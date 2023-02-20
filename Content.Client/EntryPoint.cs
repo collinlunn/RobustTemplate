@@ -1,5 +1,8 @@
+using Content.Client.UserInterface;
+using Content.Client.UserInterface.States;
 using Robust.Client;
 using Robust.Client.Graphics;
+using Robust.Client.State;
 using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
@@ -11,6 +14,13 @@ namespace Content.Client;
 
 public sealed class EntryPoint : GameClient
 {
+    [Dependency] private readonly IStateManager _stateManager = default!;
+
+    public override void PreInit()
+    {
+        IoCManager.Resolve<IClyde>().SetWindowTitle("Placeholder Window Title");
+    }
+
     public override void Init()
     {
         var factory = IoCManager.Resolve<IComponentFactory>();
@@ -35,24 +45,27 @@ public sealed class EntryPoint : GameClient
         factory.GenerateNetIds();
 
         // DEVNOTE: This is generally where you'll be setting up the IoCManager further.
+
+        IoCManager.Resolve<StyleSheetManager>().Initialize(); //Load a stylesheet into the IUserInterfaceManager so UI works
+        IoCManager.Resolve<HudManager>().Initialize(); //Handles modifying game state when client run level changes, which updates HUD
     }
 
     public override void PostInit()
     {
         base.PostInit();
-            
+
         // DEVNOTE: The line below will disable lighting, so you can see in-game sprites without the need for lights
-        //IoCManager.Resolve<ILightManager>().Enabled = false;
+        IoCManager.Resolve<ILightManager>().Enabled = false;
 
         // DEVNOTE: Further setup...
         var client = IoCManager.Resolve<IBaseClient>();
-            
+
         // DEVNOTE: You might want a main menu to connect to a server, or start a singleplayer game.
         // Be sure to check out StateManager for this! Below you'll find examples to start a game.
-            
+
         // If you want to connect to a server...
         // client.ConnectToServer("ip-goes-here", 1212);
-            
+
         // Optionally, singleplayer also works!
         // client.StartSinglePlayer();
     }

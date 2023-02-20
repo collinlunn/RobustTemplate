@@ -1,0 +1,15 @@
+<Control xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <PanelContainer MaxSize="480 250">
+        <BoxContainer Orientation="Vertical" Margin="15 15 15 15" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="5">
+            <Label Text="Placeholder Menu Title" Align="Center" StyleClasses="LabelGame"/>
+            <Label Text="Placeholder description" Align="Center"/>
+            <Button Name="StartLocalServerButton" Text="Start Local Server" TextAlign="Center" MaxWidth="150"/>
+            <Control VerticalExpand="True"/>
+            <Label Text="Connect to Server" Align="Center"/>
+            <LineEdit Name="UsernameLineEdit" PlaceHolder="Username..." MaxWidth="150"/>
+            <LineEdit Name="AddressLineEdit" PlaceHolder="Server address..." MaxWidth="150"/>
+            <Control />
+            <Button Name="ConnectButton" Text="Connect" TextAlign="Center" MaxWidth="150"/>
+        </BoxContainer>
+    </PanelContainer>
+</Control>
