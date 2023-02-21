@@ -31,7 +31,8 @@ public sealed class MainMenuState : State
     {
         _mainMenu = new MainMenuHud
         {
-            Username = _cfgManager.GetCVar(CVars.PlayerName)
+            Username = _cfgManager.GetCVar(CVars.PlayerName),
+            Address = "127.0.0.1"
         };
 
         _mainMenu.OnConnectButtonPressed += OnConnectPressed;

@@ -20,5 +20,10 @@ public sealed partial class MainMenuHud : Control
         set => UsernameLineEdit.Text = value;
     }
 
-    public string Address => AddressLineEdit.Text;
+    public string Address
+    {
+        get => AddressLineEdit.Text;
+        set => AddressLineEdit.Text = value;
+    }
+
 }

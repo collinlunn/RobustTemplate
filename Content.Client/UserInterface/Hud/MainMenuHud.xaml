@@ -3,7 +3,6 @@
         <BoxContainer Orientation="Vertical" Margin="15 15 15 15" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="5">
             <Label Text="Placeholder Menu Title" Align="Center" StyleClasses="LabelGame"/>
             <Label Text="Placeholder description" Align="Center"/>
-            <Button Name="StartLocalServerButton" Text="Start Local Server" TextAlign="Center" MaxWidth="150"/>
             <Control VerticalExpand="True"/>
             <Label Text="Connect to Server" Align="Center"/>
             <LineEdit Name="UsernameLineEdit" PlaceHolder="Username..." MaxWidth="150"/>
