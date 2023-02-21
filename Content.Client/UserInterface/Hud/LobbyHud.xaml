@@ -1,0 +1,9 @@
+<Control xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <PanelContainer MaxSize="480 250">
+        <BoxContainer Orientation="Vertical" Margin="15 15 15 15" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="5">
+            <Label Text="Placeholder Lobby" Align="Center" StyleClasses="LabelGame"/>
+            <Label Text="Woohoo you've connected to a server" Align="Center"/>
+            <Button Name="StartGameButton" Text="Start Game" TextAlign="Center" MaxWidth="150"/>
+        </BoxContainer>
+    </PanelContainer>
+</Control>
