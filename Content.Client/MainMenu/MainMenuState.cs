@@ -1,6 +1,5 @@
 using System;
 using System.Text.RegularExpressions;
-using Content.Client.UserInterface.Hud;
 using Robust.Client;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
@@ -12,7 +11,7 @@ using Robust.Shared.Network;
 using Robust.Shared.Utility;
 using UsernameHelpers = Robust.Shared.AuthLib.UsernameHelpers;
 
-namespace Content.Client.UserInterface.States;
+namespace Content.Client.MainMenu;
 
 public sealed class MainMenuState : State
 {
@@ -21,12 +20,12 @@ public sealed class MainMenuState : State
     [Dependency] private readonly IGameController _gameController = default!;
     [Dependency] private readonly IConfigurationManager _cfgManager = default!;
     [Dependency] private readonly IUserInterfaceManager _userInterface = default!;
-        
+
     // ReSharper disable once InconsistentNaming
     private static readonly Regex IPv6Regex = new(@"\[(.*:.*:.*)](?::(\d+))?");
-        
+
     private MainMenuHud? _mainMenu;
-        
+
     protected override void Startup()
     {
         _mainMenu = new MainMenuHud
@@ -39,16 +38,16 @@ public sealed class MainMenuState : State
         _netManager.ConnectFailed += OnConnectFailed;
 
         LayoutContainer.SetAnchorAndMarginPreset(_mainMenu, LayoutContainer.LayoutPreset.Wide);
-            
+
         _userInterface.StateRoot.AddChild(_mainMenu);
     }
-        
+
     protected override void Shutdown()
     {
         _netManager.ConnectFailed -= OnConnectFailed;
         _mainMenu?.Dispose();
     }
-        
+
     private void OnConnectFailed(object? sender, NetConnectFailArgs e)
     {
         _userInterface.Popup($"Disconnected: {e.Reason}", "Disconnected");
@@ -63,7 +62,7 @@ public sealed class MainMenuState : State
                 _userInterface.Popup($"Invalid username:\n{usernameReason.ToText()}", "Invalid Username");
                 return;
             }
-                
+
             _cfgManager.SetCVar(CVars.PlayerName, _mainMenu.Username);
             _cfgManager.SaveToFile();
         }
@@ -83,7 +82,7 @@ public sealed class MainMenuState : State
             _userInterface.Popup($"Unable to connect: {e.Message}", "Connection Error");
         }
     }
-        
+
     private bool TryParseAddress(string address, out string ip, out ushort port, out string reason)
     {
         var match6 = IPv6Regex.Match(address);

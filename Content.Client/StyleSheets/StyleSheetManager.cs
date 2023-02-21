@@ -6,7 +6,7 @@ using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
 
-namespace Content.Client.UserInterface;
+namespace Content.Client.StyleSheets;
 
 /// <summary>
 ///     Creates a stylesheet for UI.

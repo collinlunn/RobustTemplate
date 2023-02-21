@@ -1,4 +1,4 @@
-using Content.Client.UserInterface;
+using Content.Client.StyleSheets;
 using Robust.Shared.IoC;
 
 namespace Content.Client;

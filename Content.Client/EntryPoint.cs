@@ -1,5 +1,5 @@
-using Content.Client.UserInterface;
-using Content.Client.UserInterface.States;
+using Content.Client.MainMenu;
+using Content.Client.StyleSheets;
 using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.State;
