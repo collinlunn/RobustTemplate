@@ -19,11 +19,17 @@ public sealed class ClientLobbySystem : SharedLobbySystem
     {
         base.Initialize();
         SubscribeLocalEvent<PlayerAttachSysMessage>(OnPlayerAttached);
+        SubscribeNetworkEvent<LobbyJoinedEvent>(OnLobbyJoined);
     }
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+    }
+
+    private void OnLobbyJoined(LobbyJoinedEvent ev)
+    {
+        _stateManager.RequestStateChange<LobbyState>();
     }
 
     private void OnPlayerAttached(PlayerAttachSysMessage ev)
