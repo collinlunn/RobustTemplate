@@ -18,6 +18,7 @@ public sealed class EntryPoint : GameClient
 
     public override void PreInit()
     {
+        IoCManager.InjectDependencies(this);
         IoCManager.Resolve<IClyde>().SetWindowTitle("Placeholder Window Title");
     }
 
@@ -45,14 +46,15 @@ public sealed class EntryPoint : GameClient
         factory.GenerateNetIds();
 
         // DEVNOTE: This is generally where you'll be setting up the IoCManager further.
-
+        
         IoCManager.Resolve<StyleSheetManager>().Initialize(); //Load a stylesheet into the IUserInterfaceManager so UI works
-        IoCManager.Resolve<HudManager>().Initialize(); //Handles modifying game state when client run level changes, which updates HUD
     }
 
     public override void PostInit()
     {
         base.PostInit();
+
+        _stateManager.RequestStateChange<MainMenuState>();
 
         // DEVNOTE: The line below will disable lighting, so you can see in-game sprites without the need for lights
         IoCManager.Resolve<ILightManager>().Enabled = false;
