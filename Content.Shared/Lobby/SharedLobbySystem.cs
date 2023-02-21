@@ -22,3 +22,9 @@ public sealed class StartGamePressedEvent : EntityEventArgs
 {
 
 }
+
+[Serializable, NetSerializable]
+public sealed class StartGameEvent : EntityEventArgs
+{
+
+}

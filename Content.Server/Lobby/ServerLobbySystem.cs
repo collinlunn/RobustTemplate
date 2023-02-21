@@ -4,7 +4,6 @@ using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.IoC;
 using Robust.Shared.Timing;
-using Robust.Shared.Utility;
 
 namespace Content.Server.Lobby;
 
@@ -19,6 +18,11 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
         _playerManager.PlayerStatusChanged += PlayerStatusChanged;
         SubscribeNetworkEvent<StartGamePressedEvent>(OnStartGamePressed);
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
     }
 
     private void PlayerStatusChanged(object? sender, SessionStatusEventArgs args)
@@ -46,5 +50,11 @@ public sealed class ServerLobbySystem : SharedLobbySystem
     {
         //TODO Check if game should be allowed to start
         //TODO Start the game
+        var startGameEvent = new StartGameEvent();
+        RaiseLocalEvent(startGameEvent);
+        foreach (var playerSession in _playerManager.ServerSessions)
+        {
+            RaiseNetworkEvent(startGameEvent, playerSession);
+        }
     }
 }

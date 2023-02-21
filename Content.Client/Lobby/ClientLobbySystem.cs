@@ -1,3 +1,4 @@
+using Content.Client.InGame;
 using Content.Shared.Lobby;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
@@ -18,6 +19,7 @@ public sealed class ClientLobbySystem : SharedLobbySystem
         base.Initialize();
         SubscribeLocalEvent<PlayerAttachSysMessage>(OnPlayerAttached);
         SubscribeNetworkEvent<LobbyJoinedEvent>(OnLobbyJoined);
+        SubscribeNetworkEvent<StartGameEvent>(OnStartGame);
     }
 
     public override void Update(float frameTime)
@@ -28,6 +30,11 @@ public sealed class ClientLobbySystem : SharedLobbySystem
     private void OnLobbyJoined(LobbyJoinedEvent ev)
     {
         _stateManager.RequestStateChange<LobbyState>();
+    }
+
+    private void OnStartGame(StartGameEvent ev)
+    {
+        _stateManager.RequestStateChange<InGameState>();
     }
 
     private void OnPlayerAttached(PlayerAttachSysMessage ev)
