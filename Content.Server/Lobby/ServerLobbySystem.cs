@@ -18,6 +18,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
         base.Initialize();
 
         _playerManager.PlayerStatusChanged += PlayerStatusChanged;
+        SubscribeNetworkEvent<StartGamePressedEvent>(OnStartGamePressed);
     }
 
     private void PlayerStatusChanged(object? sender, SessionStatusEventArgs args)
@@ -41,8 +42,9 @@ public sealed class ServerLobbySystem : SharedLobbySystem
         }
     }
 
-    public override void Update(float frameTime)
+    private void OnStartGamePressed(StartGamePressedEvent ev)
     {
-        base.Update(frameTime);
+        //TODO Check if game should be allowed to start
+        //TODO Start the game
     }
 }

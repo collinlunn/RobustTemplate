@@ -18,7 +18,7 @@ public sealed class LobbyJoinedEvent : EntityEventArgs
 }
 
 [Serializable, NetSerializable]
-public sealed class LobbyStartGameEvent : EntityEventArgs
+public sealed class StartGamePressedEvent : EntityEventArgs
 {
 
 }

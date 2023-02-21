@@ -1,6 +1,5 @@
 using Content.Shared.Lobby;
 using JetBrains.Annotations;
-using Robust.Client;
 using Robust.Client.GameObjects;
 using Robust.Client.State;
 using Robust.Shared.IoC;
@@ -12,7 +11,6 @@ namespace Content.Client.Lobby;
 [UsedImplicitly]
 public sealed class ClientLobbySystem : SharedLobbySystem
 {
-    [Dependency] private readonly IBaseClient _client = default!;
     [Dependency] private readonly IStateManager _stateManager = default!;
 
     public override void Initialize()
