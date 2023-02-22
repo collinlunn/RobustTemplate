@@ -1,0 +1,5 @@
+- type: entity
+  id: TestEntity
+  components:
+    - type: Sprite
+      texture: Interface/cross.png
