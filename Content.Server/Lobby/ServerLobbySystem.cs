@@ -3,6 +3,8 @@ using JetBrains.Annotations;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.IoC;
+using Robust.Shared.Map;
+using Robust.Shared.Maths;
 using Robust.Shared.Timing;
 
 namespace Content.Server.Lobby;
@@ -11,6 +13,9 @@ namespace Content.Server.Lobby;
 public sealed class ServerLobbySystem : SharedLobbySystem
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;
+    [Dependency] private readonly IMapManager _mapManager = default!;
+
+    private MapId _map = MapId.Nullspace;
 
     public override void Initialize()
     {
@@ -52,9 +57,17 @@ public sealed class ServerLobbySystem : SharedLobbySystem
         //TODO Start the game
         var startGameEvent = new StartGameEvent();
         RaiseLocalEvent(startGameEvent);
+
+        _map = _mapManager.CreateMap();
         foreach (var playerSession in _playerManager.ServerSessions)
         {
             RaiseNetworkEvent(startGameEvent, playerSession);
+
+            // Empty entity
+            var spawnVector = new Vector2i(20, 10) / 2f;
+            var spawnCoord = new MapCoordinates(spawnVector, _map);
+            var entity = EntityManager.SpawnEntity(null, spawnCoord);
+            playerSession.AttachToEntity(entity);
         }
     }
 }
