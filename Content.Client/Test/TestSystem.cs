@@ -15,8 +15,6 @@ namespace Content.Client.Test
             {
                 //TEST
             }
-
-
         }
     }
 }

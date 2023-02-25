@@ -1,0 +1,10 @@
+- type: entity
+  id: TestEntity
+  components:
+    - type: Sprite
+      texture: Interface/cross.png
+    - type: Test
+    - type: UserInterface
+      interfaces:
+      - key: enum.TestUiKey.Key
+        type: TestBoundUserInterface

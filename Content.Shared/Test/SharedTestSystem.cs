@@ -1,5 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Serialization;
+using System;
 
 namespace Content.Shared.Test
 {
@@ -16,5 +18,11 @@ namespace Content.Shared.Test
                 //TEST
             }
         }
+    }
+
+    [Serializable, NetSerializable]
+    public enum TestUiKey
+    {
+        Key
     }
 }

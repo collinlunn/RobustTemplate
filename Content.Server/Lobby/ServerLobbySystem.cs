@@ -59,6 +59,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
         RaiseLocalEvent(startGameEvent);
 
         _map = _mapManager.CreateMap();
+        //_mapManager.SetMapPaused(_map, true);
         foreach (var playerSession in _playerManager.ServerSessions)
         {
             RaiseNetworkEvent(startGameEvent, playerSession);
@@ -68,6 +69,8 @@ public sealed class ServerLobbySystem : SharedLobbySystem
             var spawnCoord = new MapCoordinates(spawnVector, _map);
             var entity = EntityManager.SpawnEntity(null, spawnCoord);
             playerSession.AttachToEntity(entity);
+
+            EntityManager.SpawnEntity("TestEntity", spawnCoord);
         }
     }
 }
