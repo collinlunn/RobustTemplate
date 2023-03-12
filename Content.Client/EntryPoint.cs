@@ -3,6 +3,8 @@ using Content.Client.StyleSheets;
 using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.State;
+using Robust.Shared;
+using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
@@ -53,6 +55,11 @@ public sealed class EntryPoint : GameClient
     public override void PostInit()
     {
         base.PostInit();
+
+#if DEBUG
+        //fake latency to help reveal bugs while debugging on localhost
+        IoCManager.Resolve<IConfigurationManager>().OverrideDefault(CVars.NetFakeLagMin, 0.05f); 
+#endif
 
         _stateManager.RequestStateChange<MainMenuState>();
 
