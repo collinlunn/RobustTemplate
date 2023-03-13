@@ -8,3 +8,9 @@
       interfaces:
       - key: enum.TestUiKey.Key
         type: TestBoundUserInterface
+        
+- type: entity
+  id: TestPlayer
+  components:
+    - type: Sprite
+      texture: redCross.png

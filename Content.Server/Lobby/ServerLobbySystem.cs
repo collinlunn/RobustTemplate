@@ -60,17 +60,17 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
         _map = _mapManager.CreateMap();
         //_mapManager.SetMapPaused(_map, true);
+
+        var spawnVector = new Vector2i(10, 5);
+        var spawnCoord = new MapCoordinates(spawnVector, _map);
+
         foreach (var playerSession in _playerManager.ServerSessions)
         {
             RaiseNetworkEvent(startGameEvent, playerSession);
-
-            // Empty entity
-            var spawnVector = new Vector2i(20, 10) / 2f;
-            var spawnCoord = new MapCoordinates(spawnVector, _map);
-            var entity = EntityManager.SpawnEntity(null, spawnCoord);
-            playerSession.AttachToEntity(entity);
-
-            EntityManager.SpawnEntity("TestEntity", spawnCoord);
+            var playerEntity = EntityManager.SpawnEntity("TestPlayer", spawnCoord);
+            playerSession.AttachToEntity(playerEntity);
         }
+
+        EntityManager.SpawnEntity("TestEntity", spawnCoord);
     }
 }

@@ -39,11 +39,12 @@ public sealed class ClientLobbySystem : SharedLobbySystem
 
     private void OnPlayerAttached(PlayerAttachSysMessage ev)
     {
-        if (!ev.AttachedEntity.Valid)
+        var entityUid = ev.AttachedEntity;
+
+        if (!entityUid.Valid)
             return;
 
-        var camera = EntityManager.SpawnEntity(null, new MapCoordinates(new Vector2i(20, 10) / 2f, Transform(ev.AttachedEntity).MapID));
-        var eye = EnsureComp<EyeComponent>(camera);
+        var eye = EnsureComp<EyeComponent>(entityUid);
         eye.Current = true;
         eye.Zoom = Vector2.One;
     }
