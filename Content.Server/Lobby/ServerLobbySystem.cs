@@ -61,7 +61,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
         _map = _mapManager.CreateMap();
         //_mapManager.SetMapPaused(_map, true);
 
-        var spawnVector = new Vector2i(10, 5);
+        var spawnVector = new Vector2i(0, 0);
         var spawnCoord = new MapCoordinates(spawnVector, _map);
 
         foreach (var playerSession in _playerManager.ServerSessions)

@@ -1,5 +1,6 @@
 using Content.Client.InGame;
 using Content.Shared.Lobby;
+using Content.Shared.Test;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
 using Robust.Client.State;
@@ -44,8 +45,7 @@ public sealed class ClientLobbySystem : SharedLobbySystem
         if (!entityUid.Valid)
             return;
 
-        var eye = EnsureComp<EyeComponent>(entityUid);
+        var eye = Comp<EyeComponent>(entityUid);
         eye.Current = true;
-        eye.Zoom = Vector2.One;
     }
 }
