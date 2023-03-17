@@ -15,3 +15,15 @@
     - type: Sprite
       texture: redCross.png
     - type: Eye
+    - type: Input
+    - type: Physics
+      bodyType: Dynamic
+    - type: Fixtures
+      fixtures:
+        - shape:
+            !type:PhysShapeCircle
+            radius: 0.35
+          mask:
+            - MobMask
+          layer:
+            - MobLayer
