@@ -16,6 +16,8 @@
       texture: redCross.png
     - type: Eye
     - type: Input
+    - type: PlayerMovement
+      speed: 5
     - type: Physics
       bodyType: Dynamic
     - type: Fixtures
