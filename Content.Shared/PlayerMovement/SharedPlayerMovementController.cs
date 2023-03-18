@@ -5,6 +5,7 @@ using Robust.Shared.Players;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.IoC;
+using Robust.Shared.Maths;
 
 namespace Content.Shared.PlayerMovement
 {
@@ -16,13 +17,16 @@ namespace Content.Shared.PlayerMovement
         {
             base.Initialize();
 
-            var cmdHandler = new PlayerMovementInputCmdHandler(this);
+            var upHandler = new PlayerMovementInputCmdHandler(this, Direction.North);
+			var downHandler = new PlayerMovementInputCmdHandler(this, Direction.South);
+			var leftHandler = new PlayerMovementInputCmdHandler(this, Direction.West);
+			var rightHandler = new PlayerMovementInputCmdHandler(this, Direction.East);
 
-            CommandBinds.Builder
-                .Bind(EngineKeyFunctions.MoveUp, cmdHandler)
-                .Bind(EngineKeyFunctions.MoveLeft, cmdHandler)
-                .Bind(EngineKeyFunctions.MoveRight, cmdHandler)
-                .Bind(EngineKeyFunctions.MoveDown, cmdHandler)
+			CommandBinds.Builder
+                .Bind(EngineKeyFunctions.MoveUp, upHandler)
+				.Bind(EngineKeyFunctions.MoveDown, downHandler)
+				.Bind(EngineKeyFunctions.MoveLeft, leftHandler)
+                .Bind(EngineKeyFunctions.MoveRight, rightHandler)
                 .Register<SharedPlayerMovementController>();
         }
 
@@ -40,11 +44,14 @@ namespace Content.Shared.PlayerMovement
         private sealed class PlayerMovementInputCmdHandler : InputCmdHandler
         {
             private readonly SharedPlayerMovementController _controller;
+			private readonly Direction _dir;
 
-            public PlayerMovementInputCmdHandler(SharedPlayerMovementController controller)
+			public PlayerMovementInputCmdHandler(SharedPlayerMovementController controller, Direction dir)
             {
                 _controller = controller;
-            }
+				_dir = dir;
+
+			}
 
             //what does this do why do we return false here
             public override bool HandleCmdMessage(ICommonSession session, InputCmdMessage message)
