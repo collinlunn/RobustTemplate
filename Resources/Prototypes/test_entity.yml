@@ -19,7 +19,7 @@
     - type: PlayerMovement
       speed: 10
     - type: Physics
-      bodyType: Dynamic
+      bodyType: KinematicController
     - type: Fixtures
       fixtures:
         - shape:
