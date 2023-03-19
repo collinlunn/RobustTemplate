@@ -8,11 +8,10 @@ using Robust.Shared.IoC;
 using Robust.Shared.Maths;
 using System;
 using Robust.Shared.Timing;
-using Robust.Shared.Physics.Components;
 
 namespace Content.Shared.PlayerMovement
 {
-    public class SharedPlayerMovementController : VirtualController
+    public abstract class SharedPlayerMovementController : VirtualController
     {
         [Dependency] protected readonly SharedPhysicsSystem _physics = default!;
 		[Dependency] protected readonly IGameTiming _timing = default!;

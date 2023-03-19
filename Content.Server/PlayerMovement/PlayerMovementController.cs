@@ -1,5 +1,4 @@
 ﻿using Content.Shared.PlayerMovement;
-using Robust.Shared.Physics.Components;
 
 namespace Content.Server.PlayerMovement
 {
@@ -9,10 +8,11 @@ namespace Content.Server.PlayerMovement
 		{
 			base.UpdateBeforeSolve(prediction, frameTime);
 
-			foreach (var playerMovement in EntityQuery<PlayerMovementComponent>())
+			var query = EntityQueryEnumerator<PlayerMovementComponent>();
+			while (query.MoveNext(out var player, out var _))
 			{
 				SetPlayerVelocity(player);
-			}	
+			}
 		}
 	}
 }
