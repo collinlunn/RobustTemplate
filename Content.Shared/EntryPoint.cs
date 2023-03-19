@@ -39,10 +39,11 @@ public sealed class EntryPoint : GameShared
         base.PostInit();
 
 #if DEBUG
-		//fake latency to help reveal bugs while debugging on localhost
-		IoCManager.Resolve<IConfigurationManager>().OverrideDefault(CVars.NetTickrate, 30);
-		IoCManager.Resolve<IConfigurationManager>().OverrideDefault(CVars.TargetMinimumTickrate, 30);
-		
+		//test settings with simulated latency
+		var configMan = IoCManager.Resolve<IConfigurationManager>();
+		configMan.SetCVar(CVars.NetFakeLagMin, 0.1f);
+		configMan.SetCVar(CVars.NetTickrate, 30);
+		configMan.SetCVar(CVars.TargetMinimumTickrate, 30);
 #endif
 		// DEVNOTE: You might want to put special init handlers for, say, tiles here.
 		// TODO: Document what else you might want to put here
