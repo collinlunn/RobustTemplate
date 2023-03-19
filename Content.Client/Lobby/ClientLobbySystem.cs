@@ -4,6 +4,7 @@ using Content.Shared.Test;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
 using Robust.Client.State;
+using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
@@ -40,12 +41,11 @@ public sealed class ClientLobbySystem : SharedLobbySystem
 
     private void OnPlayerAttached(PlayerAttachSysMessage ev)
     {
-        var entityUid = ev.AttachedEntity;
+        var entity = ev.AttachedEntity;
 
-        if (!entityUid.Valid)
+        if (!entity.Valid)
             return;
 
-        var eye = Comp<EyeComponent>(entityUid);
-        eye.Current = true;
+		entity.EnsureComponentWarn<EyeComponent>().Current = true;
     }
 }

@@ -1,4 +1,4 @@
-﻿using Robust.Shared.Input.Binding;
+using Robust.Shared.Input.Binding;
 using Robust.Shared.Input;
 using Robust.Shared.Physics.Controllers;
 using Robust.Shared.Players;
@@ -51,9 +51,14 @@ namespace Content.Shared.PlayerMovement
 			
 			playerMovement.LastInputTick = _timing.CurTick;
 			playerMovement.LastInputSubTick = subTick;
+
+		}
+
+		protected void SetPlayerVelocity(EntityUid player)
+		{
+			var playerMovement = player.EnsureComponentWarn<PlayerMovementComponent>();
 			var newVelocity = ButtonsToVelocityDir(playerMovement.HeldButtons).Normalized * playerMovement.Speed;
-			
-			PhysicsSystem.SetLinearVelocity(entity, newVelocity);
+			PhysicsSystem.SetLinearVelocity(player, newVelocity);
 		}
 
 		private sealed class PlayerMovementInputCmdHandler : InputCmdHandler
@@ -65,7 +70,6 @@ namespace Content.Shared.PlayerMovement
             {
                 _controller = controller;
 				_button = button;
-
 			}
 
             //why are we returning false here
