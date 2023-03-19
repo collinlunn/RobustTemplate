@@ -8,6 +8,8 @@ using Robust.Shared.IoC;
 using Robust.Shared.Maths;
 using System;
 using Robust.Shared.Timing;
+using Robust.Shared.GameStates;
+using Robust.Shared.Serialization;
 
 namespace Content.Shared.PlayerMovement
 {
@@ -19,6 +21,9 @@ namespace Content.Shared.PlayerMovement
 		public override void Initialize()
         {
             base.Initialize();
+
+			SubscribeLocalEvent<PlayerMovementComponent, ComponentGetState>(GetPlayerMovementState);
+			SubscribeLocalEvent<PlayerMovementComponent, ComponentHandleState>(HandlePlayerMovementState);
 
             var upHandler = new PlayerMovementInputCmdHandler(this, MoveButtons.Up);
 			var downHandler = new PlayerMovementInputCmdHandler(this, MoveButtons.Down);
@@ -32,6 +37,19 @@ namespace Content.Shared.PlayerMovement
                 .Bind(EngineKeyFunctions.MoveRight, rightHandler)
                 .Register<SharedPlayerMovementController>();
         }
+
+		private void GetPlayerMovementState(EntityUid uid, PlayerMovementComponent component, ref ComponentGetState args)
+		{
+			args.State = new PlayerMovementComponentState(component.HeldButtons);
+		}
+
+		private void HandlePlayerMovementState(EntityUid uid, PlayerMovementComponent component, ref ComponentHandleState args)
+		{
+			if (args.Current is not PlayerMovementComponentState state)
+				return;
+
+			component.HeldButtons = state.HeldButtons;
+		}
 
 		public override void Shutdown()
 		{
@@ -50,6 +68,8 @@ namespace Content.Shared.PlayerMovement
 			
 			playerMovement.LastInputTick = _timing.CurTick;
 			playerMovement.LastInputSubTick = subTick;
+
+			Dirty(playerMovement);
 		}
 
 		protected void SetPlayerVelocity(EntityUid player)
@@ -113,5 +133,16 @@ namespace Content.Shared.PlayerMovement
 		Down = 1 << 1,
 		Left = 1 << 2,
 		Right = 1 << 3,
+	}
+
+	[Serializable, NetSerializable]
+	public sealed class PlayerMovementComponentState : ComponentState
+	{
+		public readonly MoveButtons HeldButtons;
+
+		public PlayerMovementComponentState(MoveButtons heldButtons)
+		{
+			HeldButtons = heldButtons;
+		}
 	}
 }
