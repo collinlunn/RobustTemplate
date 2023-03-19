@@ -50,13 +50,13 @@ namespace Content.Shared.PlayerMovement
 			
 			playerMovement.LastInputTick = _timing.CurTick;
 			playerMovement.LastInputSubTick = subTick;
-
 		}
 
 		protected void SetPlayerVelocity(EntityUid player)
 		{
 			var playerMovement = player.EnsureComponentWarn<PlayerMovementComponent>();
-			var newVelocity = ButtonsToVelocityDir(playerMovement.HeldButtons).Normalized * playerMovement.Speed;
+			var newVelocityDir = TryGetVelocityDir(playerMovement.HeldButtons);
+			var newVelocity = newVelocityDir * playerMovement.Speed;
 			PhysicsSystem.SetLinearVelocity(player, newVelocity);
 		}
 
@@ -82,7 +82,7 @@ namespace Content.Shared.PlayerMovement
             }
         }
 
-		private static Vector2 ButtonsToVelocityDir(MoveButtons buttons)
+		private static Vector2 TryGetVelocityDir(MoveButtons buttons)
 		{
 			var velocity = new Vector2(0, 0);
 
@@ -98,8 +98,11 @@ namespace Content.Shared.PlayerMovement
 			if (buttons.HasFlag(MoveButtons.Right))
 				velocity += new Vector2(1, 0);
 
-			return velocity;
-		}
+			if (velocity.Length != 0)
+				return velocity.Normalized; //convert to unit vector because this is just for direction
+			else
+				return velocity; //length 0 vector cannot be normalized so just return the zero vector
+		}		
     }
 
 	[Flags]
