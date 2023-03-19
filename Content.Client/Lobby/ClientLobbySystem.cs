@@ -1,13 +1,10 @@
 using Content.Client.InGame;
 using Content.Shared.Lobby;
-using Content.Shared.Test;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
 using Robust.Client.State;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
-using Robust.Shared.Map;
-using Robust.Shared.Maths;
 
 namespace Content.Client.Lobby;
 

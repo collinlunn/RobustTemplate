@@ -1,12 +1,10 @@
-using JetBrains.Annotations;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
 using System;
 
 namespace Content.Shared.Lobby;
 
-[UsedImplicitly]
-public class SharedLobbySystem : EntitySystem
+public abstract class SharedLobbySystem : EntitySystem
 {
 
 }

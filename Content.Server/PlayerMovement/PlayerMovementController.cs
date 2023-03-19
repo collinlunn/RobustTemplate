@@ -1,7 +1,9 @@
 ﻿using Content.Shared.PlayerMovement;
+using JetBrains.Annotations;
 
 namespace Content.Server.PlayerMovement
 {
+	[UsedImplicitly]
 	public sealed class PlayerMovementController : SharedPlayerMovementController
 	{
 		public override void UpdateBeforeSolve(bool prediction, float frameTime)
