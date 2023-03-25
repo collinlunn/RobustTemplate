@@ -102,6 +102,9 @@ namespace Content.Shared.PlayerMovement
             }
         }
 
+		/// <summary>
+		///		Returns a unit vector in the direction the player is moving.
+		/// </summary>
 		private static Vector2 TryGetVelocityDir(MoveButtons buttons)
 		{
 			var velocity = new Vector2(0, 0);
