@@ -17,8 +17,9 @@ namespace Content.Client;
 public sealed class EntryPoint : GameClient
 {
     [Dependency] private readonly IStateManager _stateManager = default!;
+	[Dependency] private readonly IBaseClient _baseClient = default!;
 
-    public override void PreInit()
+	public override void PreInit()
     {
         IoCManager.InjectDependencies(this);
     }
@@ -60,23 +61,31 @@ public sealed class EntryPoint : GameClient
         IoCManager.Resolve<IConfigurationManager>().OverrideDefault(CVars.NetFakeLagMin, 0.05f); 
 #endif
 
-        _stateManager.RequestStateChange<MainMenuState>();
-
         // DEVNOTE: The line below will disable lighting, so you can see in-game sprites without the need for lights
         IoCManager.Resolve<ILightManager>().Enabled = false;
 
-        // DEVNOTE: Further setup...
-        var client = IoCManager.Resolve<IBaseClient>();
+		_stateManager.RequestStateChange<MainMenuState>(); //bring up the main menu
+		//If run level drops to initialize after disconnecting reopen the main menu
+		_baseClient.RunLevelChanged += (_, args) =>
+		{
+			if (args.NewLevel == ClientRunLevel.Initialize)
+			{
+				if (args.OldLevel == ClientRunLevel.Connected || args.OldLevel == ClientRunLevel.InGame)
+				{
+					_stateManager.RequestStateChange<MainMenuState>();
+				}
+			}
+		};
 
-        // DEVNOTE: You might want a main menu to connect to a server, or start a singleplayer game.
-        // Be sure to check out StateManager for this! Below you'll find examples to start a game.
+		// DEVNOTE: You might want a main menu to connect to a server, or start a singleplayer game.
+		// Be sure to check out StateManager for this! Below you'll find examples to start a game.
 
-        // If you want to connect to a server...
-        // client.ConnectToServer("ip-goes-here", 1212);
+		// If you want to connect to a server...
+		// client.ConnectToServer("ip-goes-here", 1212);
 
-        // Optionally, singleplayer also works!
-        // client.StartSinglePlayer();
-    }
+		// Optionally, singleplayer also works!
+		// client.StartSinglePlayer();
+	}
 
     protected override void Dispose(bool disposing)
     {
