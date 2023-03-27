@@ -31,11 +31,11 @@ public sealed class MainMenuState : State
     {
         _mainMenu = new MainMenuHud
         {
-            Username = _cfgManager.GetCVar(CVars.PlayerName),
-            Address = "127.0.0.1"
+            Username = _cfgManager.GetCVar(CVars.PlayerName)
         };
 
-        _mainMenu.ConnectButton.OnPressed += _ => OnConnectPressed();
+        _mainMenu.ConnectButton.OnPressed += _ => OnConnectPressed(_mainMenu.ConnectButton.Text ?? "");
+		_mainMenu.ConnectToLocalHostButton.OnPressed += _ => OnConnectPressed("127.0.0.1");
 		_mainMenu.QuitButton.OnPressed += _ =>
 		{
 			_gameController.Shutdown("Client pressed quit button.");
@@ -58,7 +58,7 @@ public sealed class MainMenuState : State
         _userInterface.Popup($"Disconnected: {e.Reason}", "Disconnected");
     }
 
-    private void OnConnectPressed()
+    private void OnConnectPressed(string address)
     {
         if (!_gameController.LaunchState.FromLauncher)
         {
@@ -70,9 +70,9 @@ public sealed class MainMenuState : State
 
             _cfgManager.SetCVar(CVars.PlayerName, _mainMenu.Username);
             _cfgManager.SaveToFile();
-        }
+		}
 
-        if (!TryParseAddress(_mainMenu!.Address, out var ip, out var port, out var connectReason))
+        if (!TryParseAddress(address, out var ip, out var port, out var connectReason))
         {
             _userInterface.Popup($"Invalid address:\n{connectReason}", "Invalid Address");
             return;
