@@ -8,12 +8,6 @@ namespace Content.Client.MainMenu;
 [GenerateTypedNameReferences]
 public sealed partial class MainMenuHud : Control
 {
-    public event Action<BaseButton.ButtonEventArgs>? OnConnectButtonPressed
-    {
-        add => ConnectButton.OnPressed += value;
-        remove => ConnectButton.OnPressed -= value;
-    }
-
     public string Username
     {
         get => UsernameLineEdit.Text;

@@ -21,8 +21,9 @@ public sealed class MainMenuState : State
     [Dependency] private readonly IConfigurationManager _cfgManager = default!;
     [Dependency] private readonly IUserInterfaceManager _userInterface = default!;
 
-    // ReSharper disable once InconsistentNaming
-    private static readonly Regex IPv6Regex = new(@"\[(.*:.*:.*)](?::(\d+))?");
+
+	// ReSharper disable once InconsistentNaming
+	private static readonly Regex IPv6Regex = new(@"\[(.*:.*:.*)](?::(\d+))?");
 
     private MainMenuHud? _mainMenu;
 
@@ -34,8 +35,12 @@ public sealed class MainMenuState : State
             Address = "127.0.0.1"
         };
 
-        _mainMenu.OnConnectButtonPressed += OnConnectPressed;
-        _netManager.ConnectFailed += OnConnectFailed;
+        _mainMenu.ConnectButton.OnPressed += _ => OnConnectPressed();
+		_mainMenu.QuitButton.OnPressed += _ =>
+		{
+			_gameController.Shutdown("Client pressed quit button.");
+		};
+		_netManager.ConnectFailed += OnConnectFailed;
 
         LayoutContainer.SetAnchorAndMarginPreset(_mainMenu, LayoutContainer.LayoutPreset.Wide);
 
@@ -53,7 +58,7 @@ public sealed class MainMenuState : State
         _userInterface.Popup($"Disconnected: {e.Reason}", "Disconnected");
     }
 
-    private void OnConnectPressed(BaseButton.ButtonEventArgs obj)
+    private void OnConnectPressed()
     {
         if (!_gameController.LaunchState.FromLauncher)
         {
