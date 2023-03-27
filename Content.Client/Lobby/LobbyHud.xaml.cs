@@ -8,9 +8,5 @@ namespace Content.Client.Lobby;
 [GenerateTypedNameReferences]
 public sealed partial class LobbyHud : Control
 {
-    public event Action<BaseButton.ButtonEventArgs>? OnConnectButtonPressed
-    {
-        add => StartGameButton.OnPressed += value;
-        remove => StartGameButton.OnPressed -= value;
-    }
+
 }
