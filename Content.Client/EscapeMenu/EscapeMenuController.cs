@@ -1,8 +1,6 @@
 using Content.Client.InGame;
-using Content.Client.MainMenu;
 using JetBrains.Annotations;
 using Robust.Client;
-using Robust.Client.State;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
@@ -18,7 +16,6 @@ public sealed class EscapeMenuController : UIController, IOnStateEntered<InGameS
 {
 	[Dependency] private readonly IGameController _gameController = default!;
 	[Dependency] private readonly IClientNetManager _netManager = default!;
-	[Dependency] private readonly IStateManager _stateManager = default!;
 
 	private EscapeMenu? _escapeWindow;
 
@@ -52,6 +49,7 @@ public sealed class EscapeMenuController : UIController, IOnStateEntered<InGameS
 	public void OnStateExited(InGameState state)
     {
 		_escapeWindow?.Dispose();
+		_escapeWindow = null;
 		CommandBinds.Unregister<EscapeMenuController>();
     }
 
