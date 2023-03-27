@@ -36,7 +36,6 @@ public sealed class EscapeMenuController : UIController, IOnStateEntered<InGameS
 		{
 			CloseWindow();
 			_netManager.ClientDisconnect("Client pressed disconnect button.");
-			_stateManager.RequestStateChange<MainMenuState>();
 		};
 		_escapeWindow.QuitButton.OnPressed += _ =>
 		{
