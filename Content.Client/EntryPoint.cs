@@ -21,7 +21,6 @@ public sealed class EntryPoint : GameClient
     public override void PreInit()
     {
         IoCManager.InjectDependencies(this);
-        IoCManager.Resolve<IClyde>().SetWindowTitle("Placeholder Window Title");
     }
 
     public override void Init()

@@ -1,2 +1,6 @@
 modules: [] # Any needed RobustToolbox modules here.
 assemblyPrefix: Content # Assembly prefix here.
+
+defaultWindowTitle: Placeholder Window Title
+windowIconSet: /Textures/Logo/icon
+splashLogo: /Textures/Logo/logo.png
