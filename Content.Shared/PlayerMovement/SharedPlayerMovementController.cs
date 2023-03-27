@@ -91,14 +91,13 @@ namespace Content.Shared.PlayerMovement
 				_button = button;
 			}
 
-            //why are we returning false here
             public override bool HandleCmdMessage(ICommonSession session, InputCmdMessage message)
             {
                 if (message is not FullInputCmdMessage full || session?.AttachedEntity == null) return false;
 
                 var buttonPressed = full.State == BoundKeyState.Down;
                 _controller.HandleMovementInput(session.AttachedEntity.Value, message.SubTick, _button, buttonPressed);
-                return false;
+                return false; //return false to avoid blocking other keybinds
             }
         }
 
