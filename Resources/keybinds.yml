@@ -1,4 +1,4 @@
-﻿version: 1 # Currently unused.
+version: 1 # Currently unused.
 binds: # These are all the current engine keybinds.
 - function: UIClick
   type: State
@@ -13,6 +13,9 @@ binds: # These are all the current engine keybinds.
   type: State
   key: Escape
   priority: 10
+- function: ShowEscapeMenu
+  type: State
+  key: Escape
 - function: Use
   type: State
   key: MouseLeft
