@@ -42,8 +42,8 @@ public sealed class EntryPoint : GameShared
 		//test settings with simulated latency
 		var configMan = IoCManager.Resolve<IConfigurationManager>();
 		configMan.SetCVar(CVars.NetFakeLagMin, 0.1f);
-		configMan.SetCVar(CVars.NetTickrate, 30);
-		configMan.SetCVar(CVars.TargetMinimumTickrate, 30);
+		configMan.SetCVar(CVars.NetTickrate, 10);
+		configMan.SetCVar(CVars.TargetMinimumTickrate, 10);
 #endif
 		// DEVNOTE: You might want to put special init handlers for, say, tiles here.
 		// TODO: Document what else you might want to put here
