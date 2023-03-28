@@ -6,6 +6,7 @@ using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Maths;
 using Robust.Shared.Timing;
+using System.Collections.Generic;
 
 namespace Content.Server.Lobby;
 
@@ -73,4 +74,26 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
         EntityManager.SpawnEntity("TestEntity", spawnCoord);
     }
+
+	private void SendLobbyHudState()
+	{
+		var state = GenerateLobbyHudState();
+		foreach (var playerSession in _playerManager.ServerSessions)
+		{
+			RaiseNetworkEvent(state, playerSession);
+		}
+	}
+
+	private LobbyUIStateEvent GenerateLobbyHudState()
+	{
+		var playerStates = new List<LobbyPlayerState>();
+		foreach (var playerSession in _playerManager.ServerSessions)
+		{
+			var userName = playerSession.Data.UserName;
+			var ready = false; //TODO
+			var playerState = new LobbyPlayerState(userName, ready);
+			playerStates.Add(playerState);
+		}
+		var uiStateEvent = new LobbyUIStateEvent(playerStates);
+		return uiStateEvent;
 }

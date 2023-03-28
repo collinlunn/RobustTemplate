@@ -25,6 +25,10 @@ namespace Content.Client.Lobby
 		{
 			DebugTools.Assert(_lobbyHud == null);
 			_lobbyHud = new LobbyHud();
+			_lobbyHud.SetReadyButton.OnPressed += _ =>
+			{
+				_entityNetManager.SendSystemNetworkMessage(new LobbyPlayerReadyEvent(true));
+			};
 			_lobbyHud.StartGameButton.OnPressed += _ =>
 			{
 				_entityNetManager.SendSystemNetworkMessage(new StartGamePressedEvent());

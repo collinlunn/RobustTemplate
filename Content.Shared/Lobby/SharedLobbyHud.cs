@@ -15,6 +15,11 @@ namespace Content.Shared.Lobby
 		///		Data on each player in the lobby.
 		/// </summary>
 		public IEnumerable<LobbyPlayerState> PlayersInLobby { get; }
+
+		public LobbyUIStateEvent(IEnumerable<LobbyPlayerState> playersInLobby)
+		{
+			PlayersInLobby = playersInLobby;
+		}
 	}
 
 	/// <summary>
@@ -32,6 +37,12 @@ namespace Content.Shared.Lobby
 		///		If this player is ready for the game to start.
 		/// </summary>
 		public bool Ready { get; }
+
+		public LobbyPlayerState(string name, bool ready)
+		{
+			Name = name;
+			Ready = ready;
+		}
 	}
 
 	/// <summary>
@@ -41,6 +52,17 @@ namespace Content.Shared.Lobby
 	public sealed class LobbyJoinedEvent : EntityEventArgs
 	{
 
+	}
+
+	[Serializable, NetSerializable]
+	public sealed class LobbyPlayerReadyEvent : EntityEventArgs
+	{
+		public bool Ready { get; }
+
+		public LobbyPlayerReadyEvent(bool ready)
+		{
+			Ready = ready;
+		}
 	}
 
 	/// <summary>
