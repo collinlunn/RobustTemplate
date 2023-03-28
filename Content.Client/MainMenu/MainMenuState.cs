@@ -42,9 +42,8 @@ public sealed class MainMenuState : State
 		};
 		_netManager.ConnectFailed += OnConnectFailed;
 
-        LayoutContainer.SetAnchorAndMarginPreset(_mainMenu, LayoutContainer.LayoutPreset.Wide);
-
-        _userInterface.StateRoot.AddChild(_mainMenu);
+        LayoutContainer.SetAnchorPreset(_mainMenu, LayoutContainer.LayoutPreset.HorizontalCenterWide);
+		_userInterface.StateRoot.AddChild(_mainMenu);
     }
 
     protected override void Shutdown()
@@ -62,13 +61,15 @@ public sealed class MainMenuState : State
     {
         if (!_gameController.LaunchState.FromLauncher)
         {
-            if (!UsernameHelpers.IsNameValid(_mainMenu!.Username, out var usernameReason))
+			var userName = _mainMenu?.Username ?? "";
+
+			if (!UsernameHelpers.IsNameValid(userName, out var usernameReason))
             {
                 _userInterface.Popup($"Invalid username:\n{usernameReason.ToText()}", "Invalid Username");
                 return;
             }
 
-            _cfgManager.SetCVar(CVars.PlayerName, _mainMenu.Username);
+            _cfgManager.SetCVar(CVars.PlayerName, userName);
             _cfgManager.SaveToFile();
 		}
 
