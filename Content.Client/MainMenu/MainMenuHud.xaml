@@ -2,12 +2,16 @@
     <PanelContainer>
         <BoxContainer Orientation="Vertical">
             <Label Text="Placeholder Menu Title" StyleClasses="LabelGame"/>
-            <Label Text="Set Username"/>
-            <LineEdit Name="UsernameLineEdit" Access="Public" PlaceHolder="Username..."/>
-            <LineEdit Name="AddressLineEdit" Access="Public" PlaceHolder="IP..."/>
-            <Button Name="ConnectButton" Access="Public" Text="Username..."/>
-            <Button Name="QuitButton" Access="Public" Text="Quit"/>
+            <BoxContainer Orientation="Horizontal">
+                <Label Text="Set Username" SetWidth="200"/>
+                <LineEdit Name="UsernameLineEdit" Access="Public" PlaceHolder="Username..." SetWidth="200"/>
+            </BoxContainer>
             <Button Name="ConnectToLocalHostButton" Access="Public" Text="Connect To LocalHost"/>
+            <BoxContainer Orientation="Horizontal">
+                <LineEdit Name="AddressLineEdit" Access="Public" PlaceHolder="IP..." SetWidth="200"/>
+                <Button Name="ConnectButton" Access="Public" Text="Username..." SetWidth="200"/>
+            </BoxContainer>
+            <Button Name="QuitButton" Access="Public" Text="Quit"/>
         </BoxContainer>
     </PanelContainer>
 </Control>
