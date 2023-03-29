@@ -96,4 +96,5 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		}
 		var uiStateEvent = new LobbyUIStateEvent(playerStates);
 		return uiStateEvent;
+	}
 }
