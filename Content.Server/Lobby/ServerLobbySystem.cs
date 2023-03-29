@@ -1,5 +1,6 @@
 using Content.Shared.Lobby;
 using JetBrains.Annotations;
+using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.IoC;
@@ -15,8 +16,9 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 {
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
+	[Dependency] private readonly MapLoaderSystem _mapLoader = default!;
 
-    private MapId _map = MapId.Nullspace;
+	private MapId _map = MapId.Nullspace;
 
     public override void Initialize()
     {
@@ -54,15 +56,13 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
     private void OnStartGamePressed(StartGamePressedEvent ev)
     {
-        //TODO Check if game should be allowed to start
-        //TODO Start the game
         var startGameEvent = new StartGameEvent();
         RaiseLocalEvent(startGameEvent);
 
         _map = _mapManager.CreateMap();
-        //_mapManager.SetMapPaused(_map, true);
+		_mapLoader.TryLoad(_map, "/Maps/test_map.yml", out var rootUids);
 
-        var spawnVector = new Vector2i(0, 0);
+		var spawnVector = new Vector2i(0, 0);
         var spawnCoord = new MapCoordinates(spawnVector, _map);
 
         foreach (var playerSession in _playerManager.ServerSessions)
@@ -71,8 +71,6 @@ public sealed class ServerLobbySystem : SharedLobbySystem
             var playerEntity = EntityManager.SpawnEntity("TestPlayer", spawnCoord);
             playerSession.AttachToEntity(playerEntity);
         }
-
-        EntityManager.SpawnEntity("TestEntity", spawnCoord);
     }
 
 	private void SendLobbyHudState()
