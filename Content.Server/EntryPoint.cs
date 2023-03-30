@@ -1,3 +1,4 @@
+using Content.Server.Admin;
 using Robust.Server.ServerStatus;
 using Robust.Shared;
 using Robust.Shared.Configuration;
@@ -46,6 +47,7 @@ public sealed class EntryPoint : GameServer
             
         factory.GenerateNetIds();
 
+		IoCManager.Resolve<IAdminConsoleManager>().SetAsActiveConsoleManager();
         // DEVNOTE: This is generally where you'll be setting up the IoCManager further.
     }
 
