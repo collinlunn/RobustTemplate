@@ -10,8 +10,10 @@ namespace Content.Server.PlayerMovement
 		{
 			base.UpdateBeforeSolve(prediction, frameTime);
 
-			var query = EntityQueryEnumerator<PlayerMovementComponent>();
-			while (query.MoveNext(out var player, out var _))
+			//Get paused players too, so you can move around on paused maps for mapping
+			//Regular players still frozen, since their PhysicsComponent hasnt been set to ignore pause
+			var allQuery = AllEntityQuery<PlayerMovementComponent>(); 
+			while (allQuery.MoveNext(out var player, out _))
 			{
 				SetPlayerVelocity(player);
 			}
