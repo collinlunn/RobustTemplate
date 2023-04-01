@@ -29,3 +29,22 @@
             - MobMask
           layer:
             - MobLayer
+            
+- type: entity
+  id: TestMappingPlayer
+  noSpawn: true
+  save: false
+  components:
+    - type: Sprite
+      texture: blueCross.png
+    - type: Eye
+    - type: Input
+    - type: PlayerMovement
+      speed: 10
+    - type: Physics
+      ignorePaused: true
+      bodyType: KinematicController
+    - type: Fixtures
+      fixtures:
+        - shape:
+            !type:PhysShapeCircle
