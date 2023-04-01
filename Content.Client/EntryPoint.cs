@@ -1,7 +1,9 @@
+using Content.Client.Input;
 using Content.Client.MainMenu;
 using Content.Client.StyleSheets;
 using Robust.Client;
 using Robust.Client.Graphics;
+using Robust.Client.Input;
 using Robust.Client.State;
 using Robust.Shared;
 using Robust.Shared.Configuration;
@@ -18,6 +20,7 @@ public sealed class EntryPoint : GameClient
 {
     [Dependency] private readonly IStateManager _stateManager = default!;
 	[Dependency] private readonly IBaseClient _baseClient = default!;
+	[Dependency] private readonly IInputManager _inputManager = default!;
 
 	public override void PreInit()
     {
@@ -55,10 +58,11 @@ public sealed class EntryPoint : GameClient
     public override void PostInit()
     {
         base.PostInit();
+		ContentContexts.SetupContexts(_inputManager.Contexts);
 
 #if DEBUG
-        //fake latency to help reveal bugs while debugging on localhost
-        IoCManager.Resolve<IConfigurationManager>().OverrideDefault(CVars.NetFakeLagMin, 0.05f); 
+		//fake latency to help reveal bugs while debugging on localhost
+		IoCManager.Resolve<IConfigurationManager>().OverrideDefault(CVars.NetFakeLagMin, 0.05f); 
 #endif
 
         // DEVNOTE: The line below will disable lighting, so you can see in-game sprites without the need for lights

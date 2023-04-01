@@ -27,6 +27,9 @@ binds: # These are all the current engine keybinds.
   type: Toggle
   mod1: Shift
   key: F4
+- function: OpenMappingWindow
+  type: State
+  key: F4
 - function: MoveUp
   type: State
   key: W
