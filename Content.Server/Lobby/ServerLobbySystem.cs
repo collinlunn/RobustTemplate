@@ -95,27 +95,4 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 			playerSession.AttachToEntity(playerEntity);
 		}
 	}
-
-	private void SendLobbyHudState()
-	{
-		var state = GenerateLobbyHudState();
-		foreach (var playerSession in _playerManager.ServerSessions)
-		{
-			RaiseNetworkEvent(state, playerSession);
-		}
-	}
-
-	private LobbyUIStateEvent GenerateLobbyHudState()
-	{
-		var playerStates = new List<LobbyPlayerState>();
-		foreach (var playerSession in _playerManager.ServerSessions)
-		{
-			var userName = playerSession.Data.UserName;
-			var ready = false; //TODO
-			var playerState = new LobbyPlayerState(userName, ready);
-			playerStates.Add(playerState);
-		}
-		var uiStateEvent = new LobbyUIStateEvent(playerStates);
-		return uiStateEvent;
-	}
 }
