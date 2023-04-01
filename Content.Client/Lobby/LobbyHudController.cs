@@ -33,6 +33,10 @@ namespace Content.Client.Lobby
 			{
 				_entityNetManager.SendSystemNetworkMessage(new StartGamePressedEvent());
 			};
+			_lobbyHud.StartMappingButton.OnPressed += _ =>
+			{
+				_entityNetManager.SendSystemNetworkMessage(new StartMappingPressedEvent());
+			};
 			LayoutContainer.SetAnchorAndMarginPreset(_lobbyHud, LayoutContainer.LayoutPreset.Wide);
 			_lobbyHud.DisconnectButton.OnPressed += _ =>
 			{

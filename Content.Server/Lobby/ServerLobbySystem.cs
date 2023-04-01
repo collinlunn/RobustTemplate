@@ -18,17 +18,20 @@ public sealed class ServerLobbySystem : SharedLobbySystem
     [Dependency] private readonly IMapManager _mapManager = default!;
 	[Dependency] private readonly MapLoaderSystem _mapLoader = default!;
 
-	private MapId _map = MapId.Nullspace;
+	private string _mapToLoad = "/Maps/test_map.yml";
 
-    public override void Initialize()
+
+	public override void Initialize()
     {
         base.Initialize();
 
         _playerManager.PlayerStatusChanged += PlayerStatusChanged;
         SubscribeNetworkEvent<StartGamePressedEvent>(OnStartGamePressed);
-    }
+		SubscribeNetworkEvent<StartMappingPressedEvent>(OnStartMappingPressed);
 
-    public override void Update(float frameTime)
+	}
+
+	public override void Update(float frameTime)
     {
         base.Update(frameTime);
     }
@@ -59,11 +62,11 @@ public sealed class ServerLobbySystem : SharedLobbySystem
         var startGameEvent = new StartGameEvent();
         RaiseLocalEvent(startGameEvent);
 
-        _map = _mapManager.CreateMap();
-		_mapLoader.TryLoad(_map, "/Maps/test_map.yml", out var rootUids);
+		var mapId = _mapManager.CreateMap();
+		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
 
 		var spawnVector = new Vector2i(0, 0);
-        var spawnCoord = new MapCoordinates(spawnVector, _map);
+        var spawnCoord = new MapCoordinates(spawnVector, mapId);
 
         foreach (var playerSession in _playerManager.ServerSessions)
         {
@@ -72,6 +75,26 @@ public sealed class ServerLobbySystem : SharedLobbySystem
             playerSession.AttachToEntity(playerEntity);
         }
     }
+
+	private void OnStartMappingPressed(StartMappingPressedEvent ev)
+	{
+		var startGameEvent = new StartGameEvent();
+		RaiseLocalEvent(startGameEvent);
+
+		var mapId = _mapManager.CreateMap();
+		_mapManager.AddUninitializedMap(mapId); //set as uninitialized so map can be saved to a file correctly
+		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
+
+		var spawnVector = new Vector2i(0, 0);
+		var spawnCoord = new MapCoordinates(spawnVector, mapId);
+
+		foreach (var playerSession in _playerManager.ServerSessions)
+		{
+			RaiseNetworkEvent(startGameEvent, playerSession);
+			var playerEntity = EntityManager.SpawnEntity("TestMappingPlayer", spawnCoord);
+			playerSession.AttachToEntity(playerEntity);
+		}
+	}
 
 	private void SendLobbyHudState()
 	{

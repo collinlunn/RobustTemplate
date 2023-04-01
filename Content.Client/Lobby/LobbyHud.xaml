@@ -6,6 +6,7 @@
             <Label Name="PlayerList" Text="Woohoo you've connected to a server" Access="Public" Align="Center"/>
             <Button Name="SetReadyButton" Access="Public" Text="Toggle Ready" TextAlign="Center" MaxWidth="150"/>
             <Button Name="StartGameButton" Access="Public" Text="Start Game" TextAlign="Center" MaxWidth="150"/>
+            <Button Name="StartMappingButton" Access="Public" Text="Start Mapping" TextAlign="Center" MaxWidth="150"/>
             <Button Name="DisconnectButton" Access="Public" Text="Disconnect" TextAlign="Center" MaxWidth="150"/>
             <Button Name="QuitButton" Access="Public" Text="Quit" TextAlign="Center" MaxWidth="150"/>
         </BoxContainer>
