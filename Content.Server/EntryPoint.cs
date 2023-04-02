@@ -1,7 +1,12 @@
+using Content.Server.Admin;
 using Robust.Server.ServerStatus;
+using Robust.Shared;
+using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
+using Robust.Shared.Localization;
+using Robust.Shared.Network;
 using Robust.Shared.Timing;
 
 // DEVNOTE: Games that want to be on the hub can change their namespace prefix in the "manifest.yml" file.
@@ -9,6 +14,16 @@ namespace Content.Server;
 
 public sealed class EntryPoint : GameServer
 {
+    public override void PreInit()
+    {
+        base.PreInit();
+
+        if (IoCManager.Resolve<INetManager>().IsServer)
+        {
+            IoCManager.Resolve<IConfigurationManager>().SetCVar(CVars.NetPVS, false); //Keeping PVS off for prototypes
+        }
+    }
+
     public override void Init()
     {
         base.Init();
@@ -32,6 +47,7 @@ public sealed class EntryPoint : GameServer
             
         factory.GenerateNetIds();
 
+		IoCManager.Resolve<IAdminConsoleManager>().SetAsActiveConsoleManager();
         // DEVNOTE: This is generally where you'll be setting up the IoCManager further.
     }
 

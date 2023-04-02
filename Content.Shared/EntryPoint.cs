@@ -1,4 +1,6 @@
 using System.Globalization;
+using Robust.Shared.Configuration;
+using Robust.Shared;
 using Robust.Shared.ContentPack;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
@@ -35,7 +37,15 @@ public sealed class EntryPoint : GameShared
     public override void PostInit()
     {
         base.PostInit();
-        // DEVNOTE: You might want to put special init handlers for, say, tiles here.
-        // TODO: Document what else you might want to put here
-    }
+
+#if DEBUG
+		//test settings with simulated latency
+		var configMan = IoCManager.Resolve<IConfigurationManager>();
+		configMan.SetCVar(CVars.NetFakeLagMin, 0.1f);
+		configMan.SetCVar(CVars.NetTickrate, 10);
+		configMan.SetCVar(CVars.TargetMinimumTickrate, 10);
+#endif
+		// DEVNOTE: You might want to put special init handlers for, say, tiles here.
+		// TODO: Document what else you might want to put here
+	}
 }

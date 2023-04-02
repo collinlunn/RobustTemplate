@@ -1,0 +1,50 @@
+- type: entity
+  id: TestEntity
+  components:
+    - type: Sprite
+      texture: Interface/cross.png
+    - type: Test
+    - type: UserInterface
+      interfaces:
+      - key: enum.TestUiKey.Key
+        type: TestBoundUserInterface
+        
+- type: entity
+  id: TestPlayer
+  components:
+    - type: Sprite
+      texture: redCross.png
+    - type: Eye
+    - type: Input
+    - type: PlayerMovement
+      speed: 10
+    - type: Physics
+      bodyType: KinematicController
+    - type: Fixtures
+      fixtures:
+        - shape:
+            !type:PhysShapeCircle
+            radius: 0.35
+          mask:
+            - MobMask
+          layer:
+            - MobLayer
+            
+- type: entity
+  id: TestMappingPlayer
+  noSpawn: true
+  save: false
+  components:
+    - type: Sprite
+      texture: blueCross.png
+    - type: Eye
+    - type: Input
+    - type: PlayerMovement
+      speed: 10
+    - type: Physics
+      ignorePaused: true
+      bodyType: KinematicController
+    - type: Fixtures
+      fixtures:
+        - shape:
+            !type:PhysShapeCircle

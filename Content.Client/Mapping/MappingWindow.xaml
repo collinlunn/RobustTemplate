@@ -1,0 +1,7 @@
+﻿<DefaultWindow xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <PanelContainer MaxSize="480 250">
+        <BoxContainer Orientation="Vertical">
+
+        </BoxContainer>
+    </PanelContainer>
+</DefaultWindow>

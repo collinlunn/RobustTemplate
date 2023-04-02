@@ -1,0 +1,8 @@
+<Control xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <PanelContainer MaxSize="480 250">
+        <BoxContainer Orientation="Vertical" Margin="15 15 15 15" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="5">
+            <Label Text="TestWindow" Align="Center" StyleClasses="LabelGame"/>
+            <Button Name="TestButton" Text="TestButton" TextAlign="Center" MaxWidth="150"/>
+        </BoxContainer>
+    </PanelContainer>
+</Control>

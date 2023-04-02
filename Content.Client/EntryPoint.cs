@@ -1,5 +1,12 @@
+using Content.Client.Input;
+using Content.Client.MainMenu;
+using Content.Client.StyleSheets;
 using Robust.Client;
 using Robust.Client.Graphics;
+using Robust.Client.Input;
+using Robust.Client.State;
+using Robust.Shared;
+using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
@@ -11,6 +18,15 @@ namespace Content.Client;
 
 public sealed class EntryPoint : GameClient
 {
+    [Dependency] private readonly IStateManager _stateManager = default!;
+	[Dependency] private readonly IBaseClient _baseClient = default!;
+	[Dependency] private readonly IInputManager _inputManager = default!;
+
+	public override void PreInit()
+    {
+        IoCManager.InjectDependencies(this);
+    }
+
     public override void Init()
     {
         var factory = IoCManager.Resolve<IComponentFactory>();
@@ -35,27 +51,45 @@ public sealed class EntryPoint : GameClient
         factory.GenerateNetIds();
 
         // DEVNOTE: This is generally where you'll be setting up the IoCManager further.
+        
+        IoCManager.Resolve<StyleSheetManager>().Initialize(); //Load a stylesheet into the IUserInterfaceManager so UI works
     }
 
     public override void PostInit()
     {
         base.PostInit();
-            
-        // DEVNOTE: The line below will disable lighting, so you can see in-game sprites without the need for lights
-        //IoCManager.Resolve<ILightManager>().Enabled = false;
+		ContentContexts.SetupContexts(_inputManager.Contexts);
 
-        // DEVNOTE: Further setup...
-        var client = IoCManager.Resolve<IBaseClient>();
-            
-        // DEVNOTE: You might want a main menu to connect to a server, or start a singleplayer game.
-        // Be sure to check out StateManager for this! Below you'll find examples to start a game.
-            
-        // If you want to connect to a server...
-        // client.ConnectToServer("ip-goes-here", 1212);
-            
-        // Optionally, singleplayer also works!
-        // client.StartSinglePlayer();
-    }
+#if DEBUG
+		//fake latency to help reveal bugs while debugging on localhost
+		IoCManager.Resolve<IConfigurationManager>().OverrideDefault(CVars.NetFakeLagMin, 0.05f); 
+#endif
+
+        // DEVNOTE: The line below will disable lighting, so you can see in-game sprites without the need for lights
+        IoCManager.Resolve<ILightManager>().Enabled = false;
+
+		_stateManager.RequestStateChange<MainMenuState>(); //bring up the main menu
+		//If run level drops to initialize after disconnecting reopen the main menu
+		_baseClient.RunLevelChanged += (_, args) =>
+		{
+			if (args.NewLevel == ClientRunLevel.Initialize)
+			{
+				if (args.OldLevel == ClientRunLevel.Connected || args.OldLevel == ClientRunLevel.InGame)
+				{
+					_stateManager.RequestStateChange<MainMenuState>();
+				}
+			}
+		};
+
+		// DEVNOTE: You might want a main menu to connect to a server, or start a singleplayer game.
+		// Be sure to check out StateManager for this! Below you'll find examples to start a game.
+
+		// If you want to connect to a server...
+		// client.ConnectToServer("ip-goes-here", 1212);
+
+		// Optionally, singleplayer also works!
+		// client.StartSinglePlayer();
+	}
 
     protected override void Dispose(bool disposing)
     {

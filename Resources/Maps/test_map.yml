@@ -1,0 +1,22 @@
+meta:
+  format: 3
+  name: DemoStation
+  author: Space-Wizards
+  postmapinit: false
+tilemap: {}
+entities:
+- uid: 0
+  components:
+  - type: MetaData
+  - type: Transform
+  - index: 1
+    type: Map
+  - type: PhysicsMap
+  - type: Broadphase
+  - type: OccluderTree
+- uid: 1
+  type: TestEntity
+  components:
+  - parent: 0
+    type: Transform
+...
