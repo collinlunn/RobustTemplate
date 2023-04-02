@@ -1,7 +1,12 @@
-﻿<DefaultWindow xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center">
-    <PanelContainer MaxSize="480 250">
+﻿<DefaultWindow xmlns="https://spacestation14.io" Title="Mapping Tools">
+    <TabContainer Name="Tabs">
+        <Label Text="Test0"/>
+        <Label Text="Test1"/>
         <BoxContainer Orientation="Vertical">
-
+            <Button Name="LoadMap" Text="Load Map From"/>
+            <LineEdit Name="LoadPath" PlaceHolder="Maps/test_map.yml"/>
+            <Button Name="SaveMap" Text="Save Map To"/>
+            <LineEdit Name="SavePath" PlaceHolder="test_map.yml"/>
         </BoxContainer>
-    </PanelContainer>
+    </TabContainer>
 </DefaultWindow>

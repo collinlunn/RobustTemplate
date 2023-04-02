@@ -13,7 +13,7 @@ namespace Content.Client.Mapping
 	{
 		[Dependency] private readonly IInputManager _input = default!;
 
-		private DefaultWindow? _window;
+		private MappingWindow? _window;
 
 		public void OnStateEntered(InGameState state)
 		{
@@ -27,6 +27,7 @@ namespace Content.Client.Mapping
 		public void OnStateExited(InGameState state)
 		{
 			_window?.Dispose();
+			_window = null;
 		}
 
 		private void ToggleWindow()
