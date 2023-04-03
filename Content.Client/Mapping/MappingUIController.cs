@@ -18,7 +18,7 @@ namespace Content.Client.Mapping
 		public void OnStateEntered(InGameState state)
 		{
 			DebugTools.Assert(_window == null);
-			_window = new();
+			_window = UIManager.CreateWindow<MappingWindow>();
 
 			_input.SetInputCommand(ContentKeyFunctions.OpenMappingWindow,
 				InputCmdHandler.FromDelegate(_ => ToggleWindow()));

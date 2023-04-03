@@ -1,12 +1,25 @@
-﻿<DefaultWindow xmlns="https://spacestation14.io" Title="Mapping Tools">
+﻿<DefaultWindow xmlns="https://spacestation14.io" 
+               Title="Mapping Tools" 
+               MinSize="400 400">
     <TabContainer Name="Tabs">
         <Label Text="Test0"/>
         <Label Text="Test1"/>
         <BoxContainer Orientation="Vertical">
-            <Button Name="LoadMap" Text="Load Map From"/>
-            <LineEdit Name="LoadPath" PlaceHolder="Maps/test_map.yml"/>
-            <Button Name="SaveMap" Text="Save Map To"/>
-            <LineEdit Name="SavePath" PlaceHolder="test_map.yml"/>
+            <Label Text="Load Map (Root=/this-project/Resources/Maps)"/>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="5">
+                <Button Name="LoadMapFromMapsButton" Text="Load"/>
+                <LineEdit Name="LoadPathFromMaps" PlaceHolder="Map Path..." Text="default_map.yml" SetWidth="200"/>
+            </BoxContainer>
+            <Label Text="Load Map (Root=/this-project/bin/Content.Server/data/)"/>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="5">
+                <Button Name="LoadMapFromBinButton" Text="Load"/>
+                <LineEdit Name="LoadPathFromBin" PlaceHolder="Map Path..." Text="new_map.yml" SetWidth="200"/>
+            </BoxContainer>
+            <Label Text="Save Map (Root=/this-project/bin/Content.Server/data/)"/>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="5">
+                <Button Name="SaveMapButton" Text="Save"/>
+                <LineEdit Name="SavePath" PlaceHolder="Map Path..." Text="new_map.yml" SetWidth="200"/>
+            </BoxContainer>
         </BoxContainer>
     </TabContainer>
 </DefaultWindow>

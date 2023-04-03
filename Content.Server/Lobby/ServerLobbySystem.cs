@@ -18,7 +18,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
     [Dependency] private readonly IMapManager _mapManager = default!;
 	[Dependency] private readonly MapLoaderSystem _mapLoader = default!;
 
-	private string _mapToLoad = "/Maps/test_map.yml";
+	private string _mapToLoad = "/Maps/default_map.yml";
 
 
 	public override void Initialize()
