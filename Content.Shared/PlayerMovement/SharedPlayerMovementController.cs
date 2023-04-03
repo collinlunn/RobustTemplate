@@ -91,7 +91,7 @@ namespace Content.Shared.PlayerMovement
 				_button = button;
 			}
 
-            public override bool HandleCmdMessage(ICommonSession session, InputCmdMessage message)
+            public override bool HandleCmdMessage(ICommonSession? session, InputCmdMessage message)
             {
                 if (message is not FullInputCmdMessage full || session?.AttachedEntity == null) return false;
 
