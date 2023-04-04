@@ -10,6 +10,6 @@ public sealed partial class TestWindow : Control
 {
     public string Label
     {
-        get => TestButton.Text;
+        get => TestButton.Text ?? "";
     }
 }
