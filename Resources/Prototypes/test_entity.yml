@@ -39,6 +39,7 @@
       texture: blueCross.png
     - type: Eye
     - type: Input
+      context: "mapping"
     - type: PlayerMovement
       speed: 10
     - type: Physics

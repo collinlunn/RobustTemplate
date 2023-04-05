@@ -13,7 +13,8 @@ namespace Content.Client.Input
         {
             var common = contexts.GetContext("common");
 
-            common.AddFunction(ContentKeyFunctions.OpenMappingWindow);
+			var mapping = contexts.New("mapping", "common");
+			mapping.AddFunction(ContentKeyFunctions.OpenMappingWindow);
         }
     }
 }
