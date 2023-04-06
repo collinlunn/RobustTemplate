@@ -11,21 +11,17 @@ using System.Diagnostics.CodeAnalysis;
 namespace Content.Client.Mapping
 {
 	[GenerateTypedNameReferences]
-	public sealed partial class MappingWindow : DefaultWindow
+	public sealed partial class MappingCommandWindow : DefaultWindow
 	{
 		[Dependency] private readonly IClientConsoleHost _console = default!;
 		[Dependency] private readonly IPlayerManager _playerManager = default!;
 		[Dependency] private readonly IEntityManager _entityManager = default!;
 		[Dependency] private readonly IMapManager _mapManager = default!;
 
-		public MappingWindow()
+		public MappingCommandWindow()
 		{
 			RobustXamlLoader.Load(this);
 			IoCManager.InjectDependencies(this);
-
-			Tabs.SetTabTitle(0, "Entities");
-			Tabs.SetTabTitle(1, "Tiles");
-			Tabs.SetTabTitle(2, "Commands");
 
 			LoadMapFromMapsButton.OnPressed += _ => LoadMap($"Maps/{LoadPathFromMaps.Text}");
 			LoadMapFromBinButton.OnPressed += _ => LoadMap($"../bin/Content.Server/data/{LoadPathFromBin.Text}");

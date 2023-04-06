@@ -14,7 +14,9 @@ namespace Content.Client.Input
             var common = contexts.GetContext("common");
 
 			var mapping = contexts.New("mapping", "common");
-			mapping.AddFunction(ContentKeyFunctions.OpenMappingWindow);
-        }
-    }
+			mapping.AddFunction(ContentKeyFunctions.OpenMappingCommandWindow);
+			mapping.AddFunction(ContentKeyFunctions.OpenEntitySpawnWindow);
+			mapping.AddFunction(ContentKeyFunctions.OpenTileSpawnWindow);
+		}
+	}
 }

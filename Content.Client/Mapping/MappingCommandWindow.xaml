@@ -1,0 +1,21 @@
+﻿<DefaultWindow xmlns="https://spacestation14.io"
+               Title="Mapping Commands" 
+               MinSize="400 200">
+    <BoxContainer Orientation="Vertical">
+        <Label Text="Load Map (Root=/this-project/Resources/Maps)"/>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="5">
+            <Button Name="LoadMapFromMapsButton" Text="Load"/>
+            <LineEdit Name="LoadPathFromMaps" PlaceHolder="Map Path..." Text="default_map.yml" SetWidth="200"/>
+        </BoxContainer>
+        <Label Text="Load Map (Root=/this-project/bin/Content.Server/data/)"/>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="5">
+            <Button Name="LoadMapFromBinButton" Text="Load"/>
+            <LineEdit Name="LoadPathFromBin" PlaceHolder="Map Path..." Text="new_map.yml" SetWidth="200"/>
+        </BoxContainer>
+        <Label Text="Save Map (Root=/this-project/bin/Content.Server/data/)"/>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="5">
+            <Button Name="SaveMapButton" Text="Save"/>
+            <LineEdit Name="SavePath" PlaceHolder="Map Path..." Text="new_map.yml" SetWidth="200"/>
+        </BoxContainer>
+    </BoxContainer>
+</DefaultWindow>

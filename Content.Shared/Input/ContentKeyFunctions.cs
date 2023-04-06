@@ -6,5 +6,8 @@ namespace Content.Shared.Input;
 public static class ContentKeyFunctions
 {
 	// DEVNOTE: Stick keys you want to be bindable here.
-	public static readonly BoundKeyFunction OpenMappingWindow = "OpenMappingWindow";
+	public static readonly BoundKeyFunction OpenMappingCommandWindow = "OpenMappingCommandWindow";
+	public static readonly BoundKeyFunction OpenEntitySpawnWindow = "OpenEntitySpawnWindow";
+	public static readonly BoundKeyFunction OpenTileSpawnWindow = "OpenTileSpawnWindow";
+
 }
