@@ -1,0 +1,10 @@
+- type: tile
+  id: TestTile
+  name: tiles-test
+  sprite: /Textures/Tiles/test_tile.png
+  
+- type: tile
+  id: TestTile4
+  name: tiles-test-4
+  sprite: /Textures/Tiles/test_tile_4.png
+  variants: 4

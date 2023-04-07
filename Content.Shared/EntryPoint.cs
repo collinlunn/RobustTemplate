@@ -4,19 +4,26 @@ using Robust.Shared;
 using Robust.Shared.ContentPack;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
+using Robust.Shared.Map;
+using System.Collections.Generic;
+using Robust.Shared.Prototypes;
+using System;
+using Content.Shared.Tiles;
 
 // DEVNOTE: Games that want to be on the hub can change their namespace prefix in the "manifest.yml" file.
 namespace Content.Shared;
 
 public sealed class EntryPoint : GameShared
 {
-    // IoC services shared between the client and the server go here...
-        
-    // See line 23. Controls the default game culture and language.
-    // Robust calls this culture, but you might find it more fitting to call it the game
-    // language. Robust doesn't support changing this mid-game. Load your config file early
-    // if you want that.
-    private const string Culture = "en-US";
+	// IoC services shared between the client and the server go here...
+	[Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+	[Dependency] private readonly ITileDefinitionManager _tileDefinitionManager = default!;
+
+	// See line 23. Controls the default game culture and language.
+	// Robust calls this culture, but you might find it more fitting to call it the game
+	// language. Robust doesn't support changing this mid-game. Load your config file early
+	// if you want that.
+	private const string Culture = "en-US";
 
     public override void PreInit()
     {
@@ -47,5 +54,36 @@ public sealed class EntryPoint : GameShared
 #endif
 		// DEVNOTE: You might want to put special init handlers for, say, tiles here.
 		// TODO: Document what else you might want to put here
+		InitTiles();
+	}
+
+	private void InitTiles()
+	{
+		 var prototypeList = new List<ITileDefinition>();
+		foreach (var tileDef in _prototypeManager.EnumeratePrototypes<ContentTileDefinition>())
+		{
+			prototypeList.Add(tileDef);
+		}
+
+		// Sort ordinal to ensure it's consistent client and server.
+		// So that tile IDs match up.
+		prototypeList.Sort((a, b) => string.Compare(a.ID, b.ID, StringComparison.Ordinal));
+
+		foreach (var tileDef in prototypeList)
+		{
+			_tileDefinitionManager.Register(tileDef);
+		}
+
+		_tileDefinitionManager.Initialize();
+
+
+		_prototypeManager.PrototypesReloaded += _ =>
+		{
+			// Need to re-allocate tiledefs due to how prototype reloads work
+			foreach (var def in _prototypeManager.EnumeratePrototypes<ContentTileDefinition>())
+			{
+				def.AssignTileId(_tileDefinitionManager[def.ID].TileId);
+			}
+		};
 	}
 }
