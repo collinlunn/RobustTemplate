@@ -1,15 +1,19 @@
+using Robust.Client.ComponentTrees;
 using Robust.Client.GameObjects;
+using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.Player;
 using Robust.Client.State;
-using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Input;
 using Robust.Shared.IoC;
 using Robust.Shared.Map;
+using Robust.Shared.Maths;
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Content.Client.InGame;
 
@@ -20,7 +24,7 @@ public sealed class InGameState : State
     [Dependency] private readonly IEntitySystemManager _entitySystemManager = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
-	[Dependency] private readonly IUserInterfaceManager _uiManager = default!;
+	[Dependency] private readonly IEntityManager _entityManager = default!;
 
 	protected override void Startup()
     {
@@ -87,6 +91,15 @@ public sealed class InGameState : State
     private bool TryGetClickedEntity(MapCoordinates coordinates, [NotNullWhen(true)] out EntityUid? foundEntity)
     {
 		foundEntity = null;
-        return foundEntity != null;
-    }
+
+		// Find all the entities intersecting our click
+		var spriteTree = _entityManager.EntitySysManager.GetEntitySystem<SpriteTreeSystem>();
+		var spriteEntries = spriteTree.QueryAabb(coordinates.MapId, Box2.CenteredAround(coordinates.Position, (1, 1)), true);
+
+		//Order sprites top to bottom
+		spriteEntries.OrderByDescending(spriteEntry => spriteEntry.Component.DrawDepth);
+		
+		foundEntity = spriteEntries.FirstOrNull()?.Uid;
+		return foundEntity != null;
+	}
 }
