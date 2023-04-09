@@ -59,9 +59,19 @@ public sealed class EntryPoint : GameShared
 
 	private void InitTiles()
 	{
-		 var prototypeList = new List<ITileDefinition>();
+		//Registers the dedicated "BlankTile" as the 0th TileId, as that Id is used to be "no tile"
+		//Yes this is awful, but I don't want to make engine changes RN
+		var blankTileDef = _prototypeManager.Index<ContentTileDefinition>(ContentTileDefinition.BlankTileId);
+		_tileDefinitionManager.Register(blankTileDef);
+
+		//Get all the other tiles	
+		var prototypeList = new List<ITileDefinition>();
 		foreach (var tileDef in _prototypeManager.EnumeratePrototypes<ContentTileDefinition>())
 		{
+			//Skip the BlankTile prototype because we special-cased that. I hate this.
+			if (tileDef.ID == ContentTileDefinition.BlankTileId)
+				continue;
+
 			prototypeList.Add(tileDef);
 		}
 

@@ -11,6 +11,12 @@ namespace Content.Shared.Tiles
 	[Prototype("tile")]
 	public sealed class ContentTileDefinition : IPrototype, IInheritingPrototype, ITileDefinition
 	{
+		/// <summary>
+		///		The ID for the 0-th TileId, representing the absence of a tile.
+		///		WHY IS THIS HARDCODED
+		/// </summary>
+		public const string BlankTileId = "BlankTile";
+
 		#region ITileDefinition
 
 		public ushort TileId { get; private set; }
