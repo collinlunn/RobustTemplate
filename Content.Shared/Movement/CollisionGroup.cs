@@ -4,7 +4,7 @@ using Robust.Shared.Physics.Dynamics;
 using Robust.Shared.Serialization;
 using System;
 
-namespace Content.Shared.PlayerMovement
+namespace Content.Shared.Movement
 {
     /// <summary>
     ///     Defined collision groups for the physics system.

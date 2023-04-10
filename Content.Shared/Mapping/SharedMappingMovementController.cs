@@ -11,9 +11,9 @@ using Robust.Shared.Timing;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
 
-namespace Content.Shared.PlayerMovement
+namespace Content.Shared.Mapping
 {
-    public abstract class SharedPlayerMovementController : VirtualController
+    public abstract class SharedMappingMovementController : VirtualController
     {
         [Dependency] protected readonly SharedPhysicsSystem _physics = default!;
 		[Dependency] protected readonly IGameTiming _timing = default!;
@@ -22,30 +22,30 @@ namespace Content.Shared.PlayerMovement
         {
             base.Initialize();
 
-			SubscribeLocalEvent<PlayerMovementComponent, ComponentGetState>(GetPlayerMovementState);
-			SubscribeLocalEvent<PlayerMovementComponent, ComponentHandleState>(HandlePlayerMovementState);
+			SubscribeLocalEvent<MappingMovementComponent, ComponentGetState>(GetMappingMovementState);
+			SubscribeLocalEvent<MappingMovementComponent, ComponentHandleState>(HandleMappingMovementState);
 
-            var upHandler = new PlayerMovementInputCmdHandler(this, MoveButtons.Up);
-			var downHandler = new PlayerMovementInputCmdHandler(this, MoveButtons.Down);
-			var leftHandler = new PlayerMovementInputCmdHandler(this, MoveButtons.Left);
-			var rightHandler = new PlayerMovementInputCmdHandler(this, MoveButtons.Right);
+            var upHandler = new MappingMovementInputCmdHandler(this, MoveButtons.Up);
+			var downHandler = new MappingMovementInputCmdHandler(this, MoveButtons.Down);
+			var leftHandler = new MappingMovementInputCmdHandler(this, MoveButtons.Left);
+			var rightHandler = new MappingMovementInputCmdHandler(this, MoveButtons.Right);
 
 			CommandBinds.Builder
                 .Bind(EngineKeyFunctions.MoveUp, upHandler)
 				.Bind(EngineKeyFunctions.MoveDown, downHandler)
 				.Bind(EngineKeyFunctions.MoveLeft, leftHandler)
                 .Bind(EngineKeyFunctions.MoveRight, rightHandler)
-                .Register<SharedPlayerMovementController>();
+                .Register<SharedMappingMovementController>();
         }
 
-		private void GetPlayerMovementState(EntityUid uid, PlayerMovementComponent component, ref ComponentGetState args)
+		private void GetMappingMovementState(EntityUid uid, MappingMovementComponent component, ref ComponentGetState args)
 		{
-			args.State = new PlayerMovementComponentState(component.HeldButtons);
+			args.State = new MappingMovementComponentState(component.HeldButtons);
 		}
 
-		private void HandlePlayerMovementState(EntityUid uid, PlayerMovementComponent component, ref ComponentHandleState args)
+		private void HandleMappingMovementState(EntityUid uid, MappingMovementComponent component, ref ComponentHandleState args)
 		{
-			if (args.Current is not PlayerMovementComponentState state)
+			if (args.Current is not MappingMovementComponentState state)
 				return;
 
 			component.HeldButtons = state.HeldButtons;
@@ -54,38 +54,35 @@ namespace Content.Shared.PlayerMovement
 		public override void Shutdown()
 		{
 			base.Shutdown();
-			CommandBinds.Unregister<SharedPlayerMovementController>();
+			CommandBinds.Unregister<SharedMappingMovementController>();
 		}
         
         private void HandleMovementInput(EntityUid entity, ushort subTick, MoveButtons button, bool buttonPressed)
         {
-			var playerMovement = entity.EnsureComponentWarn<PlayerMovementComponent>();
+			var mappingMovement = entity.EnsureComponentWarn<MappingMovementComponent>();
 
 			if (buttonPressed)
-				playerMovement.HeldButtons |= button;
+				mappingMovement.HeldButtons |= button;
 			else
-				playerMovement.HeldButtons &= ~button;
+				mappingMovement.HeldButtons &= ~button;
 			
-			playerMovement.LastInputTick = _timing.CurTick;
-			playerMovement.LastInputSubTick = subTick;
-
-			Dirty(playerMovement);
+			Dirty(mappingMovement);
 		}
 
-		protected void SetPlayerVelocity(EntityUid player)
+		protected void SetPlayerVelocity(EntityUid mappingPlayer)
 		{
-			var playerMovement = player.EnsureComponentWarn<PlayerMovementComponent>();
-			var newVelocityDir = TryGetVelocityDir(playerMovement.HeldButtons);
-			var newVelocity = newVelocityDir * playerMovement.Speed;
-			PhysicsSystem.SetLinearVelocity(player, newVelocity);
+			var mappingMovement = mappingPlayer.EnsureComponentWarn<MappingMovementComponent>();
+			var newVelocityDir = TryGetVelocityDir(mappingMovement.HeldButtons);
+			var newVelocity = newVelocityDir * mappingMovement.Speed;
+			PhysicsSystem.SetLinearVelocity(mappingPlayer, newVelocity);
 		}
 
-		private sealed class PlayerMovementInputCmdHandler : InputCmdHandler
+		private sealed class MappingMovementInputCmdHandler : InputCmdHandler
         {
-            private readonly SharedPlayerMovementController _controller;
+            private readonly SharedMappingMovementController _controller;
 			private readonly MoveButtons _button;
 
-			public PlayerMovementInputCmdHandler(SharedPlayerMovementController controller, MoveButtons button)
+			public MappingMovementInputCmdHandler(SharedMappingMovementController controller, MoveButtons button)
             {
                 _controller = controller;
 				_button = button;
@@ -102,7 +99,7 @@ namespace Content.Shared.PlayerMovement
         }
 
 		/// <summary>
-		///		Returns a unit vector in the direction the player is moving.
+		///		Returns a unit vector in the direction the mapping player is moving.
 		/// </summary>
 		private static Vector2 TryGetVelocityDir(MoveButtons buttons)
 		{
@@ -138,11 +135,11 @@ namespace Content.Shared.PlayerMovement
 	}
 
 	[Serializable, NetSerializable]
-	public sealed class PlayerMovementComponentState : ComponentState
+	public sealed class MappingMovementComponentState : ComponentState
 	{
 		public readonly MoveButtons HeldButtons;
 
-		public PlayerMovementComponentState(MoveButtons heldButtons)
+		public MappingMovementComponentState(MoveButtons heldButtons)
 		{
 			HeldButtons = heldButtons;
 		}
