@@ -12,6 +12,10 @@ namespace Content.Client.StyleSheets
 	{
 		public const string StyleClassLabelMainMenu = "LabelGameTitle";
 
+		private readonly Color ButtonColorDefault = Color.FromHex("#464966");
+		private readonly Color ButtonColorPressed = Color.FromHex("#575b7f");
+		private readonly Color ButtonColorHover = Color.FromHex("#3e6c45");
+
 		private StyleRule DefaultFontRule()
 		{
 			var defaultFontRule = new StyleRule(
@@ -30,7 +34,7 @@ namespace Content.Client.StyleSheets
 				new SelectorElement(typeof(PanelContainer), null, null, null),
 				new[]
 				{
-					new StyleProperty(PanelContainer.StylePropertyPanel, _lightBoxPanel),
+					new StyleProperty(PanelContainer.StylePropertyPanel, _greyBoxPanel),
 				});
 
 			return panelContainerRule;
@@ -73,6 +77,42 @@ namespace Content.Client.StyleSheets
 				});
 
 			return tabContainerRule;
+		}
+
+		private List<StyleRule> ButtonRules()
+		{
+			var buttonStyleBoxRule = new StyleRule(
+				new SelectorElement(typeof(Button), null, null, null),
+				new[]
+				{
+					new StyleProperty(Button.StylePropertyStyleBox, _whiteBoxPanel)
+				});
+			var buttonDefaultColor = new StyleRule(
+				new SelectorElement(typeof(Button), null, null, new[] { Button.StylePseudoClassNormal }),
+				new[]
+				{
+					new StyleProperty(Button.StylePropertyModulateSelf, ButtonColorDefault),
+				});
+			var buttonPressedColor = new StyleRule(
+				new SelectorElement(typeof(Button), null, null, new[] { Button.StylePseudoClassPressed }),
+				new[]
+				{
+					new StyleProperty(Button.StylePropertyModulateSelf, ButtonColorPressed),
+				});
+			var buttonHoverColor = new StyleRule(
+				new SelectorElement(typeof(Button), null, null, new[] { Button.StylePseudoClassHover }),
+				new[]
+				{
+					new StyleProperty(Button.StylePropertyModulateSelf, ButtonColorHover),
+				});
+
+			return new List<StyleRule>
+			{
+				buttonStyleBoxRule,
+				buttonDefaultColor,
+				buttonPressedColor,
+				buttonHoverColor,
+			};
 		}
 
 		private List<StyleRule> WindowCloseButtonRules()

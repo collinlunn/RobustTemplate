@@ -19,8 +19,9 @@ namespace Content.Client.StyleSheets
 		private FontResource _fontResource;
 		private VectorFont _defaultFont;
 
-		private StyleBoxTexture _lightBoxPanel;
-		private StyleBoxTexture _darkBoxPanel;
+		private StyleBoxTexture _greyBoxPanel; //TODO Replace this with a greyscale one for coloring
+		private StyleBoxTexture _darkBoxPanel; //TODO Replace this with a greyscale one for coloring
+		private StyleBoxTexture _whiteBoxPanel;
 
 		public DefaultStyle(IResourceCache resourceCache)
 		{
@@ -28,15 +29,20 @@ namespace Content.Client.StyleSheets
 			_fontResource = _resourceCache.GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf");
 			_defaultFont = new VectorFont(_fontResource, 10);
 
-			var panelTex = _resourceCache.GetResource<TextureResource>("/Textures/Interface/panel.png");
-			_lightBoxPanel = new StyleBoxTexture { Texture = panelTex };
-			_lightBoxPanel.SetPatchMargin(StyleBox.Margin.All, 2);
-			_lightBoxPanel.SetExpandMargin(StyleBox.Margin.All, 2);
+			var panelGreyTex = _resourceCache.GetResource<TextureResource>("/Textures/Interface/panelGrey.png");
+			_greyBoxPanel = new StyleBoxTexture { Texture = panelGreyTex };
+			_greyBoxPanel.SetPatchMargin(StyleBox.Margin.All, 2);
+			_greyBoxPanel.SetExpandMargin(StyleBox.Margin.All, 2);
 
 			var panelDarkTex = _resourceCache.GetResource<TextureResource>("/Textures/Interface/panelDark.png");
 			_darkBoxPanel = new StyleBoxTexture { Texture = panelDarkTex };
 			_darkBoxPanel.SetPatchMargin(StyleBox.Margin.All, 2);
 			_darkBoxPanel.SetExpandMargin(StyleBox.Margin.All, 2);
+
+			var panelWhiteTex = _resourceCache.GetResource<TextureResource>("/Textures/Interface/panelWhite.png");
+			_whiteBoxPanel = new StyleBoxTexture { Texture = panelWhiteTex };
+			_whiteBoxPanel.SetPatchMargin(StyleBox.Margin.All, 2);
+			_whiteBoxPanel.SetExpandMargin(StyleBox.Margin.All, 2);
 
 			var rules = GetStyleRules();
 			Stylesheet = new Stylesheet(rules);
@@ -44,7 +50,6 @@ namespace Content.Client.StyleSheets
 
 		private IReadOnlyList<StyleRule> GetStyleRules()
 		{
-
 			var styleRules = new List<StyleRule>
 			{
 				DefaultFontRule(),
@@ -53,6 +58,7 @@ namespace Content.Client.StyleSheets
 				LabelGameTitleRule(),
 				LineEditRule(),
 			};
+			styleRules.AddRange(ButtonRules());
 			styleRules.AddRange(WindowCloseButtonRules());
 
 			return styleRules;
