@@ -12,29 +12,55 @@ namespace Content.Client.StyleSheets
 	{
 		public const string StyleClassLabelMainMenu = "LabelGameTitle";
 
-		private readonly Color ButtonColorDefault = Color.FromHex("#464966");
+		private const string PanelContainerTexturePath = "/Textures/Interface/panelGrey.png";
+		private const string LineEditTexturePath = "/Textures/Interface/panelDark.png";
+		private const string ButtonTexturePath = "/Textures/Interface/panelWhite.png";
+		private const string TabContainerPanelTexturePath = "/Textures/Interface/tabPanel.png";
+
+		private readonly Color ButtonColorDefault = Color.FromHex("#1a1a1a");
 		private readonly Color ButtonColorPressed = Color.FromHex("#575b7f");
-		private readonly Color ButtonColorHover = Color.FromHex("#3e6c45");
+		private readonly Color ButtonColorHover = Color.FromHex("#242424");
 
 		private StyleRule DefaultFontRule()
 		{
+			var defaultFont = new VectorFont(_fontResource, 10);
+
 			var defaultFontRule = new StyleRule(
 				new SelectorElement(null, null, null, null),
 				new[]
 				{
-					new StyleProperty("font", _defaultFont),
+					new StyleProperty("font", defaultFont),
 				});
 
 			return defaultFontRule;
 		}
 
+		private StyleRule GameTitleFontRule()
+		{
+			var bigFont = new VectorFont(_fontResource, 32);
+
+			var gameLabelRule = new StyleRule(
+				new SelectorElement(typeof(Label), new[] { StyleClassLabelMainMenu }, null, null),
+				new[]
+				{
+					new StyleProperty(Label.StylePropertyFont, bigFont)
+				});
+
+			return gameLabelRule;
+		}
+
 		private StyleRule PanelContainerRule()
 		{
+			var panelContainerTexture = _resourceCache.GetResource<TextureResource>(PanelContainerTexturePath);
+			var panelContainerStyleBoxTexture = new StyleBoxTexture { Texture = panelContainerTexture };
+			panelContainerStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 2);
+			panelContainerStyleBoxTexture.SetExpandMargin(StyleBox.Margin.All, 2);
+
 			var panelContainerRule = new StyleRule(
 				new SelectorElement(typeof(PanelContainer), null, null, null),
 				new[]
 				{
-					new StyleProperty(PanelContainer.StylePropertyPanel, _greyBoxPanel),
+					new StyleProperty(PanelContainer.StylePropertyPanel, panelContainerStyleBoxTexture),
 				});
 
 			return panelContainerRule;
@@ -42,11 +68,16 @@ namespace Content.Client.StyleSheets
 
 		private StyleRule LineEditRule()
 		{
+			var lineEditTexture = _resourceCache.GetResource<TextureResource>(LineEditTexturePath);
+			var lineEditStyleBoxTexture = new StyleBoxTexture { Texture = lineEditTexture };
+			lineEditStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 2);
+			lineEditStyleBoxTexture.SetExpandMargin(StyleBox.Margin.All, 2);
+
 			var lineEditRule = new StyleRule(
 				new SelectorElement(typeof(LineEdit), null, null, null),
 				new[]
 				{
-					new StyleProperty(LineEdit.StylePropertyStyleBox, _darkBoxPanel)
+					new StyleProperty(LineEdit.StylePropertyStyleBox, lineEditStyleBoxTexture)
 				});
 
 			return lineEditRule;
@@ -54,7 +85,7 @@ namespace Content.Client.StyleSheets
 
 		private StyleRule TabContainerRule()
 		{
-			var tabContainerPanelTex = _resourceCache.GetResource<TextureResource>("/Textures/Interface/tabPanel.png");
+			var tabContainerPanelTex = _resourceCache.GetResource<TextureResource>(TabContainerPanelTexturePath);
 			var tabContainerPanel = new StyleBoxTexture
 			{
 				Texture = tabContainerPanelTex.Texture,
@@ -81,11 +112,16 @@ namespace Content.Client.StyleSheets
 
 		private List<StyleRule> ButtonRules()
 		{
+			var buttonTexture = _resourceCache.GetResource<TextureResource>(ButtonTexturePath);
+			var buttonStyleBoxTexture = new StyleBoxTexture { Texture = buttonTexture };
+			buttonStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 2);
+			buttonStyleBoxTexture.SetExpandMargin(StyleBox.Margin.All, 2);
+
 			var buttonStyleBoxRule = new StyleRule(
 				new SelectorElement(typeof(Button), null, null, null),
 				new[]
 				{
-					new StyleProperty(Button.StylePropertyStyleBox, _whiteBoxPanel)
+					new StyleProperty(Button.StylePropertyStyleBox, buttonStyleBoxTexture)
 				});
 			var buttonDefaultColor = new StyleRule(
 				new SelectorElement(typeof(Button), null, null, new[] { Button.StylePseudoClassNormal }),
@@ -157,20 +193,6 @@ namespace Content.Client.StyleSheets
 				windowCloseButtonHoverRule,
 				windowCloseButtonPressedRule
 			};
-		}
-
-		private StyleRule LabelGameTitleRule()
-		{
-			var bigFont = new VectorFont(_fontResource, 32);
-
-			var gameLabelRule = new StyleRule(
-				new SelectorElement(typeof(Label), new[] { StyleClassLabelMainMenu }, null, null), 
-				new[]
-				{
-					new StyleProperty(Label.StylePropertyFont, bigFont)
-				});
-
-			return gameLabelRule;
 		}
 	}
 }

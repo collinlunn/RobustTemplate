@@ -17,32 +17,13 @@ namespace Content.Client.StyleSheets
 		private IResourceCache _resourceCache;
 
 		private FontResource _fontResource;
-		private VectorFont _defaultFont;
 
-		private StyleBoxTexture _greyBoxPanel; //TODO Replace this with a greyscale one for coloring
-		private StyleBoxTexture _darkBoxPanel; //TODO Replace this with a greyscale one for coloring
-		private StyleBoxTexture _whiteBoxPanel;
+		private const string DefaultFontResourcePath = "/Fonts/NotoSans/NotoSans-Regular.ttf";
 
 		public DefaultStyle(IResourceCache resourceCache)
 		{
 			_resourceCache = resourceCache;
-			_fontResource = _resourceCache.GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf");
-			_defaultFont = new VectorFont(_fontResource, 10);
-
-			var panelGreyTex = _resourceCache.GetResource<TextureResource>("/Textures/Interface/panelGrey.png");
-			_greyBoxPanel = new StyleBoxTexture { Texture = panelGreyTex };
-			_greyBoxPanel.SetPatchMargin(StyleBox.Margin.All, 2);
-			_greyBoxPanel.SetExpandMargin(StyleBox.Margin.All, 2);
-
-			var panelDarkTex = _resourceCache.GetResource<TextureResource>("/Textures/Interface/panelDark.png");
-			_darkBoxPanel = new StyleBoxTexture { Texture = panelDarkTex };
-			_darkBoxPanel.SetPatchMargin(StyleBox.Margin.All, 2);
-			_darkBoxPanel.SetExpandMargin(StyleBox.Margin.All, 2);
-
-			var panelWhiteTex = _resourceCache.GetResource<TextureResource>("/Textures/Interface/panelWhite.png");
-			_whiteBoxPanel = new StyleBoxTexture { Texture = panelWhiteTex };
-			_whiteBoxPanel.SetPatchMargin(StyleBox.Margin.All, 2);
-			_whiteBoxPanel.SetExpandMargin(StyleBox.Margin.All, 2);
+			_fontResource = _resourceCache.GetResource<FontResource>(DefaultFontResourcePath);
 
 			var rules = GetStyleRules();
 			Stylesheet = new Stylesheet(rules);
@@ -55,7 +36,7 @@ namespace Content.Client.StyleSheets
 				DefaultFontRule(),
 				PanelContainerRule(),
 				TabContainerRule(),
-				LabelGameTitleRule(),
+				GameTitleFontRule(),
 				LineEditRule(),
 			};
 			styleRules.AddRange(ButtonRules());
