@@ -1,18 +1,18 @@
-<Control xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center">
+<Control xmlns="https://spacestation14.io" HorizontalAlignment="Center">
     <BoxContainer Orientation="Vertical">
         <Label Text="Placeholder Menu Title" StyleClasses="LabelGameTitle"/>
-        <PanelContainer>
+        <PanelContainer HorizontalAlignment="Center" Margin="3">
             <BoxContainer Orientation="Vertical">
-                <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Label Text="Set Username" SetWidth="200"/>
-                    <LineEdit Name="UsernameLineEdit" Access="Public" PlaceHolder="Username..." SetWidth="200"/>
+                <BoxContainer Orientation="Horizontal" Margin="3">
+                    <Label Text="Set Username" SetWidth="197" Margin="0 0 3 0"/>
+                    <LineEdit Name="UsernameLineEdit" Access="Public" PlaceHolder="Username..." SetWidth="197" Margin="3 0 0 0"/>
                 </BoxContainer>
-                <Button Name="ConnectToLocalHostButton" Access="Public" Text="Connect To LocalHost" SetWidth="400"/>
-                <BoxContainer Orientation="Horizontal" HorizontalAlignment="Center">
-                    <LineEdit Name="AddressLineEdit" Access="Public" PlaceHolder="IP..." SetWidth="200"/>
-                    <Button Name="ConnectButton" Access="Public" Text="Connect" SetWidth="200"/>
+                <Button Name="ConnectToLocalHostButton" Access="Public" Text="Connect To LocalHost" SetWidth="400" Margin="3"/>
+                <BoxContainer Orientation="Horizontal" Margin="3">
+                    <LineEdit Name="AddressLineEdit" Access="Public" PlaceHolder="IP..." SetWidth="197" Margin="0 0 3 0"/>
+                    <Button Name="ConnectButton" Access="Public" Text="Connect" SetWidth="197" Margin="3 0 0 0"/>
                 </BoxContainer>
-                <Button Name="QuitButton" Access="Public" Text="Quit" SetWidth="400"/>
+                <Button Name="QuitButton" Access="Public" Text="Quit" SetWidth="400" Margin="3"/>
             </BoxContainer>
         </PanelContainer>
     </BoxContainer>

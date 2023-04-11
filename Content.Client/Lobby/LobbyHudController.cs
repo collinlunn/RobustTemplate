@@ -33,7 +33,6 @@ namespace Content.Client.Lobby
 			{
 				_entityNetManager.SendSystemNetworkMessage(new StartMappingPressedEvent());
 			};
-			LayoutContainer.SetAnchorAndMarginPreset(_lobbyHud, LayoutContainer.LayoutPreset.Wide);
 			_lobbyHud.DisconnectButton.OnPressed += _ =>
 			{
 				_clientNetManager.ClientDisconnect("Client pressed disconnect button.");
@@ -43,6 +42,7 @@ namespace Content.Client.Lobby
 				_gameController.Shutdown("Client pressed quit button.");
 			};
 
+			LayoutContainer.SetAnchorAndMarginPreset(_lobbyHud, LayoutContainer.LayoutPreset.HorizontalCenterWide);
 			_userInterface.StateRoot.AddChild(_lobbyHud);
 		}
 

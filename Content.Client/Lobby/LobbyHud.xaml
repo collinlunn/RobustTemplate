@@ -1,12 +1,12 @@
 <Control xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center">
-    <PanelContainer MaxSize="480 250">
-        <BoxContainer Orientation="Vertical" Margin="15 15 15 15" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="5">
-            <Label Text="Placeholder Lobby" Align="Center" StyleClasses="LabelGame"/>
-            <Label Text="Woohoo you've connected to a server" Align="Center"/>
-            <Button Name="StartGameButton" Access="Public" Text="Start Game" TextAlign="Center" MaxWidth="150"/>
-            <Button Name="StartMappingButton" Access="Public" Text="Start Mapping" TextAlign="Center" MaxWidth="150"/>
-            <Button Name="DisconnectButton" Access="Public" Text="Disconnect" TextAlign="Center" MaxWidth="150"/>
-            <Button Name="QuitButton" Access="Public" Text="Quit" TextAlign="Center" MaxWidth="150"/>
+    <PanelContainer>
+        <BoxContainer Orientation="Vertical">
+            <Label Text="Placeholder Lobby" Align="Center" Margin="3"/>
+            <Label Text="Woohoo you've connected to a server" Align="Center" Margin="3"/>
+            <Button Name="StartGameButton" Access="Public" Text="Start Game" TextAlign="Center" SetWidth="200" Margin="3"/>
+            <Button Name="StartMappingButton" Access="Public" Text="Start Mapping" TextAlign="Center" SetWidth="200" Margin="3"/>
+            <Button Name="DisconnectButton" Access="Public" Text="Disconnect" TextAlign="Center" SetWidth="200" Margin="3"/>
+            <Button Name="QuitButton" Access="Public" Text="Quit" TextAlign="Center" SetWidth="200" Margin="3"/>
         </BoxContainer>
     </PanelContainer>
 </Control>
