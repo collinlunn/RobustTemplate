@@ -1,52 +1,8 @@
-﻿using Robust.Shared.GameObjects;
-using Robust.Shared.Input;
-using Robust.Shared.Input.Binding;
-using Robust.Shared.Maths;
-using Robust.Shared.Players;
+﻿using Robust.Shared.Maths;
 using System;
 
 namespace Content.Shared.Movement
 {
-	public sealed class MovementInputCmdHandler : InputCmdHandler
-	{		
-		private readonly MoveButtons _button;
-		private readonly OnMoveButtonChangedDelegate MoveButtonChangedDelegate;
-
-		public MovementInputCmdHandler(MoveButtons button, OnMoveButtonChangedDelegate moveButtonChangedDelegate)
-		{
-			_button = button;
-			MoveButtonChangedDelegate = moveButtonChangedDelegate;
-		}
-
-		public override bool HandleCmdMessage(ICommonSession? session, InputCmdMessage message)
-		{
-			if (message is not FullInputCmdMessage full || session?.AttachedEntity == null) return false;
-
-			var buttonPressed = full.State == BoundKeyState.Down;
-			var args = new OnMoveButtonChangedArgs(session.AttachedEntity.Value, message.SubTick, _button, buttonPressed);
-			MoveButtonChangedDelegate.Invoke(args);
-			return false; //return false to avoid blocking other keybinds
-		}
-
-		public delegate void OnMoveButtonChangedDelegate(OnMoveButtonChangedArgs args);
-
-		public sealed class OnMoveButtonChangedArgs
-		{
-			public readonly EntityUid Entity;
-			public readonly ushort SubTick;
-			public readonly MoveButtons Button;
-			public readonly bool ButtonPressed;
-
-			public OnMoveButtonChangedArgs(EntityUid entity, ushort subTick, MoveButtons button, bool buttonPressed)
-			{
-				Entity = entity;
-				SubTick = subTick;
-				Button = button;
-				ButtonPressed = buttonPressed;
-			}
-		}
-	}
-
 	[Flags]
 	public enum MoveButtons : byte
 	{

@@ -1,4 +1,5 @@
 using Content.Shared.Mapping;
+using Content.Shared.Movement;
 using JetBrains.Annotations;
 using Robust.Client.Player;
 using Robust.Shared.GameObjects;
@@ -19,11 +20,14 @@ namespace Content.Client.Mapping
             if (_playerManager.LocalPlayer?.ControlledEntity is not { Valid: true } mappingPlayer)
                 return;
 
-            if (!HasComp<MappingMovementComponent>(mappingPlayer))
+            if (!TryComp<MappingMovementComponent>(mappingPlayer, out var mappingMovement))
                 return;
 
-            mappingPlayer.EnsureComponentWarn<PhysicsComponent>().Predict = true;
-            SetPlayerVelocity(mappingPlayer);
+			var moveButtonTracker = mappingPlayer.EnsureComponentWarn<MoveButtonTrackerComponent>(
+				$"Entity with a {nameof(MappingMovementComponent)} did not have a {nameof(MoveButtonTrackerComponent)}");
+
+			mappingPlayer.EnsureComponentWarn<PhysicsComponent>().Predict = true;
+            SetPlayerVelocity(mappingPlayer, moveButtonTracker, mappingMovement);
         }
     }
 }
