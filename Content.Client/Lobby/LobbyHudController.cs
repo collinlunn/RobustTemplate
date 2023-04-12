@@ -12,7 +12,7 @@ using Robust.Shared.Utility;
 namespace Content.Client.Lobby
 {
 	[UsedImplicitly]
-	public sealed class LobbyHudController : UIController, IOnStateEntered<LobbyState>, IOnStateExited<LobbyState>
+	public sealed class LobbyHudController : UIController, IOnStateChanged<LobbyState>
 	{
 		[Dependency] private readonly IUserInterfaceManager _userInterface = default!;
 		[Dependency] private readonly IEntityNetworkManager _entityNetManager = default!;
