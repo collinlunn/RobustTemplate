@@ -23,8 +23,7 @@ namespace Content.Client.Mapping
             if (!TryComp<MappingMovementComponent>(mappingPlayer, out var mappingMovement))
                 return;
 
-			var moveButtonTracker = mappingPlayer.EnsureComponentWarn<MoveButtonTrackerComponent>(
-				$"Entity with a {nameof(MappingMovementComponent)} did not have a {nameof(MoveButtonTrackerComponent)}");
+			var moveButtonTracker = mappingPlayer.EnsureComponentWarn<MoveButtonTrackerComponent>();
 
 			mappingPlayer.EnsureComponentWarn<PhysicsComponent>().Predict = true;
             SetPlayerVelocity(mappingPlayer, moveButtonTracker, mappingMovement);

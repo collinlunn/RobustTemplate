@@ -1,4 +1,3 @@
-﻿using Content.Shared.Mapping;
 using Robust.Shared.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.Input.Binding;
@@ -15,8 +14,8 @@ namespace Content.Shared.Movement
 		{
 			base.Initialize();
 
-			SubscribeLocalEvent<MoveButtonTrackerComponent, ComponentGetState>(GetMappingMovementState);
-			SubscribeLocalEvent<MoveButtonTrackerComponent, ComponentHandleState>(HandleMappingMovementState);
+			SubscribeLocalEvent<MoveButtonTrackerComponent, ComponentGetState>(GetMoveButtonTrackerState);
+			SubscribeLocalEvent<MoveButtonTrackerComponent, ComponentHandleState>(HandleMoveButtonTrackerState);
 
 			var upHandler = new MovementInputCmdHandler(MoveButtons.Up, this);
 			var downHandler = new MovementInputCmdHandler(MoveButtons.Down, this);
@@ -28,13 +27,13 @@ namespace Content.Shared.Movement
 				.Bind(EngineKeyFunctions.MoveDown, downHandler)
 				.Bind(EngineKeyFunctions.MoveLeft, leftHandler)
 				.Bind(EngineKeyFunctions.MoveRight, rightHandler)
-				.Register<SharedMappingMovementController>();
+				.Register<MoveButtonTrackerSystem>();
 		}
 
 		public override void Shutdown()
 		{
 			base.Shutdown();
-			CommandBinds.Unregister<SharedMappingMovementController>();
+			CommandBinds.Unregister<MoveButtonTrackerSystem>();
 		}
 
 		private void HandleMovementInput(EntityUid entity, MoveButtons button, bool buttonPressed)
@@ -50,13 +49,13 @@ namespace Content.Shared.Movement
 		}
 
 		//Replace with auto once Engine is updated
-		private void GetMappingMovementState(EntityUid uid, MoveButtonTrackerComponent component, ref ComponentGetState args)
+		private void GetMoveButtonTrackerState(EntityUid uid, MoveButtonTrackerComponent component, ref ComponentGetState args)
 		{
 			args.State = new MoveButtonTrackerComponentState(component.HeldButtons);
 		}
 
 		//Replace with auto once Engine is updated
-		private void HandleMappingMovementState(EntityUid uid, MoveButtonTrackerComponent component, ref ComponentHandleState args)
+		private void HandleMoveButtonTrackerState(EntityUid uid, MoveButtonTrackerComponent component, ref ComponentHandleState args)
 		{
 			if (args.Current is not MoveButtonTrackerComponentState state)
 				return;
