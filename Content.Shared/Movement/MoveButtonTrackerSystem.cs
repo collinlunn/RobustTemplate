@@ -1,9 +1,6 @@
 using Robust.Shared.GameObjects;
-using Robust.Shared.GameStates;
 using Robust.Shared.Input.Binding;
 using Robust.Shared.Input;
-using Robust.Shared.Serialization;
-using System;
 using Robust.Shared.Players;
 
 namespace Content.Shared.Movement
@@ -13,9 +10,6 @@ namespace Content.Shared.Movement
 		public override void Initialize()
 		{
 			base.Initialize();
-
-			SubscribeLocalEvent<MoveButtonTrackerComponent, ComponentGetState>(GetMoveButtonTrackerState);
-			SubscribeLocalEvent<MoveButtonTrackerComponent, ComponentHandleState>(HandleMoveButtonTrackerState);
 
 			var upHandler = new MovementInputCmdHandler(MoveButtons.Up, this);
 			var downHandler = new MovementInputCmdHandler(MoveButtons.Down, this);
@@ -48,21 +42,6 @@ namespace Content.Shared.Movement
 			Dirty(mappingMovement);
 		}
 
-		//Replace with auto once Engine is updated
-		private void GetMoveButtonTrackerState(EntityUid uid, MoveButtonTrackerComponent component, ref ComponentGetState args)
-		{
-			args.State = new MoveButtonTrackerComponentState(component.HeldButtons);
-		}
-
-		//Replace with auto once Engine is updated
-		private void HandleMoveButtonTrackerState(EntityUid uid, MoveButtonTrackerComponent component, ref ComponentHandleState args)
-		{
-			if (args.Current is not MoveButtonTrackerComponentState state)
-				return;
-
-			component.HeldButtons = state.HeldButtons;
-		}
-
 		public sealed class MovementInputCmdHandler : InputCmdHandler
 		{
 			private readonly MoveButtons _button;
@@ -82,17 +61,6 @@ namespace Content.Shared.Movement
 				_tracker.HandleMovementInput(session.AttachedEntity.Value, _button, buttonPressed);
 				return false; //return false to avoid blocking other keybinds
 			}
-		}
-	}
-
-	[Serializable, NetSerializable]
-	public sealed class MoveButtonTrackerComponentState : ComponentState
-	{
-		public readonly MoveButtons HeldButtons;
-
-		public MoveButtonTrackerComponentState(MoveButtons heldButtons)
-		{
-			HeldButtons = heldButtons;
 		}
 	}
 }

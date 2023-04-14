@@ -8,13 +8,15 @@ namespace Content.Shared.Movement
 	///		Keeps track of what movement buttons a player has held down, so movement systems can move them appropriately.
 	/// </summary>
 	[Access(typeof(MoveButtonTrackerSystem))]
+	[AutoGenerateComponentState]
 	[NetworkedComponent]
     [RegisterComponent]
-    public sealed class MoveButtonTrackerComponent : Component
+    public sealed partial class MoveButtonTrackerComponent : Component
     {
 		/// <summary>
 		///		What buttons the player is holding down.
 		/// </summary>
-        public MoveButtons HeldButtons = MoveButtons.None;
-    }
+		[AutoNetworkedField]
+		public MoveButtons HeldButtons = MoveButtons.None;
+	}
 }
