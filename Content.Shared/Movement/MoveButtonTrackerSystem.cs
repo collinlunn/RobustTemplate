@@ -32,17 +32,17 @@ namespace Content.Shared.Movement
 
 		private void HandleMovementInput(EntityUid entity, MoveButtons button, bool buttonPressed)
 		{
-			var mappingMovement = entity.EnsureComponentWarn<MoveButtonTrackerComponent>();
+			var tracker = entity.EnsureComponentWarn<MoveButtonTrackerComponent>();
 
 			if (buttonPressed)
-				mappingMovement.HeldButtons |= button;
+				tracker.HeldButtons |= button;
 			else
-				mappingMovement.HeldButtons &= ~button;
+				tracker.HeldButtons &= ~button;
 
-			Dirty(mappingMovement);
+			Dirty(tracker);
 		}
 
-		public sealed class MovementInputCmdHandler : InputCmdHandler
+		private sealed class MovementInputCmdHandler : InputCmdHandler
 		{
 			private readonly MoveButtons _button;
 			private readonly MoveButtonTrackerSystem _tracker;
