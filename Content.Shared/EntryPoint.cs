@@ -18,6 +18,7 @@ public sealed class EntryPoint : GameShared
 	// IoC services shared between the client and the server go here...
 	[Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 	[Dependency] private readonly ITileDefinitionManager _tileDefinitionManager = default!;
+	[Dependency] private readonly IConfigurationManager _configMan = default!;
 
 	// See line 23. Controls the default game culture and language.
 	// Robust calls this culture, but you might find it more fitting to call it the game
@@ -47,10 +48,9 @@ public sealed class EntryPoint : GameShared
 
 #if DEBUG
 		//test settings with simulated latency
-		var configMan = IoCManager.Resolve<IConfigurationManager>();
-		configMan.SetCVar(CVars.NetFakeLagMin, 0.1f);
-		configMan.SetCVar(CVars.NetTickrate, 10);
-		configMan.SetCVar(CVars.TargetMinimumTickrate, 10);
+		_configMan.SetCVar(CVars.NetFakeLagMin, 0.1f);
+		_configMan.OverrideDefault(CVars.NetFakeLoss, 0.005f);
+		_configMan.OverrideDefault(CVars.NetFakeDuplicates, 0.005f);
 #endif
 		// DEVNOTE: You might want to put special init handlers for, say, tiles here.
 		// TODO: Document what else you might want to put here

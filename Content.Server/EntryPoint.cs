@@ -14,17 +14,15 @@ namespace Content.Server;
 
 public sealed class EntryPoint : GameServer
 {
-    public override void PreInit()
+	[Dependency] private readonly IConfigurationManager _configMan = default!;
+
+	public override void PreInit()
     {
         base.PreInit();
+		IoCManager.InjectDependencies(this);
+	}
 
-        if (IoCManager.Resolve<INetManager>().IsServer)
-        {
-            IoCManager.Resolve<IConfigurationManager>().SetCVar(CVars.NetPVS, false); //Keeping PVS off for prototypes
-        }
-    }
-
-    public override void Init()
+	public override void Init()
     {
         base.Init();
 
@@ -54,10 +52,16 @@ public sealed class EntryPoint : GameServer
     public override void PostInit()
     {
         base.PostInit();
-        // DEVNOTE: Can also initialize IoC stuff more here.
-    }
 
-    public override void Update(ModUpdateLevel level, FrameEventArgs frameEventArgs)
+#if DEBUG
+		_configMan.SetCVar(CVars.NetTickrate, 10);
+		_configMan.SetCVar(CVars.TargetMinimumTickrate, 10);
+		_configMan.SetCVar(CVars.NetPVS, false);
+#endif
+		// DEVNOTE: Can also initialize IoC stuff more here.
+	}
+
+	public override void Update(ModUpdateLevel level, FrameEventArgs frameEventArgs)
     {
         base.Update(level, frameEventArgs);
         // DEVNOTE: Game update loop goes here. Usually you'll want some independent GameTicker.
