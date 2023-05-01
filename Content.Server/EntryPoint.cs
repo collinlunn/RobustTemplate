@@ -1,4 +1,5 @@
 using Content.Server.Admin;
+using Content.Server.UI;
 using Robust.Server.ServerStatus;
 using Robust.Shared;
 using Robust.Shared.Configuration;
@@ -15,10 +16,13 @@ namespace Content.Server;
 public sealed class EntryPoint : GameServer
 {
 	[Dependency] private readonly IConfigurationManager _configMan = default!;
+	[Dependency] private readonly ServerUiManager _uiMan = default!;
 
 	public override void PreInit()
     {
         base.PreInit();
+		ServerContentIoC.Register();
+		IoCManager.BuildGraph();
 		IoCManager.InjectDependencies(this);
 	}
 
@@ -38,13 +42,9 @@ public sealed class EntryPoint : GameServer
         {
             factory.RegisterIgnore(ignoreName);
         }
-
-        ServerContentIoC.Register();
-
-        IoCManager.BuildGraph();
-            
         factory.GenerateNetIds();
 
+		IoCManager.Resolve<ServerUiManager>().Initialize(); //registers net messages for ui man
 		IoCManager.Resolve<IAdminConsoleManager>().SetAsActiveConsoleManager();
         // DEVNOTE: This is generally where you'll be setting up the IoCManager further.
     }
@@ -64,6 +64,13 @@ public sealed class EntryPoint : GameServer
 	public override void Update(ModUpdateLevel level, FrameEventArgs frameEventArgs)
     {
         base.Update(level, frameEventArgs);
-        // DEVNOTE: Game update loop goes here. Usually you'll want some independent GameTicker.
-    }
+		// DEVNOTE: Game update loop goes here. Usually you'll want some independent GameTicker.
+
+		switch (level)
+		{
+			case ModUpdateLevel.PostEngine:
+				_uiMan.SendDirtyStates();
+				break;
+		}
+	}
 }

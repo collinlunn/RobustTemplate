@@ -1,5 +1,5 @@
 using Content.Client.StyleSheets;
-using Robust.Shared.IoC;
+using Content.Client.UI;
 
 namespace Content.Client;
 
@@ -9,5 +9,6 @@ internal static class ClientContentIoC
     {
         // DEVNOTE: IoCManager registrations for the client go here and only here.
         IoCManager.Register<StyleSheetManager, StyleSheetManager>();
-    }
+		IoCManager.Register<ClientUiManager, ClientUiManager>();
+	}
 }

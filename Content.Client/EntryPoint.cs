@@ -1,6 +1,7 @@
 using Content.Client.Input;
 using Content.Client.MainMenu;
 using Content.Client.StyleSheets;
+using Content.Client.UI;
 using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
@@ -8,8 +9,6 @@ using Robust.Client.State;
 using Robust.Shared;
 using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
-using Robust.Shared.GameObjects;
-using Robust.Shared.IoC;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -21,10 +20,12 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly IStateManager _stateManager = default!;
 	[Dependency] private readonly IBaseClient _baseClient = default!;
 	[Dependency] private readonly IInputManager _inputManager = default!;
-
+	
 	public override void PreInit()
-    {
-        IoCManager.InjectDependencies(this);
+	{
+		ClientContentIoC.Register();
+		IoCManager.BuildGraph();
+		IoCManager.InjectDependencies(this);
     }
 
     public override void Init()
@@ -43,16 +44,12 @@ public sealed class EntryPoint : GameClient
         {
             prototypes.RegisterIgnore(ignoreName);
         }
-
-        ClientContentIoC.Register();
-
-        IoCManager.BuildGraph();
-
         factory.GenerateNetIds();
 
-        // DEVNOTE: This is generally where you'll be setting up the IoCManager further.
-        
-        IoCManager.Resolve<StyleSheetManager>().Initialize(); //Load a stylesheet into the IUserInterfaceManager so UI works
+		// DEVNOTE: This is generally where you'll be setting up the IoCManager further.
+
+		IoCManager.Resolve<ClientUiManager>().Initialize(); //registers net messages for ui man
+		IoCManager.Resolve<StyleSheetManager>().Initialize(); //Load a stylesheet into the IUserInterfaceManager so UI works
     }
 
     public override void PostInit()

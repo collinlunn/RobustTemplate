@@ -1,5 +1,5 @@
 using Content.Server.Admin;
-using Robust.Shared.IoC;
+using Content.Server.UI;
 
 namespace Content.Server;
 
@@ -9,5 +9,6 @@ internal static class ServerContentIoC
     {
 		// DEVNOTE: IoCManager registrations for the server go here and only here.
 		IoCManager.Register<IAdminConsoleManager, AdminConsoleManager>();
+		IoCManager.Register<ServerUiManager, ServerUiManager>();
 	}
 }
