@@ -6,6 +6,8 @@ namespace Content.Server.UI
 	[Access(typeof(ServerUiManager))]
 	public abstract class ServerStateUi
 	{
+		[Dependency] ServerUiManager _uiMan = default!;
+
 		public uint Id { get; set; } = PreInitId;
 
 		public const uint PreInitId = 0;
@@ -17,6 +19,18 @@ namespace Content.Server.UI
 		public ServerStateUi()
 		{
 			IoCManager.InjectDependencies(this);
+		}
+
+		[Access(Other = AccessPermissions.ReadWriteExecute)]
+		public void Open(IPlayerSession player)
+		{
+			_uiMan.OpenUi(this, player);
+		}
+
+		[Access(Other = AccessPermissions.ReadWriteExecute)]
+		public void Close()
+		{
+			_uiMan.CloseUi(this);
 		}
 
 		public abstract UiStateMessage GetNewState();
