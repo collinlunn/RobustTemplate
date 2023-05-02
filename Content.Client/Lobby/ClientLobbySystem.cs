@@ -3,8 +3,6 @@ using Content.Shared.Lobby;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
 using Robust.Client.State;
-using Robust.Shared.GameObjects;
-using Robust.Shared.IoC;
 
 namespace Content.Client.Lobby;
 
@@ -16,27 +14,22 @@ public sealed class ClientLobbySystem : SharedLobbySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<PlayerAttachSysMessage>(OnPlayerAttached);
-        SubscribeNetworkEvent<LobbyJoinedEvent>(OnLobbyJoined);
-        SubscribeNetworkEvent<StartGameEvent>(OnStartGame);
-    }
+		SubscribeLocalEvent<PlayerAttachSysMessage>(OnPlayerAttached);
+		SubscribeNetworkEvent<LobbyJoinedEvent>(OnLobbyJoined);
+		SubscribeNetworkEvent<GameStartedEvent>(OnGameStarted);
+	}
 
-    public override void Update(float frameTime)
-    {
-        base.Update(frameTime);
-    }
+	private void OnLobbyJoined(LobbyJoinedEvent message)
+	{
+		_stateManager.RequestStateChange<LobbyState>();
+	}
 
-    private void OnLobbyJoined(LobbyJoinedEvent ev)
-    {
-        _stateManager.RequestStateChange<LobbyState>();
-    }
+	private void OnGameStarted(GameStartedEvent message)
+	{
+		_stateManager.RequestStateChange<InGameState>();
+	}
 
-    private void OnStartGame(StartGameEvent ev)
-    {
-        _stateManager.RequestStateChange<InGameState>();
-    }
-
-    private void OnPlayerAttached(PlayerAttachSysMessage ev)
+	private void OnPlayerAttached(PlayerAttachSysMessage ev)
     {
         var entity = ev.AttachedEntity;
 

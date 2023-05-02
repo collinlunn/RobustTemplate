@@ -5,8 +5,8 @@
             <Label Text="Woohoo you've connected to a server" Align="Center" Margin="3"/>
             <Button Name="StartGameButton" Access="Public" Text="Start Game" TextAlign="Center" SetWidth="200" Margin="3"/>
             <Button Name="StartMappingButton" Access="Public" Text="Start Mapping" TextAlign="Center" SetWidth="200" Margin="3"/>
-            <Button Name="DisconnectButton" Access="Public" Text="Disconnect" TextAlign="Center" SetWidth="200" Margin="3"/>
-            <Button Name="QuitButton" Access="Public" Text="Quit" TextAlign="Center" SetWidth="200" Margin="3"/>
+            <Button Name="DisconnectButton" Text="Disconnect" TextAlign="Center" SetWidth="200" Margin="3"/>
+            <Button Name="QuitButton" Text="Quit" TextAlign="Center" SetWidth="200" Margin="3"/>
         </BoxContainer>
     </PanelContainer>
 </Control>
