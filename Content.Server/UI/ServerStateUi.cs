@@ -35,6 +35,12 @@ namespace Content.Server.UI
 		}
 
 		[Access(Other = AccessPermissions.ReadWriteExecute)]
+		public void SendUiEvent(UiEventMessage uiEvent)
+		{
+			_uiMan.SendUiEvent(this, uiEvent);
+		}
+
+		[Access(Other = AccessPermissions.ReadWriteExecute)]
 		public void MarkDirty()
 		{
 			if (!Dirty)
