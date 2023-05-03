@@ -1,4 +1,4 @@
-﻿using Content.Shared.UI;
+using Content.Shared.UI;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.Network;
@@ -27,6 +27,7 @@ namespace Content.Server.UI
 			_players.PlayerStatusChanged += PlayerStatusChanged;
 		}
 
+		[Access(typeof(ServerStateUi))]
 		public void OpenUi(ServerStateUi ui, IPlayerSession player)
 		{
 			if (ui.Id != ServerStateUi.PreInitId)
@@ -44,6 +45,7 @@ namespace Content.Server.UI
 			SendMsgUi(newId, new OpenUiMessage(ui.GetType().Name), player.ConnectedClient);
 		}
 
+		[Access(typeof(ServerStateUi))]
 		public void CloseUi(ServerStateUi ui)
 		{
 			var player = ui.Player;
@@ -53,11 +55,13 @@ namespace Content.Server.UI
 			SendMsgUi(id, new CloseUiMessage(), player.ConnectedClient);
 		}
 
+		[Access(typeof(ServerStateUi))]
 		public void SendUiEvent(ServerStateUi ui, UiEventMessage uiEvent)
 		{
 			SendMsgUi(ui.Id, uiEvent, ui.Player.ConnectedClient);
 		}
 
+		[Access(typeof(ServerStateUi))]
 		public void DirtyUi(ServerStateUi ui)
 		{
 			if (!ui.Dirty)
@@ -83,7 +87,8 @@ namespace Content.Server.UI
 			}
 		}
 
-		private void QueueStateUpdate(ServerStateUi ui)
+		[Access(typeof(ServerStateUi))]
+		public void QueueStateUpdate(ServerStateUi ui)
 		{
 			DebugTools.Assert(ui.Id != ServerStateUi.PreInitId, "UI has not been opened yet.");
 			_stateUpdateQueue.Enqueue((ui.Player, ui.Id));

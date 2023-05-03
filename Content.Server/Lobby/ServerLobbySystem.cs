@@ -87,7 +87,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		}
 		foreach (var ui in _lobbyUis)
 		{
-			_uiManager.CloseUi(ui);
+			ui.Close();
 		}
 		_lobbyUis.Clear();
 	}

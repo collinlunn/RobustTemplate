@@ -25,12 +25,23 @@ namespace Content.Server.UI
 		public void Open(IPlayerSession player)
 		{
 			_uiMan.OpenUi(this, player);
+			MarkDirty();
 		}
 
 		[Access(Other = AccessPermissions.ReadWriteExecute)]
 		public void Close()
 		{
 			_uiMan.CloseUi(this);
+		}
+
+		[Access(Other = AccessPermissions.ReadWriteExecute)]
+		public void MarkDirty()
+		{
+			if (!Dirty)
+			{
+				Dirty = true;
+				_uiMan.QueueStateUpdate(this);
+			}
 		}
 
 		public abstract UiStateMessage GetNewState();
