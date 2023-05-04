@@ -2,7 +2,7 @@
 
 namespace Content.Client.UI
 {
-	[Access(typeof(ClientUiManager))]
+	[Access(typeof(ClientUiStateManager))]
 	public abstract class ClientStateUi
 	{
 		public uint Id { get; set; } = PreInitId;
@@ -14,9 +14,9 @@ namespace Content.Client.UI
 			IoCManager.InjectDependencies(this);
 		}
 
-		public abstract void OnOpen();
+		public abstract void OnLoad();
 
-		public abstract void OnClose();
+		public abstract void OnUnload();
 
 		public abstract void HandleState(UiStateMessage uiState);
 

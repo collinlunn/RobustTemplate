@@ -5,13 +5,13 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Content.Client.UI
 {
-	public sealed class ClientUiManager
+	public sealed class ClientUiStateManager
 	{
 		[Dependency] private readonly IClientNetManager _net = default!;
 		[Dependency] private readonly IReflectionManager _refl = default!;
 		[Dependency] private readonly IDynamicTypeFactory _dtf = default!;
 
-		private readonly Dictionary<uint, ClientStateUi> _openUis = new();
+		private readonly Dictionary<uint, ClientStateUi> _loadedUis = new();
 
 		public void Initialize()
 		{
@@ -31,12 +31,12 @@ namespace Content.Client.UI
 
 			switch (uiMessage)
 			{
-				case OpenUiMessage openUi:
-					OpenUi(id, openUi.OpenType);
+				case LoadUiMessage loadUi:
+					LoadUi(id, loadUi.LoadType);
 					break;
 
-				case CloseUiMessage:
-					CloseUi(id);
+				case UnloadUiMessage:
+					UnloadUi(id);
 					break;
 
 				case UiStateMessage uiState:
@@ -55,35 +55,35 @@ namespace Content.Client.UI
 
 		private void NetOnDisconnect(object? sender, NetDisconnectedArgs e)
 		{
-			foreach (var openUi in _openUis)
+			foreach (var loadedUi in _loadedUis)
 			{
-				openUi.Value.OnClose();
+				loadedUi.Value.OnUnload();
 			}
-			_openUis.Clear();
+			_loadedUis.Clear();
 		}
 
-		private void OpenUi(uint id, string type)
+		private void LoadUi(uint id, string type)
 		{
-			if (!_openUis.TryGetValue(id, out var openUi))
+			if (!_loadedUis.TryGetValue(id, out var loadedUi))
 			{
 				var uiType = _refl.LooseGetType(type);
 				var newUi = _dtf.CreateInstance<ClientStateUi>(uiType);
 				newUi.Id = id;
-				newUi.OnOpen();
-				_openUis.Add(id, newUi);
+				newUi.OnLoad();
+				_loadedUis.Add(id, newUi);
 			}
 			else
 			{
-				Logger.Error($"Tried to open a UI ({type}) but ID ({id}) was already in use by {openUi.GetType()}.");
+				Logger.Error($"Tried to load a UI ({type}) but ID ({id}) was already in use by {loadedUi.GetType()}.");
 			}
 		}
 
-		private void CloseUi(uint id)
+		private void UnloadUi(uint id)
 		{
 			if (TryGetUi(id, out var targetUi))
 			{
-				targetUi.OnClose();
-				_openUis.Remove(id);
+				targetUi.OnUnload();
+				_loadedUis.Remove(id);
 			}
 		}
 
@@ -105,7 +105,7 @@ namespace Content.Client.UI
 
 		private bool TryGetUi(uint id, [NotNullWhen(true)] out ClientStateUi? ui)
 		{
-			if (_openUis.TryGetValue(id, out var foundUi))
+			if (_loadedUis.TryGetValue(id, out var foundUi))
 			{
 				ui = foundUi;
 				return true;

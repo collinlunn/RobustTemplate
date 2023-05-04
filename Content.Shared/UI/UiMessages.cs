@@ -12,27 +12,27 @@ namespace Content.Shared.UI
 	}
 
 	/// <summary>
-	///		For opening a UI on a client, sent from server -> client.
+	///		For loading a UI on a client, sent from server -> client.
 	/// </summary>
 	[Serializable, NetSerializable]
-	public sealed class OpenUiMessage : BaseUiMessage
+	public sealed class LoadUiMessage : BaseUiMessage
 	{
 		/// <summary>
 		///		What type of UI should be opened?
 		/// </summary>
-		public string OpenType { get; }
+		public string LoadType { get; }
 
-		public OpenUiMessage(string type)
+		public LoadUiMessage(string type)
 		{
-			OpenType = type;
+			LoadType = type;
 		}
 	}
 
 	/// <summary>
-	///		For closing a UI on a client, sent from server -> client.
+	///		For unloading a UI on a client, sent from server -> client.
 	/// </summary>
 	[Serializable, NetSerializable]
-	public sealed class CloseUiMessage : BaseUiMessage
+	public sealed class UnloadUiMessage : BaseUiMessage
 	{
 
 	}

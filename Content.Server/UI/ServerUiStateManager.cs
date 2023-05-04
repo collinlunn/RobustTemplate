@@ -6,7 +6,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Server.UI
 {
-	public sealed class ServerUiManager
+	public sealed class ServerUiStateManager
 	{
 		[Dependency] private readonly IPlayerManager _players = default!;
 		[Dependency] private readonly IServerNetManager _net = default!;
@@ -16,7 +16,7 @@ namespace Content.Server.UI
 		private sealed class PlayerUiData
 		{
 			public uint NextId = 1;
-			public readonly Dictionary<uint, ServerStateUi> OpenUis = new();
+			public readonly Dictionary<uint, ServerStateUi> LoadedUis = new();
 		}
 
 		private readonly Queue<(IPlayerSession player, uint id)> _stateUpdateQueue = new ();
@@ -28,31 +28,31 @@ namespace Content.Server.UI
 		}
 
 		[Access(typeof(ServerStateUi))]
-		public void OpenUi(ServerStateUi ui, IPlayerSession player)
+		public void LoadUi(ServerStateUi ui, IPlayerSession player)
 		{
 			if (ui.Id != ServerStateUi.PreInitId)
 			{
-				throw new ArgumentException($"Tried to open UI {ui.GetType().Name}, but it was already opened.");
+				throw new ArgumentException($"Tried to load UI {ui.GetType().Name}, but it was already loaded.");
 			}
 
 			var data = _playerData[player];
 			var newId = data.NextId++;
-			data.OpenUis.Add(newId, ui);
+			data.LoadedUis.Add(newId, ui);
 
 			ui.Id = newId;
 			ui.Player = player;
 
-			SendMsgUi(newId, new OpenUiMessage(ui.GetType().Name), player.ConnectedClient);
+			SendMsgUi(newId, new LoadUiMessage(ui.GetType().Name), player.ConnectedClient);
 		}
 
 		[Access(typeof(ServerStateUi))]
-		public void CloseUi(ServerStateUi ui)
+		public void UnloadUi(ServerStateUi ui)
 		{
 			var player = ui.Player;
 			var id = ui.Id;
 
-			_playerData[player].OpenUis.Remove(id);
-			SendMsgUi(id, new CloseUiMessage(), player.ConnectedClient);
+			_playerData[player].LoadedUis.Remove(id);
+			SendMsgUi(id, new UnloadUiMessage(), player.ConnectedClient);
 		}
 
 		[Access(typeof(ServerStateUi))]
@@ -78,7 +78,7 @@ namespace Content.Server.UI
 				var (player, id) = tuple;
 
 				// Check that UI and player still exist.
-				if (_playerData.TryGetValue(player, out var playerData) && playerData.OpenUis.TryGetValue(id, out var ui))
+				if (_playerData.TryGetValue(player, out var playerData) && playerData.LoadedUis.TryGetValue(id, out var ui))
 				{
 					ui.Dirty = false;
 					var state = ui.GetNewState();
@@ -90,7 +90,7 @@ namespace Content.Server.UI
 		[Access(typeof(ServerStateUi))]
 		public void QueueStateUpdate(ServerStateUi ui)
 		{
-			DebugTools.Assert(ui.Id != ServerStateUi.PreInitId, "UI has not been opened yet.");
+			DebugTools.Assert(ui.Id != ServerStateUi.PreInitId, "UI has not been loaded yet.");
 			_stateUpdateQueue.Enqueue((ui.Player, ui.Id));
 		}
 
@@ -107,7 +107,7 @@ namespace Content.Server.UI
 			{
 				return;
 			}
-			if (!playerUiData.OpenUis.TryGetValue(id, out var ui))
+			if (!playerUiData.LoadedUis.TryGetValue(id, out var ui))
 			{
 				Logger.Error($"Received a UI message from {player} for ID {id} but none existed.");
 				return;
@@ -135,9 +135,9 @@ namespace Content.Server.UI
 			{
 				if (_playerData.TryGetValue(e.Session, out var playerData))
 				{
-					foreach (var ui in playerData.OpenUis.Values)
+					foreach (var ui in playerData.LoadedUis.Values)
 					{
-						CloseUi(ui);
+						UnloadUi(ui);
 					}
 
 					_playerData.Remove(e.Session);

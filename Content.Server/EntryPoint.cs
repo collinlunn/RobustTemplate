@@ -16,7 +16,7 @@ namespace Content.Server;
 public sealed class EntryPoint : GameServer
 {
 	[Dependency] private readonly IConfigurationManager _configMan = default!;
-	[Dependency] private readonly ServerUiManager _uiMan = default!;
+	[Dependency] private readonly ServerUiStateManager _uiMan = default!;
 
 	public override void PreInit()
     {
@@ -44,7 +44,7 @@ public sealed class EntryPoint : GameServer
         }
         factory.GenerateNetIds();
 
-		IoCManager.Resolve<ServerUiManager>().Initialize(); //registers net messages for ui man
+		IoCManager.Resolve<ServerUiStateManager>().Initialize(); //registers net messages for ui man
 		IoCManager.Resolve<IAdminConsoleManager>().SetAsActiveConsoleManager();
         // DEVNOTE: This is generally where you'll be setting up the IoCManager further.
     }

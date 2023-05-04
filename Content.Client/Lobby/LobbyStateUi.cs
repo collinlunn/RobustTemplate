@@ -1,4 +1,4 @@
-﻿using Content.Client.UI;
+using Content.Client.UI;
 using Content.Shared.Lobby;
 using Content.Shared.UI;
 using Robust.Client.UserInterface;
@@ -10,7 +10,7 @@ namespace Content.Client.Lobby
 	public sealed class LobbyStateUi : ClientStateUi
 	{
 		[Dependency] private readonly IUserInterfaceManager _userInterface = default!;
-		[Dependency] private readonly ClientUiManager _uiManager = default!;
+		[Dependency] private readonly ClientUiStateManager _uiManager = default!;
 
 		private LobbyHud? _lobbyHud;
 
@@ -24,7 +24,7 @@ namespace Content.Client.Lobby
 
 		}
 
-		public override void OnOpen()
+		public override void OnLoad()
 		{
 			DebugTools.Assert(_lobbyHud == null);
 			_lobbyHud = new LobbyHud();
@@ -35,7 +35,7 @@ namespace Content.Client.Lobby
 			_userInterface.StateRoot.AddChild(_lobbyHud);
 		}
 
-		public override void OnClose()
+		public override void OnUnload()
 		{
 			_lobbyHud?.Dispose();
 			_lobbyHud = null;

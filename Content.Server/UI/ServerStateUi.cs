@@ -3,10 +3,10 @@ using Robust.Server.Player;
 
 namespace Content.Server.UI
 {
-	[Access(typeof(ServerUiManager))]
+	[Access(typeof(ServerUiStateManager))]
 	public abstract class ServerStateUi
 	{
-		[Dependency] ServerUiManager _uiMan = default!;
+		[Dependency] ServerUiStateManager _uiMan = default!;
 
 		public uint Id { get; set; } = PreInitId;
 
@@ -22,16 +22,16 @@ namespace Content.Server.UI
 		}
 
 		[Access(Other = AccessPermissions.ReadWriteExecute)]
-		public void Open(IPlayerSession player)
+		public void Load(IPlayerSession player)
 		{
-			_uiMan.OpenUi(this, player);
+			_uiMan.LoadUi(this, player);
 			MarkDirty();
 		}
 
 		[Access(Other = AccessPermissions.ReadWriteExecute)]
-		public void Close()
+		public void Unload()
 		{
-			_uiMan.CloseUi(this);
+			_uiMan.UnloadUi(this);
 		}
 
 		[Access(Other = AccessPermissions.ReadWriteExecute)]
