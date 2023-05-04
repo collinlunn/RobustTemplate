@@ -19,6 +19,7 @@ namespace Content.Client.UI
 			_net.Disconnect += NetOnDisconnect;
 		}
 
+		[Access(typeof(ClientStateUi))]
 		public void SendUiInput(ClientStateUi ui, UiInputMessage uiInput)
 		{
 			SendMsgUi(ui.Id, uiInput);

@@ -28,8 +28,8 @@ namespace Content.Client.Lobby
 		{
 			DebugTools.Assert(_lobbyHud == null);
 			_lobbyHud = new LobbyHud();
-			_lobbyHud.StartGameButton.OnPressed += _ => _uiManager.SendUiInput(this, new StartGameInputMessage());
-			_lobbyHud.StartMappingButton.OnPressed += _ => _uiManager.SendUiInput(this, new StartMappingInputMessage());
+			_lobbyHud.StartGameButton.OnPressed += _ => SendUiInput(new StartGameInputMessage());
+			_lobbyHud.StartMappingButton.OnPressed += _ => SendUiInput(new StartMappingInputMessage());
 
 			LayoutContainer.SetAnchorAndMarginPreset(_lobbyHud, LayoutContainer.LayoutPreset.HorizontalCenterWide);
 			_userInterface.StateRoot.AddChild(_lobbyHud);

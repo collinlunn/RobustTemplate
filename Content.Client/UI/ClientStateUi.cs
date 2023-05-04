@@ -5,6 +5,8 @@ namespace Content.Client.UI
 	[Access(typeof(ClientUiStateManager))]
 	public abstract class ClientStateUi
 	{
+		[Dependency] private readonly ClientUiStateManager _uiMan = default!;
+
 		public uint Id { get; set; } = PreInitId;
 
 		public const uint PreInitId = 0;
@@ -12,6 +14,11 @@ namespace Content.Client.UI
 		public ClientStateUi()
 		{
 			IoCManager.InjectDependencies(this);
+		}
+
+		public void SendUiInput(UiInputMessage uiInput)
+		{
+			_uiMan.SendUiInput(this, uiInput);
 		}
 
 		public abstract void OnLoad();
