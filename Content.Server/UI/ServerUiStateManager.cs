@@ -11,6 +11,9 @@ namespace Content.Server.UI
 		[Dependency] private readonly IPlayerManager _players = default!;
 		[Dependency] private readonly IServerNetManager _net = default!;
 
+		/// <summary>
+		///		Set of connected players with their set of active ui connections.
+		/// </summary>
 		private readonly Dictionary<IPlayerSession, PlayerUiData> _playerData = new();
 
 		private sealed class PlayerUiData
@@ -19,6 +22,9 @@ namespace Content.Server.UI
 			public readonly Dictionary<uint, ServerStateUiConnection> LoadedUis = new();
 		}
 
+		/// <summary>
+		///		Set of players with a dirty ui state to update, with the id of the ui to update.
+		/// </summary>
 		private readonly Queue<(IPlayerSession player, uint id)> _stateUpdateQueue = new ();
 
 		public void Initialize()
