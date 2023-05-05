@@ -4,22 +4,15 @@ using Robust.Server.Player;
 namespace Content.Server.UI
 {
 	[Access(typeof(ServerUiStateManager))]
-	public abstract class ServerStateUiConnection
+	public abstract class ServerStateUiConnection : SharedStateUiConnection
 	{
 		[Dependency] ServerUiStateManager _uiMan = default!;
 
 		public uint Id { get; set; } = PreInitId;
 
-		public const uint PreInitId = 0;
-
 		public IPlayerSession Player { get; set; } = default!;
 
 		public bool Dirty;
-
-		public ServerStateUiConnection()
-		{
-			IoCManager.InjectDependencies(this);
-		}
 
 		[Access(Other = AccessPermissions.ReadWriteExecute)]
 		public void Load(IPlayerSession player)

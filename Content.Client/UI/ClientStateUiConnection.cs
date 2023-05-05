@@ -3,18 +3,12 @@
 namespace Content.Client.UI
 {
 	[Access(typeof(ClientUiStateManager))]
-	public abstract class ClientStateUiConnection
+	public abstract class ClientStateUiConnection : SharedStateUiConnection
 	{
 		[Dependency] private readonly ClientUiStateManager _uiMan = default!;
 
 		public uint Id { get; set; } = PreInitId;
 
-		public const uint PreInitId = 0;
-
-		public ClientStateUiConnection()
-		{
-			IoCManager.InjectDependencies(this);
-		}
 
 		public void SendUiInput(UiInputMessage uiInput)
 		{
