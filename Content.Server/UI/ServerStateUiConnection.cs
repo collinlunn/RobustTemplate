@@ -6,8 +6,6 @@ namespace Content.Server.UI
 	[Access(typeof(ServerUiStateManager))]
 	public abstract class ServerStateUiConnection : SharedStateUiConnection
 	{
-		public uint Id { get; set; } = PreInitId;
-
 		public IPlayerSession Player { get; set; } = default!;
 
 		public bool Dirty;

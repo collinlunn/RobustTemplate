@@ -14,5 +14,7 @@ namespace Content.Shared.UI
 		}
 
 		public const uint PreInitId = 0;
+
+		public uint Id { get; set; } = PreInitId;
 	}
 }
