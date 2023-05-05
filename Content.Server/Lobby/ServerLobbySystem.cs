@@ -15,7 +15,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
 	[Dependency] private readonly MapLoaderSystem _mapLoader = default!;
-	[Dependency] private readonly ServerUiStateManager _uiManager = default!;
+	[Dependency] private readonly ServerUiStateManager _uiState = default!;
 
 	private string _mapToLoad = "/Maps/default_map.yml";
 	private readonly List<LobbyStateUi> _lobbyUis = new();
@@ -41,7 +41,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 			case SessionStatus.InGame:
 				RaiseNetworkEvent(new LobbyJoinedEvent(), session);
 				var ui = new LobbyStateUi();
-				ui.Load(session);
+				_uiState.LoadUi(ui, session);
 				_lobbyUis.Add(ui);
 				break;
 		}
@@ -87,7 +87,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		}
 		foreach (var ui in _lobbyUis)
 		{
-			ui.Unload();
+			_uiState.UnloadUi(ui);
 		}
 		_lobbyUis.Clear();
 	}

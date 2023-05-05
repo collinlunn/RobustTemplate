@@ -10,6 +10,7 @@ namespace Content.Server.UI
 	{
 		[Dependency] private readonly IPlayerManager _players = default!;
 		[Dependency] private readonly IServerNetManager _net = default!;
+		[Dependency] ServerUiStateManager _uiState = default!;
 
 		private readonly Dictionary<IPlayerSession, PlayerUiData> _playerData = new();
 
@@ -27,10 +28,9 @@ namespace Content.Server.UI
 			_players.PlayerStatusChanged += PlayerStatusChanged;
 		}
 
-		[Access(typeof(ServerStateUiConnection))]
 		public void LoadUi(ServerStateUiConnection ui, IPlayerSession player)
 		{
-			if (ui.Id != ServerStateUiConnection.PreInitId)
+			if (ui.Id != SharedStateUiConnection.PreInitId)
 			{
 				throw new ArgumentException($"Tried to load UI {ui.GetType().Name}, but it was already loaded.");
 			}
@@ -43,9 +43,9 @@ namespace Content.Server.UI
 			ui.Player = player;
 
 			SendMsgUi(newId, new LoadUiMessage(ui.GetType().Name), player.ConnectedClient);
+			DirtyUi(ui);
 		}
 
-		[Access(typeof(ServerStateUiConnection))]
 		public void UnloadUi(ServerStateUiConnection ui)
 		{
 			var player = ui.Player;
@@ -55,13 +55,11 @@ namespace Content.Server.UI
 			SendMsgUi(id, new UnloadUiMessage(), player.ConnectedClient);
 		}
 
-		[Access(typeof(ServerStateUiConnection))]
 		public void SendUiEvent(ServerStateUiConnection ui, UiEventMessage uiEvent)
 		{
 			SendMsgUi(ui.Id, uiEvent, ui.Player.ConnectedClient);
 		}
 
-		[Access(typeof(ServerStateUiConnection))]
 		public void DirtyUi(ServerStateUiConnection ui)
 		{
 			if (!ui.Dirty)
