@@ -12,21 +12,5 @@ namespace Content.Server.Lobby
 		{
 			return new LobbyStateUiState();
 		}
-
-		public override void HandleInput(UiInputMessage uiInput)
-		{
-			var lobby = _entityManager.EntitySysManager.GetEntitySystem<ServerLobbySystem>(); //TODO how to not get this manually?
-
-			switch (uiInput)
-			{
-				case StartGameInputMessage startGame:
-					lobby.OnStartGamePressed();
-					break;
-
-				case StartMappingInputMessage startMapping:
-					lobby.OnStartMappingPressed();
-					break;
-			}
-		}
 	}
 }

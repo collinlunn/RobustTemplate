@@ -10,7 +10,5 @@ namespace Content.Client.UI
 		public abstract void OnUnload();
 
 		public abstract void HandleState(UiStateMessage uiState);
-
-		public abstract void HandleEvent(UiEventMessage uiEvent);
 	}
 }

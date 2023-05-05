@@ -10,18 +10,6 @@ namespace Content.Shared.Lobby
 	}
 
 	[Serializable, NetSerializable]
-	public sealed class StartGameInputMessage : UiInputMessage
-	{
-
-	}
-
-	[Serializable, NetSerializable]
-	public sealed class StartMappingInputMessage : UiInputMessage
-	{
-
-	}
-
-	[Serializable, NetSerializable]
 	public sealed class LobbyJoinedEvent : EntityEventArgs
 	{
 

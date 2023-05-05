@@ -11,7 +11,5 @@ namespace Content.Server.UI
 		public bool Dirty;
 
 		public abstract UiStateMessage GetNewState();
-
-		public abstract void HandleInput(UiInputMessage uiInput);
 	}
 }

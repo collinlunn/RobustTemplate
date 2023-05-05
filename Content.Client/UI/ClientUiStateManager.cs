@@ -19,12 +19,6 @@ namespace Content.Client.UI
 			_net.Disconnect += NetOnDisconnect;
 		}
 
-		[Access(typeof(ClientStateUiConnection))]
-		public void SendUiInput(ClientStateUiConnection ui, UiInputMessage uiInput)
-		{
-			SendMsgUi(ui.Id, uiInput);
-		}
-
 		private void HandleUiMessage(MsgUi message)
 		{
 			var id = message.Id;
@@ -42,10 +36,6 @@ namespace Content.Client.UI
 
 				case UiStateMessage uiState:
 					HandleState(id, uiState);
-					break;
-
-				case UiEventMessage uiEvent:
-					HandleEvent(id, uiEvent);
 					break;
 
 				default:
@@ -93,14 +83,6 @@ namespace Content.Client.UI
 			if (TryGetUi(id, out var targetUi))
 			{
 				targetUi.HandleState(uiState);
-			}
-		}
-
-		private void HandleEvent(uint id, UiEventMessage uiState)
-		{
-			if (TryGetUi(id, out var targetUi))
-			{
-				targetUi.HandleEvent(uiState);
 			}
 		}
 

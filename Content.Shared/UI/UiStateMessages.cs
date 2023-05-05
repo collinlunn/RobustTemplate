@@ -39,30 +39,9 @@ namespace Content.Shared.UI
 
 	/// <summary>
 	///		Base message for transmitting UI state, sent from server -> client.
-	///		Individual UI's will override with their own state data.
 	/// </summary>
 	[Serializable, NetSerializable]
 	public abstract class UiStateMessage : BaseUiMessage
-	{
-
-	}
-
-	/// <summary>
-	///		Base message for transmitting an event related to the UI, sent from server -> client.
-	///		Individual UI's will override with their own event data.
-	/// </summary>
-	[Serializable, NetSerializable]
-	public abstract class UiEventMessage : BaseUiMessage
-	{
-
-	}
-
-	/// <summary>
-	///		Base message for transmitting an input related to the UI, sent from client -> server.
-	///		Individual UI's will override with their own input data.
-	/// </summary>
-	[Serializable, NetSerializable]
-	public abstract class UiInputMessage : BaseUiMessage
 	{
 
 	}

@@ -10,7 +10,6 @@ namespace Content.Server.UI
 	{
 		[Dependency] private readonly IPlayerManager _players = default!;
 		[Dependency] private readonly IServerNetManager _net = default!;
-		[Dependency] ServerUiStateManager _uiState = default!;
 
 		private readonly Dictionary<IPlayerSession, PlayerUiData> _playerData = new();
 
@@ -55,11 +54,6 @@ namespace Content.Server.UI
 			SendMsgUi(id, new UnloadUiMessage(), player.ConnectedClient);
 		}
 
-		public void SendUiEvent(ServerStateUiConnection ui, UiEventMessage uiEvent)
-		{
-			SendMsgUi(ui.Id, uiEvent, ui.Player.ConnectedClient);
-		}
-
 		public void DirtyUi(ServerStateUiConnection ui)
 		{
 			if (!ui.Dirty)
@@ -85,10 +79,9 @@ namespace Content.Server.UI
 			}
 		}
 
-		[Access(typeof(ServerStateUiConnection))]
-		public void QueueStateUpdate(ServerStateUiConnection ui)
+		private void QueueStateUpdate(ServerStateUiConnection ui)
 		{
-			DebugTools.Assert(ui.Id != ServerStateUiConnection.PreInitId, "UI has not been loaded yet.");
+			DebugTools.Assert(ui.Id != SharedStateUiConnection.PreInitId, "UI has not been loaded yet.");
 			_stateUpdateQueue.Enqueue((ui.Player, ui.Id));
 		}
 
@@ -111,16 +104,7 @@ namespace Content.Server.UI
 				return;
 			}
 
-			switch (uiMessage)
-			{
-				case UiInputMessage input:
-					ui.HandleInput(input);
-					break;
-
-				default:
-					Logger.Error($"Received a UI message of an unhandled type: {message.GetType()}");
-					break;
-			}
+			//Placeholder
 		}
 
 		private void PlayerStatusChanged(object? sender, SessionStatusEventArgs e)
