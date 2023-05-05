@@ -41,8 +41,7 @@ namespace Content.Server.UI
 			ui.Id = newId;
 			ui.Player = player;
 
-			SendMsgUi(newId, new LoadUiMessage(ui.GetType().Name), player.ConnectedClient);
-			DirtyUi(ui);
+			SendMsgUi(newId, new LoadUiMessage(ui.GetType().Name, ui.GetNewState()), player.ConnectedClient);
 		}
 
 		public void UnloadUi(ServerStateUiConnection ui)
@@ -74,7 +73,7 @@ namespace Content.Server.UI
 				{
 					ui.Dirty = false;
 					var state = ui.GetNewState();
-					SendMsgUi(id, state, player.ConnectedClient);
+					SendMsgUi(id, new UiStateMessage(state), player.ConnectedClient);
 				}
 			}
 		}

@@ -4,7 +4,7 @@ using Robust.Shared.Serialization;
 namespace Content.Shared.Lobby
 {
 	[Serializable, NetSerializable]
-	public sealed class LobbyStateUiState : UiStateMessage
+	public sealed class LobbyUiState : UiState
 	{
 
 	}

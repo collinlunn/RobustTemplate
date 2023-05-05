@@ -8,9 +8,9 @@ namespace Content.Server.Lobby
 	{
 		[Dependency] private readonly IEntityManager _entityManager = default!;
 
-		public override UiStateMessage GetNewState()
+		public override UiState GetNewState()
 		{
-			return new LobbyStateUiState();
+			return new LobbyUiState();
 		}
 	}
 }

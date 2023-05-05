@@ -22,9 +22,15 @@ namespace Content.Shared.UI
 		/// </summary>
 		public string LoadType { get; }
 
-		public LoadUiMessage(string type)
+		/// <summary>
+		///		The initial value of the state of this UI.
+		/// </summary>
+		public UiState State { get; }
+
+		public LoadUiMessage(string type, UiState state)
 		{
 			LoadType = type;
+			State = state;
 		}
 	}
 
@@ -41,7 +47,20 @@ namespace Content.Shared.UI
 	///		Base message for transmitting UI state, sent from server -> client.
 	/// </summary>
 	[Serializable, NetSerializable]
-	public abstract class UiStateMessage : BaseUiMessage
+	public sealed class UiStateMessage : BaseUiMessage
+	{
+		public UiState State { get; }
+
+		public UiStateMessage(UiState state)
+		{
+			State = state;
+		}
+	}
+
+	/// <summary>
+	///		A Ui state. Each ui will override with own version.
+	/// </summary>
+	public abstract class UiState
 	{
 
 	}
