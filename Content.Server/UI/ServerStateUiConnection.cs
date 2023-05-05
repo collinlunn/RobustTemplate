@@ -10,6 +10,6 @@ namespace Content.Server.UI
 
 		public bool Dirty;
 
-		public abstract UiState GetNewState();
+		public UiState State = default!;
 	}
 }

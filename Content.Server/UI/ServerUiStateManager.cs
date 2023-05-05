@@ -27,7 +27,7 @@ namespace Content.Server.UI
 			_players.PlayerStatusChanged += PlayerStatusChanged;
 		}
 
-		public void LoadUi(ServerStateUiConnection ui, IPlayerSession player)
+		public void LoadUi(ServerStateUiConnection ui, IPlayerSession player, UiState initialState)
 		{
 			if (ui.Id != SharedStateUiConnection.PreInitId)
 			{
@@ -40,8 +40,9 @@ namespace Content.Server.UI
 
 			ui.Id = newId;
 			ui.Player = player;
+			ui.State = initialState;
 
-			SendMsgUi(newId, new LoadUiMessage(ui.GetType().Name, ui.GetNewState()), player.ConnectedClient);
+			SendMsgUi(newId, new LoadUiMessage(ui.GetType().Name, initialState), player.ConnectedClient);
 		}
 
 		public void UnloadUi(ServerStateUiConnection ui)
@@ -53,8 +54,9 @@ namespace Content.Server.UI
 			SendMsgUi(id, new UnloadUiMessage(), player.ConnectedClient);
 		}
 
-		public void DirtyUi(ServerStateUiConnection ui)
+		public void DirtyUi(ServerStateUiConnection ui, UiState newState)
 		{
+			ui.State = newState;
 			if (!ui.Dirty)
 			{
 				ui.Dirty = true;
@@ -72,8 +74,7 @@ namespace Content.Server.UI
 				if (_playerData.TryGetValue(player, out var playerData) && playerData.LoadedUis.TryGetValue(id, out var ui))
 				{
 					ui.Dirty = false;
-					var state = ui.GetNewState();
-					SendMsgUi(id, new UiStateMessage(state), player.ConnectedClient);
+					SendMsgUi(id, new UiStateMessage(ui.State), player.ConnectedClient);
 				}
 			}
 		}
