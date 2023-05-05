@@ -7,7 +7,7 @@ using Robust.Shared.Utility;
 
 namespace Content.Client.Lobby
 {
-	public sealed class LobbyStateUi : ClientStateUi
+	public sealed class LobbyStateUi : ClientStateUiConnection
 	{
 		[Dependency] private readonly IUserInterfaceManager _userInterface = default!;
 		[Dependency] private readonly ClientUiStateManager _uiManager = default!;

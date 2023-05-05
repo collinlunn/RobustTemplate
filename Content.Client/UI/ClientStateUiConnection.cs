@@ -3,7 +3,7 @@
 namespace Content.Client.UI
 {
 	[Access(typeof(ClientUiStateManager))]
-	public abstract class ClientStateUi
+	public abstract class ClientStateUiConnection
 	{
 		[Dependency] private readonly ClientUiStateManager _uiMan = default!;
 
@@ -11,7 +11,7 @@ namespace Content.Client.UI
 
 		public const uint PreInitId = 0;
 
-		public ClientStateUi()
+		public ClientStateUiConnection()
 		{
 			IoCManager.InjectDependencies(this);
 		}

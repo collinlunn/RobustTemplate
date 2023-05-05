@@ -11,7 +11,7 @@ namespace Content.Client.UI
 		[Dependency] private readonly IReflectionManager _refl = default!;
 		[Dependency] private readonly IDynamicTypeFactory _dtf = default!;
 
-		private readonly Dictionary<uint, ClientStateUi> _loadedUis = new();
+		private readonly Dictionary<uint, ClientStateUiConnection> _loadedUis = new();
 
 		public void Initialize()
 		{
@@ -19,8 +19,8 @@ namespace Content.Client.UI
 			_net.Disconnect += NetOnDisconnect;
 		}
 
-		[Access(typeof(ClientStateUi))]
-		public void SendUiInput(ClientStateUi ui, UiInputMessage uiInput)
+		[Access(typeof(ClientStateUiConnection))]
+		public void SendUiInput(ClientStateUiConnection ui, UiInputMessage uiInput)
 		{
 			SendMsgUi(ui.Id, uiInput);
 		}
@@ -68,7 +68,7 @@ namespace Content.Client.UI
 			if (!_loadedUis.TryGetValue(id, out var loadedUi))
 			{
 				var uiType = _refl.LooseGetType(type);
-				var newUi = _dtf.CreateInstance<ClientStateUi>(uiType);
+				var newUi = _dtf.CreateInstance<ClientStateUiConnection>(uiType);
 				newUi.Id = id;
 				newUi.OnLoad();
 				_loadedUis.Add(id, newUi);
@@ -104,7 +104,7 @@ namespace Content.Client.UI
 			}
 		}
 
-		private bool TryGetUi(uint id, [NotNullWhen(true)] out ClientStateUi? ui)
+		private bool TryGetUi(uint id, [NotNullWhen(true)] out ClientStateUiConnection? ui)
 		{
 			if (_loadedUis.TryGetValue(id, out var foundUi))
 			{

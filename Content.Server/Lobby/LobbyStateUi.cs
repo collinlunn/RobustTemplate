@@ -4,7 +4,7 @@ using Content.Shared.UI;
 
 namespace Content.Server.Lobby
 {
-	public sealed class LobbyStateUi : ServerStateUi
+	public sealed class LobbyStateUi : ServerStateUiConnection
 	{
 		[Dependency] private readonly IEntityManager _entityManager = default!;
 

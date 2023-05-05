@@ -4,7 +4,7 @@ using Robust.Server.Player;
 namespace Content.Server.UI
 {
 	[Access(typeof(ServerUiStateManager))]
-	public abstract class ServerStateUi
+	public abstract class ServerStateUiConnection
 	{
 		[Dependency] ServerUiStateManager _uiMan = default!;
 
@@ -16,7 +16,7 @@ namespace Content.Server.UI
 
 		public bool Dirty;
 
-		public ServerStateUi()
+		public ServerStateUiConnection()
 		{
 			IoCManager.InjectDependencies(this);
 		}

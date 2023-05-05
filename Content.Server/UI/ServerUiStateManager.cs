@@ -16,7 +16,7 @@ namespace Content.Server.UI
 		private sealed class PlayerUiData
 		{
 			public uint NextId = 1;
-			public readonly Dictionary<uint, ServerStateUi> LoadedUis = new();
+			public readonly Dictionary<uint, ServerStateUiConnection> LoadedUis = new();
 		}
 
 		private readonly Queue<(IPlayerSession player, uint id)> _stateUpdateQueue = new ();
@@ -27,10 +27,10 @@ namespace Content.Server.UI
 			_players.PlayerStatusChanged += PlayerStatusChanged;
 		}
 
-		[Access(typeof(ServerStateUi))]
-		public void LoadUi(ServerStateUi ui, IPlayerSession player)
+		[Access(typeof(ServerStateUiConnection))]
+		public void LoadUi(ServerStateUiConnection ui, IPlayerSession player)
 		{
-			if (ui.Id != ServerStateUi.PreInitId)
+			if (ui.Id != ServerStateUiConnection.PreInitId)
 			{
 				throw new ArgumentException($"Tried to load UI {ui.GetType().Name}, but it was already loaded.");
 			}
@@ -45,8 +45,8 @@ namespace Content.Server.UI
 			SendMsgUi(newId, new LoadUiMessage(ui.GetType().Name), player.ConnectedClient);
 		}
 
-		[Access(typeof(ServerStateUi))]
-		public void UnloadUi(ServerStateUi ui)
+		[Access(typeof(ServerStateUiConnection))]
+		public void UnloadUi(ServerStateUiConnection ui)
 		{
 			var player = ui.Player;
 			var id = ui.Id;
@@ -55,14 +55,14 @@ namespace Content.Server.UI
 			SendMsgUi(id, new UnloadUiMessage(), player.ConnectedClient);
 		}
 
-		[Access(typeof(ServerStateUi))]
-		public void SendUiEvent(ServerStateUi ui, UiEventMessage uiEvent)
+		[Access(typeof(ServerStateUiConnection))]
+		public void SendUiEvent(ServerStateUiConnection ui, UiEventMessage uiEvent)
 		{
 			SendMsgUi(ui.Id, uiEvent, ui.Player.ConnectedClient);
 		}
 
-		[Access(typeof(ServerStateUi))]
-		public void DirtyUi(ServerStateUi ui)
+		[Access(typeof(ServerStateUiConnection))]
+		public void DirtyUi(ServerStateUiConnection ui)
 		{
 			if (!ui.Dirty)
 			{
@@ -87,10 +87,10 @@ namespace Content.Server.UI
 			}
 		}
 
-		[Access(typeof(ServerStateUi))]
-		public void QueueStateUpdate(ServerStateUi ui)
+		[Access(typeof(ServerStateUiConnection))]
+		public void QueueStateUpdate(ServerStateUiConnection ui)
 		{
-			DebugTools.Assert(ui.Id != ServerStateUi.PreInitId, "UI has not been loaded yet.");
+			DebugTools.Assert(ui.Id != ServerStateUiConnection.PreInitId, "UI has not been loaded yet.");
 			_stateUpdateQueue.Enqueue((ui.Player, ui.Id));
 		}
 
