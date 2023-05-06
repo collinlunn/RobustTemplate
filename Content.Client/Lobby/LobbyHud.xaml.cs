@@ -9,15 +9,9 @@ namespace Content.Client.Lobby;
 [GenerateTypedNameReferences]
 public sealed partial class LobbyHud : Control
 {
-	[Dependency] private readonly IClientNetManager _clientNetManager = default!;
-	[Dependency] private readonly IGameController _gameController = default!;
-
 	public LobbyHud()
 	{
 		RobustXamlLoader.Load(this);
 		IoCManager.InjectDependencies(this);		
-		DisconnectButton.OnPressed += _ => _clientNetManager.ClientDisconnect("Client pressed disconnect button.");
-		QuitButton.OnPressed += _ => _gameController.Shutdown("Client pressed quit button.");
-
 	}
 }
