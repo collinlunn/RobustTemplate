@@ -2,7 +2,6 @@ using Content.Shared.UI;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.Network;
-using Robust.Shared.Utility;
 
 namespace Content.Server.UI
 {
@@ -19,7 +18,7 @@ namespace Content.Server.UI
 		private sealed class PlayerUiData
 		{
 			public uint NextId = 1;
-			public readonly Dictionary<uint, ServerStateUiConnection> LoadedUis = new();
+			public readonly Dictionary<uint, UiConnection> UiConnections = new();
 		}
 
 		/// <summary>
@@ -29,38 +28,28 @@ namespace Content.Server.UI
 
 		public void Initialize()
 		{
-			_net.RegisterNetMessage<MsgUi>(HandleUiMessage);
+			//_net.RegisterNetMessage<MsgUi>(HandleUiMessage);
 			_players.PlayerStatusChanged += PlayerStatusChanged;
 		}
 
-		public void LoadUi(ServerStateUiConnection ui, IPlayerSession player, UiState initialState)
+		public void LoadUi(IPlayerSession player, UiState initialState)
 		{
-			if (ui.Id != SharedStateUiConnection.PreInitId)
-			{
-				throw new ArgumentException($"Tried to load UI {ui.GetType().Name}, but it was already loaded.");
-			}
-
 			var data = _playerData[player];
 			var newId = data.NextId++;
-			data.LoadedUis.Add(newId, ui);
+			var ui = new UiConnection(newId, player, initialState);
+			data.UiConnections.Add(newId, ui);
 
-			ui.Id = newId;
-			ui.Player = player;
-			ui.State = initialState;
-
-			SendMsgUi(newId, new LoadUiMessage(ui.GetType().Name, initialState), player.ConnectedClient);
+			SendMsgUi(ui, new LoadUiMessage(initialState));
 		}
 
-		public void UnloadUi(ServerStateUiConnection ui)
+		public void UnloadUi(UiConnection ui)
 		{
-			var player = ui.Player;
-			var id = ui.Id;
-
-			_playerData[player].LoadedUis.Remove(id);
-			SendMsgUi(id, new UnloadUiMessage(), player.ConnectedClient);
+			_playerData[ui.Player].UiConnections.Remove(ui.Id);
+			//Raise LocalEvent UiConnectionClosed
+			SendMsgUi(ui, new UnloadUiMessage());
 		}
 
-		public void DirtyUi(ServerStateUiConnection ui, UiState newState)
+		public void DirtyUi(UiConnection ui, UiState newState)
 		{
 			ui.State = newState;
 			if (!ui.Dirty)
@@ -77,41 +66,40 @@ namespace Content.Server.UI
 				var (player, id) = tuple;
 
 				// Check that UI and player still exist.
-				if (_playerData.TryGetValue(player, out var playerData) && playerData.LoadedUis.TryGetValue(id, out var ui))
+				if (_playerData.TryGetValue(player, out var playerData) && playerData.UiConnections.TryGetValue(id, out var ui))
 				{
 					ui.Dirty = false;
-					SendMsgUi(id, new UiStateMessage(ui.State), player.ConnectedClient);
+					SendMsgUi(ui, new UiStateMessage(ui.State));
 				}
 			}
 		}
 
-		private void QueueStateUpdate(ServerStateUiConnection ui)
+		private void QueueStateUpdate(UiConnection ui)
 		{
-			DebugTools.Assert(ui.Id != SharedStateUiConnection.PreInitId, "UI has not been loaded yet.");
 			_stateUpdateQueue.Enqueue((ui.Player, ui.Id));
 		}
 
-		private void HandleUiMessage(MsgUi message)
-		{
-			var id = message.Id;
-			var uiMessage = message.Message;
+		//private void HandleUiMessage(MsgUi message)
+		//{
+		//	var id = message.Id;
+		//	var uiMessage = message.Message;
 
-			if (!_players.TryGetSessionByChannel(message.MsgChannel, out var player))
-			{
-				return;
-			}
-			if (!_playerData.TryGetValue(player, out var playerUiData))
-			{
-				return;
-			}
-			if (!playerUiData.LoadedUis.TryGetValue(id, out var ui))
-			{
-				Logger.Error($"Received a UI message from {player} for ID {id} but none existed.");
-				return;
-			}
+		//	if (!_players.TryGetSessionByChannel(message.MsgChannel, out var player))
+		//	{
+		//		return;
+		//	}
+		//	if (!_playerData.TryGetValue(player, out var playerUiData))
+		//	{
+		//		return;
+		//	}
+		//	if (!playerUiData.LoadedUis.TryGetValue(id, out var ui))
+		//	{
+		//		Logger.Error($"Received a UI message from {player} for ID {id} but none existed.");
+		//		return;
+		//	}
 
-			//Placeholder
-		}
+		//	//Placeholder
+		//}
 
 		private void PlayerStatusChanged(object? sender, SessionStatusEventArgs e)
 		{
@@ -123,7 +111,7 @@ namespace Content.Server.UI
 			{
 				if (_playerData.TryGetValue(e.Session, out var playerData))
 				{
-					foreach (var ui in playerData.LoadedUis.Values)
+					foreach (var ui in playerData.UiConnections.Values)
 					{
 						UnloadUi(ui);
 					}
@@ -133,14 +121,14 @@ namespace Content.Server.UI
 			}
 		}
 
-		private void SendMsgUi(uint id, BaseUiMessage message, INetChannel client)
+		private void SendMsgUi(UiConnection ui, BaseUiMessage message)
 		{
 			var msgUi = new MsgUi
 			{
-				Id = id,
+				Id = ui.Id,
 				Message = message
 			};
-			_net.ServerSendMessage(msgUi, client);
+			_net.ServerSendMessage(msgUi, ui.Player.ConnectedClient);
 		}
 	}
 }

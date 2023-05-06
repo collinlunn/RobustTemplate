@@ -12,24 +12,20 @@ namespace Content.Shared.UI
 	}
 
 	/// <summary>
-	///		For loading a UI on a client, sent from server -> client.
+	///		For sending the initial state of a ui to a client.
+	///		This is a seperate type of message from regularly sending the state to catch
+	///		bugs where a state is sent before "loading" the ui.
 	/// </summary>
 	[Serializable, NetSerializable]
 	public sealed class LoadUiMessage : BaseUiMessage
 	{
 		/// <summary>
-		///		What type of UI should be opened?
-		/// </summary>
-		public string LoadType { get; }
-
-		/// <summary>
 		///		The initial value of the state of this UI.
 		/// </summary>
 		public UiState State { get; }
 
-		public LoadUiMessage(string type, UiState state)
+		public LoadUiMessage(UiState state)
 		{
-			LoadType = type;
 			State = state;
 		}
 	}

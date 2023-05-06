@@ -18,7 +18,6 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 	[Dependency] private readonly ServerUiStateManager _uiState = default!;
 
 	private string _mapToLoad = "/Maps/default_map.yml";
-	private readonly List<LobbyStateUi> _lobbyUis = new();
 
 	public override void Initialize()
     {
@@ -39,15 +38,14 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 				break;
 
 			case SessionStatus.InGame:
-				RaiseNetworkEvent(new LobbyJoinedEvent(), session);
-				var ui = new LobbyStateUi();
-				_uiState.LoadUi(ui, session, new LobbyUiState());
-				_lobbyUis.Add(ui);
+				//RaiseNetworkEvent(new LobbyJoinedEvent(), session);
+				//var ui = new LobbyStateUi();
+				//_uiState.LoadUi(ui, session, new LobbyUiState());
+				//_lobbyUis.Add(ui);
 				break;
 		}
     }
 
-	[Access(typeof(LobbyStateUi))]
     public void OnStartGamePressed()
     {
         var gameStartedEvent = new GameStartedEvent();
@@ -62,7 +60,6 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
     }
 
-	[Access(typeof(LobbyStateUi))]
 	public void OnStartMappingPressed()
 	{
 		var gameStartedEvent = new GameStartedEvent();
@@ -85,10 +82,10 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 			var playerEntity = EntityManager.SpawnEntity(playerProto, spawnCoords);
 			playerSession.AttachToEntity(playerEntity);
 		}
-		foreach (var ui in _lobbyUis)
-		{
-			_uiState.UnloadUi(ui);
-		}
-		_lobbyUis.Clear();
+		//foreach (var ui in _lobbyUis)
+		//{
+		//	_uiState.UnloadUi(ui);
+		//}
+		//_lobbyUis.Clear();
 	}
 }

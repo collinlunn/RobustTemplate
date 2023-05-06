@@ -1,17 +1,13 @@
 ﻿using Content.Shared.UI;
 using Robust.Shared.Network;
-using Robust.Shared.Reflection;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Content.Client.UI
 {
 	public sealed class ClientUiStateManager
 	{
 		[Dependency] private readonly IClientNetManager _net = default!;
-		[Dependency] private readonly IReflectionManager _refl = default!;
-		[Dependency] private readonly IDynamicTypeFactory _dtf = default!;
 
-		private readonly Dictionary<uint, ClientStateUiConnection> _loadedUis = new();
+		private readonly Dictionary<uint, UiState> _uiStates = new();
 
 		public void Initialize()
 		{
@@ -27,7 +23,7 @@ namespace Content.Client.UI
 			switch (uiMessage)
 			{
 				case LoadUiMessage loadUi:
-					LoadUi(id, loadUi.LoadType);
+					LoadUi(id, loadUi.State);
 					break;
 
 				case UnloadUiMessage:
@@ -35,7 +31,7 @@ namespace Content.Client.UI
 					break;
 
 				case UiStateMessage uiState:
-					HandleState(id, uiState);
+					HandleState(id, uiState.State);
 					break;
 
 				default:
@@ -46,69 +42,63 @@ namespace Content.Client.UI
 
 		private void NetOnDisconnect(object? sender, NetDisconnectedArgs e)
 		{
-			foreach (var loadedUi in _loadedUis)
+			foreach (var tuple in _uiStates)
 			{
-				loadedUi.Value.OnUnload();
+				//RaiseEvent StateUiConnectionClosed
 			}
-			_loadedUis.Clear();
+			_uiStates.Clear();
 		}
 
-		private void LoadUi(uint id, string type)
+		private void LoadUi(uint id, UiState initialState)
 		{
-			if (!_loadedUis.TryGetValue(id, out var loadedUi))
+			if (!_uiStates.TryGetValue(id, out var loadedUi))
 			{
-				var uiType = _refl.LooseGetType(type);
-				var newUi = _dtf.CreateInstance<ClientStateUiConnection>(uiType);
-				newUi.Id = id;
-				newUi.OnLoad();
-				_loadedUis.Add(id, newUi);
+				_uiStates.Add(id, initialState);
 			}
 			else
 			{
-				Logger.Error($"Tried to load a UI ({type}) but ID ({id}) was already in use by {loadedUi.GetType()}.");
+				Logger.Error($"Tried to load a UI ({initialState.GetType()}) but ID ({id}) was already in use by {loadedUi.GetType()}.");
 			}
 		}
 
 		private void UnloadUi(uint id)
 		{
-			if (TryGetUi(id, out var targetUi))
+			if (IdHasConnection(id))
 			{
-				targetUi.OnUnload();
-				_loadedUis.Remove(id);
+				//RaiseEvent UiConnectionClosed
+				_uiStates.Remove(id);
 			}
 		}
 
-		private void HandleState(uint id, UiStateMessage uiState)
+		private void HandleState(uint id, UiState uiState)
 		{
-			if (TryGetUi(id, out var targetUi))
+			if (IdHasConnection(id))
 			{
-				targetUi.HandleState(uiState);
+				_uiStates[id] = uiState;
+				//RaiseEvent UiStateReceived
 			}
 		}
 
-		private bool TryGetUi(uint id, [NotNullWhen(true)] out ClientStateUiConnection? ui)
+		private bool IdHasConnection(uint id)
 		{
-			if (_loadedUis.TryGetValue(id, out var foundUi))
-			{
-				ui = foundUi;
-				return true;
-			}
-			else
+			var hasConnection = _uiStates.ContainsKey(id);
+
+			if (!hasConnection)
 			{
 				Logger.Error($"Tried to get UI at ID: {id} but none existed.");
-				ui = null;
-				return false;
 			}
+
+			return hasConnection;
 		}
 
-		private void SendMsgUi(uint id, BaseUiMessage message)
-		{
-			var msgUi = new MsgUi
-			{
-				Id = id,
-				Message = message
-			};
-			_net.ClientSendMessage(msgUi);
-		}
+		//private void SendMsgUi(uint id, BaseUiMessage message)
+		//{
+		//	var msgUi = new MsgUi
+		//	{
+		//		Id = id,
+		//		Message = message
+		//	};
+		//	_net.ClientSendMessage(msgUi);
+		//}
 	}
 }
