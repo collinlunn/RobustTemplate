@@ -28,24 +28,26 @@ namespace Content.Server.UI
 
 		public void Initialize()
 		{
-			//_net.RegisterNetMessage<MsgUi>(HandleUiMessage);
+			_net.RegisterNetMessage<MsgUi>(); //HandleUiMessage
 			_players.PlayerStatusChanged += PlayerStatusChanged;
 		}
 
-		public void LoadUi(IPlayerSession player, UiState initialState)
+		public UiConnection LoadUi(IPlayerSession player, UiState? state = null)
 		{
+			var initialState = state ?? new DummyUiState();
+
 			var data = _playerData[player];
 			var newId = data.NextId++;
 			var ui = new UiConnection(newId, player, initialState);
 			data.UiConnections.Add(newId, ui);
 
 			SendMsgUi(ui, new LoadUiMessage(initialState));
+			return ui;
 		}
 
 		public void UnloadUi(UiConnection ui)
 		{
 			_playerData[ui.Player].UiConnections.Remove(ui.Id);
-			//Raise LocalEvent UiConnectionClosed
 			SendMsgUi(ui, new UnloadUiMessage());
 		}
 

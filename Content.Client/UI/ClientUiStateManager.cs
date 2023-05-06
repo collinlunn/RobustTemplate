@@ -54,6 +54,7 @@ namespace Content.Client.UI
 			if (!_uiStates.TryGetValue(id, out var loadedUi))
 			{
 				_uiStates.Add(id, initialState);
+				HandleState(id, initialState);
 			}
 			else
 			{

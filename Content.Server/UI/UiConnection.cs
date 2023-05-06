@@ -20,5 +20,11 @@ namespace Content.Server.UI
 			Player = player;
 			State = state;
 		}
+
+		[Access(Other = AccessPermissions.ReadWriteExecute)]
+		public void Unload()
+		{
+			IoCManager.Resolve<ServerUiStateManager>().UnloadUi(this);
+		}
 	}
 }

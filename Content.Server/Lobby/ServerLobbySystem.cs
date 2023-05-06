@@ -19,6 +19,8 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
 	private string _mapToLoad = "/Maps/default_map.yml";
 
+	private readonly List<UiConnection> _lobbyUis = new();
+
 	public override void Initialize()
     {
         base.Initialize();
@@ -38,10 +40,9 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 				break;
 
 			case SessionStatus.InGame:
-				//RaiseNetworkEvent(new LobbyJoinedEvent(), session);
-				//var ui = new LobbyStateUi();
-				//_uiState.LoadUi(ui, session, new LobbyUiState());
-				//_lobbyUis.Add(ui);
+				RaiseNetworkEvent(new LobbyJoinedEvent(), session);
+				var ui = _uiState.LoadUi(session);
+				_lobbyUis.Add(ui);
 				break;
 		}
     }
@@ -82,10 +83,10 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 			var playerEntity = EntityManager.SpawnEntity(playerProto, spawnCoords);
 			playerSession.AttachToEntity(playerEntity);
 		}
-		//foreach (var ui in _lobbyUis)
-		//{
-		//	_uiState.UnloadUi(ui);
-		//}
-		//_lobbyUis.Clear();
+		foreach (var ui in _lobbyUis)
+		{
+			ui.Unload();
+		}
+		_lobbyUis.Clear();
 	}
 }

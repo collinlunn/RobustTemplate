@@ -56,7 +56,18 @@ namespace Content.Shared.UI
 	/// <summary>
 	///		A Ui state. Each ui will override with own version.
 	/// </summary>
+	[Serializable, NetSerializable]
 	public abstract class UiState
+	{
+
+	}
+
+	/// <summary>
+	///		A dummy state used by ui connections that haven't specified a state when loading.
+	///		For debugging purposes.
+	/// </summary>
+	[Serializable, NetSerializable]
+	public sealed class DummyUiState : UiState
 	{
 
 	}
