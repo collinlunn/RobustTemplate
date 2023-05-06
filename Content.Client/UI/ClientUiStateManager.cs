@@ -11,11 +11,11 @@ namespace Content.Client.UI
 
 		public void Initialize()
 		{
-			_net.RegisterNetMessage<MsgUi>(HandleUiMessage);
+			_net.RegisterNetMessage<MsgUiState>(HandleUiMessage);
 			_net.Disconnect += NetOnDisconnect;
 		}
 
-		private void HandleUiMessage(MsgUi message)
+		private void HandleUiMessage(MsgUiState message)
 		{
 			var id = message.Id;
 			var uiMessage = message.Message;
@@ -44,7 +44,7 @@ namespace Content.Client.UI
 		{
 			foreach (var tuple in _uiStates)
 			{
-				//RaiseEvent StateUiConnectionClosed
+				IoCManager.Resolve<EntityManager>().EventBus.RaiseEvent(EventSource.Local, new UiConnectionUnloadedEvent());
 			}
 			_uiStates.Clear();
 		}
@@ -54,7 +54,7 @@ namespace Content.Client.UI
 			if (!_uiStates.TryGetValue(id, out var loadedUi))
 			{
 				_uiStates.Add(id, initialState);
-				HandleState(id, initialState);
+				IoCManager.Resolve<EntityManager>().EventBus.RaiseEvent(EventSource.Local, new UiConnectionLoadedEvent(initialState));
 			}
 			else
 			{
@@ -66,7 +66,7 @@ namespace Content.Client.UI
 		{
 			if (IdHasConnection(id))
 			{
-				//RaiseEvent UiConnectionClosed
+				IoCManager.Resolve<EntityManager>().EventBus.RaiseEvent(EventSource.Local, new UiConnectionUnloadedEvent());
 				_uiStates.Remove(id);
 			}
 		}
@@ -76,7 +76,7 @@ namespace Content.Client.UI
 			if (IdHasConnection(id))
 			{
 				_uiStates[id] = uiState;
-				//RaiseEvent UiStateReceived
+				IoCManager.Resolve<EntityManager>().EventBus.RaiseEvent(EventSource.Local, new UiStateReceivedEvent(uiState));
 			}
 		}
 

@@ -41,7 +41,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
 			case SessionStatus.InGame:
 				RaiseNetworkEvent(new LobbyJoinedEvent(), session);
-				var ui = _uiState.LoadUi(session);
+				var ui = _uiState.LoadUi(session, new LobbyUiState());
 				_lobbyUis.Add(ui);
 				break;
 		}

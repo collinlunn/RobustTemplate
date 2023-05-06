@@ -6,7 +6,7 @@ namespace Content.Shared.UI
 	///		Base message for all UI communication.
 	/// </summary>
 	[Serializable, NetSerializable]
-	public abstract class BaseUiMessage
+	public abstract class BaseUiStateMessage
 	{
 
 	}
@@ -17,7 +17,7 @@ namespace Content.Shared.UI
 	///		bugs where a state is sent before "loading" the ui.
 	/// </summary>
 	[Serializable, NetSerializable]
-	public sealed class LoadUiMessage : BaseUiMessage
+	public sealed class LoadUiMessage : BaseUiStateMessage
 	{
 		/// <summary>
 		///		The initial value of the state of this UI.
@@ -34,7 +34,7 @@ namespace Content.Shared.UI
 	///		For unloading a UI on a client, sent from server -> client.
 	/// </summary>
 	[Serializable, NetSerializable]
-	public sealed class UnloadUiMessage : BaseUiMessage
+	public sealed class UnloadUiMessage : BaseUiStateMessage
 	{
 
 	}
@@ -43,7 +43,7 @@ namespace Content.Shared.UI
 	///		Base message for transmitting UI state, sent from server -> client.
 	/// </summary>
 	[Serializable, NetSerializable]
-	public sealed class UiStateMessage : BaseUiMessage
+	public sealed class UiStateMessage : BaseUiStateMessage
 	{
 		public UiState State { get; }
 

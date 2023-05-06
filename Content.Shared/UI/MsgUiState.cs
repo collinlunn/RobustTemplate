@@ -8,7 +8,7 @@ namespace Content.Shared.UI
 	/// <summary>
 	///		Packet message for transmitting UI-related data.
 	/// </summary>
-    public sealed class MsgUi : NetMessage
+    public sealed class MsgUiState : NetMessage
     {
 		/// <summary>
 		///		UI messages are sent reliably but unordered.
@@ -23,7 +23,7 @@ namespace Content.Shared.UI
 		/// <summary>
 		///		The contents of the message.
 		/// </summary>
-		public BaseUiMessage Message = default!;
+		public BaseUiStateMessage Message = default!;
 
 		public override void ReadFromBuffer(NetIncomingMessage buffer, IRobustSerializer ser)
         {
@@ -31,7 +31,7 @@ namespace Content.Shared.UI
 
             var len = buffer.ReadVariableInt32();
             var stream = buffer.ReadAlignedMemory(len);
-			Message = ser.Deserialize<BaseUiMessage>(stream);
+			Message = ser.Deserialize<BaseUiStateMessage>(stream);
         }
 
         public override void WriteToBuffer(NetOutgoingMessage buffer, IRobustSerializer ser)

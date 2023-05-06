@@ -28,7 +28,7 @@ namespace Content.Server.UI
 
 		public void Initialize()
 		{
-			_net.RegisterNetMessage<MsgUi>(); //HandleUiMessage
+			_net.RegisterNetMessage<MsgUiState>(); //HandleUiMessage
 			_players.PlayerStatusChanged += PlayerStatusChanged;
 		}
 
@@ -123,9 +123,9 @@ namespace Content.Server.UI
 			}
 		}
 
-		private void SendMsgUi(UiConnection ui, BaseUiMessage message)
+		private void SendMsgUi(UiConnection ui, BaseUiStateMessage message)
 		{
-			var msgUi = new MsgUi
+			var msgUi = new MsgUiState
 			{
 				Id = ui.Id,
 				Message = message

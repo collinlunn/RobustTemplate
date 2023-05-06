@@ -10,6 +10,12 @@ namespace Content.Shared.Lobby
 	}
 
 	[Serializable, NetSerializable]
+	public enum LobbyUiKey
+	{
+		Key
+	}
+
+	[Serializable, NetSerializable]
 	public sealed class LobbyJoinedEvent : EntityEventArgs
 	{
 
