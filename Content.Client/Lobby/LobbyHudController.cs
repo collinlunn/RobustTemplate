@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using Robust.Client.UserInterface;
 using Robust.Client;
 using Robust.Client.UserInterface.Controllers;
@@ -18,27 +18,34 @@ namespace Content.Client.Lobby
 		public LobbyUiState DefaultState => new DefaultLobbyState();
 
 		[Dependency] private readonly IUserInterfaceManager _userInterface = default!;
-		//[Dependency] private readonly ClientUiStateManager _uiStateMan = default!; //this is carashing on inject
 		[Dependency] private readonly IClientNetManager _clientNetManager = default!;
 		[Dependency] private readonly IGameController _gameController = default!;
 
-		private LobbyUiState _uiState = default!;
+		[UISystemDependency] private readonly ClientUiStateManager _uiStateMan = default!;
+
+		private LobbyUiState? _uiState;
 
 		private LobbyHud? _lobbyHud;
 
 		public override void Initialize()
 		{
 			base.Initialize();
-			SubscribeNetworkEvent<OpenUiConnectionMessage>((msg,_) => SetUiState(msg.State));
-			SubscribeNetworkEvent<CloseUiConnectionMessage>((msg, _) => SetUiState(null));
-			SubscribeNetworkEvent<StateUiConnectionMessage>((msg, _) => SetUiState(msg.State));
-			//SetUiState(_uiStateMan.GetUiStateOrNull(UiKey));
+			SubscribeNetworkEvent<OpenUiConnectionMessage>((msg,_) => TrySetState(msg.UiKey, msg.State));
+			SubscribeNetworkEvent<CloseUiConnectionMessage>((msg, _) => TrySetState(msg.UiKey, DefaultState));
+			SubscribeNetworkEvent<StateUiConnectionMessage>((msg, _) => TrySetState(msg.UiKey, msg.State));
 		}
 
 		public void OnStateEntered(LobbyState state)
 		{
 			DebugTools.Assert(_lobbyHud == null);
 			_lobbyHud = new LobbyHud();
+			if (_uiStateMan.TryGetUiState(UiKey, out var uiState))
+			{
+				if (uiState is not LobbyUiState lobbyUiState)
+					throw new Exception("Incompatible UI state under lobby UI key.");
+				_uiState = lobbyUiState;
+			}
+			_uiState ??= DefaultState;
 			_lobbyHud.SetState(_uiState);
 
 			_lobbyHud.StartGameButton.OnPressed += _ =>
@@ -68,12 +75,15 @@ namespace Content.Client.Lobby
 			_lobbyHud = null;
 		}
 
-		public void SetUiState(UiState? state)
+		private void TrySetState(Enum uiKey, UiState state)
 		{
+			if (uiKey != UiKey)
+				return;
+
 			if (state is not LobbyUiState lobbyState)
 				return;
 
-			_uiState = lobbyState ?? DefaultState;
+			_uiState = lobbyState;
 			_lobbyHud?.SetState(_uiState);
 		}
 
