@@ -12,9 +12,6 @@ namespace Content.Client.Lobby;
 public sealed class ClientLobbySystem : SharedLobbySystem
 {
     [Dependency] private readonly IStateManager _stateManager = default!;
-	[Dependency] private readonly IUserInterfaceManager _uiManager = default!;
-
-	private LobbyHudController LobbyHudController => _uiManager.GetUIController<LobbyHudController>();
 
 	public override void Initialize()
     {
@@ -22,10 +19,6 @@ public sealed class ClientLobbySystem : SharedLobbySystem
 		SubscribeLocalEvent<PlayerAttachSysMessage>(OnPlayerAttached);
 		SubscribeNetworkEvent<LobbyJoinedEvent>(OnLobbyJoined);
 		SubscribeNetworkEvent<GameStartedEvent>(OnGameStarted);
-
-		SubscribeNetworkEvent<OpenUiConnectionMessage>(LobbyUiConnectionOpened);
-		SubscribeNetworkEvent<CloseUiConnectionMessage>(LobbyUiConnectionClosed);
-		SubscribeNetworkEvent<StateUiConnectionMessage>(HandleLobbyState);
 	}
 
 	private void OnLobbyJoined(LobbyJoinedEvent message)
@@ -36,27 +29,6 @@ public sealed class ClientLobbySystem : SharedLobbySystem
 	private void OnGameStarted(GameStartedEvent message)
 	{
 		_stateManager.RequestStateChange<InGameState>();
-	}
-
-	private void LobbyUiConnectionOpened(OpenUiConnectionMessage ev)
-	{
-		if (ev.State is not LobbyUiState state)
-			return;
-
-		LobbyHudController.SetState(state);
-	}
-
-	private void LobbyUiConnectionClosed(CloseUiConnectionMessage ev)
-	{
-		LobbyHudController.ClearState();
-	}
-
-	private void HandleLobbyState(StateUiConnectionMessage ev)
-	{
-		if (ev.State is not LobbyUiState state)
-			return;
-
-		LobbyHudController.SetState(state);
 	}
 
 	private void OnPlayerAttached(PlayerAttachSysMessage ev)

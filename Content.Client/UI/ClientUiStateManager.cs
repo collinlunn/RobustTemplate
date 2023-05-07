@@ -26,17 +26,12 @@ namespace Content.Client.UI
 			_net.Disconnect += NetOnDisconnect;
 		}
 
-		/// <summary>
-		///		Checks if client has a state for a UI key.
-		/// </summary>
-		public bool HasUiState(Enum uiKey)
+		public UiState? GetUiStateOrNull(Enum uiKey)
 		{
-			return _uiStates.ContainsKey(uiKey);
+			_uiStates.TryGetValue(uiKey, out var value);
+			return value;
 		}
 
-		/// <summary>
-		///		Tries to get the UI state for a given key.
-		/// </summary>
 		public bool TryGetUiState(Enum uiKey, [NotNullWhen(true)] out UiState? uiState)
 		{
 			return _uiStates.TryGetValue(uiKey, out uiState);

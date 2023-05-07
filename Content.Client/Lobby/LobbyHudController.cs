@@ -6,28 +6,44 @@ using Robust.Shared.Network;
 using Robust.Client.UserInterface.Controls;
 using Content.Shared.Lobby;
 using Robust.Shared.Utility;
+using Content.Client.UI;
+using Content.Shared.UI;
 
 namespace Content.Client.Lobby
 {
 	[UsedImplicitly]
 	public sealed class LobbyHudController : UIController, IOnStateChanged<LobbyState>
 	{
+		public Enum UiKey => LobbyUiKey.Key;
+		public LobbyUiState DefaultState => new DefaultLobbyState();
+
 		[Dependency] private readonly IUserInterfaceManager _userInterface = default!;
-		[Dependency] private readonly IEntityNetworkManager _entityNetManager = default!;
+		//[Dependency] private readonly ClientUiStateManager _uiStateMan = default!; //this is carashing on inject
 		[Dependency] private readonly IClientNetManager _clientNetManager = default!;
 		[Dependency] private readonly IGameController _gameController = default!;
 
-		private LobbyUiState _uiState = new PlaceholderLobbyState();
+		private LobbyUiState _uiState = default!;
 
 		private LobbyHud? _lobbyHud;
+
+		public override void Initialize()
+		{
+			base.Initialize();
+			SubscribeNetworkEvent<OpenUiConnectionMessage>((msg,_) => SetUiState(msg.State));
+			SubscribeNetworkEvent<CloseUiConnectionMessage>((msg, _) => SetUiState(null));
+			SubscribeNetworkEvent<StateUiConnectionMessage>((msg, _) => SetUiState(msg.State));
+			//SetUiState(_uiStateMan.GetUiStateOrNull(UiKey));
+		}
 
 		public void OnStateEntered(LobbyState state)
 		{
 			DebugTools.Assert(_lobbyHud == null);
 			_lobbyHud = new LobbyHud();
+			_lobbyHud.SetState(_uiState);
+
 			_lobbyHud.StartGameButton.OnPressed += _ =>
 			{
-				//entityNetManager.SendSystemNetworkMessage(new StartGamePressedEvent());
+				//IoCManager.Resolve<IEntityManager>.(new StartGamePressedEvent());
 			};
 			_lobbyHud.StartMappingButton.OnPressed += _ =>
 			{
@@ -52,27 +68,16 @@ namespace Content.Client.Lobby
 			_lobbyHud = null;
 		}
 
-		public void SetState(LobbyUiState state)
+		public void SetUiState(UiState? state)
 		{
-			_uiState = state;
-			UpdateHudState();
+			if (state is not LobbyUiState lobbyState)
+				return;
+
+			_uiState = lobbyState ?? DefaultState;
+			_lobbyHud?.SetState(_uiState);
 		}
 
-		public void ClearState()
-		{
-			_uiState = new PlaceholderLobbyState();
-			UpdateHudState();
-		}
-
-		private void UpdateHudState()
-		{
-			if (_lobbyHud != null)
-			{
-				//Set update UI's state
-			}
-		}
-
-		private sealed class PlaceholderLobbyState : LobbyUiState
+		private sealed class DefaultLobbyState : LobbyUiState
 		{
 
 		}
