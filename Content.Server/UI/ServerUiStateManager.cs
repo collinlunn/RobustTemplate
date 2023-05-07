@@ -1,6 +1,7 @@
 using Content.Shared.UI;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
+using Robust.Shared.Utility;
 
 namespace Content.Server.UI
 {
@@ -11,9 +12,9 @@ namespace Content.Server.UI
 		/// <summary>
 		///		Set of connected players with their set of active ui connections.
 		/// </summary>
-		private readonly Dictionary<IPlayerSession, PlayerUiConnections> _playerUiConnections = new();
+		private readonly Dictionary<IPlayerSession, PlayerUiConnectionSet> _playerUiConnectionSets = new();
 
-		private sealed class PlayerUiConnections
+		private sealed class PlayerUiConnectionSet
 		{
 			public readonly Dictionary<Enum, UiConnection> UiConnections = new();
 		}
@@ -29,36 +30,75 @@ namespace Content.Server.UI
 			_players.PlayerStatusChanged += PlayerStatusChanged;
 		}
 
+		public override void Shutdown()
+		{
+			base.Shutdown();
+			_players.PlayerStatusChanged -= PlayerStatusChanged;
+		}
+
 		public override void Update(float frameTime)
 		{
 			base.Update(frameTime);
 			SendDirtyStates();
 		}
 
-		public UiConnection OpenUiConnection(Enum uiKey, IPlayerSession player, UiState? state = null)
+		/// <summary>
+		///		Sends the inital UI state to a client.
+		/// </summary>
+		/// <param name="uiKey">Determine which UI gets the state.</param>
+		/// <param name="player">Player to send the state to.</param>
+		/// <param name="state">State to send to the player. If null sends empty dummy state.</param>
+		public void OpenUiConnection(Enum uiKey, IPlayerSession player, UiState? state = null)
 		{
 			if (state == null)
 			{
 				Logger.Debug($"Loaded UI {nameof(uiKey)} with dummy UI state.");
 				state = new DummyUiState();
 			}
+			DebugTools.Assert(_playerUiConnectionSets.ContainsKey(player),
+				$"Tried to open UI connection for {player} but they were not in list of players.");
 
-			var data = _playerUiConnections[player];
+			var connectionSet = _playerUiConnectionSets[player].UiConnections;
+
+			DebugTools.Assert(!connectionSet.ContainsKey(uiKey),
+				$"Tried to open UI connection for {player} but {nameof(uiKey)} was already in use.");
+
 			var ui = new UiConnection(uiKey, player, state);
-			data.UiConnections.Add(uiKey, ui);
+			connectionSet.Add(uiKey, ui);
 
 			RaiseNetworkEvent(new OpenUiConnectionMessage(uiKey, state), player);
-			return ui;
 		}
 
+		/// <summary>
+		///		Makes a client discard a UI state.
+		/// </summary>
+		/// <param name="uiKey">Determine which UI discards its state.</param>
+		/// <param name="player">Player to make discard.</param>
 		public void CloseUiConnection(Enum uiKey, IPlayerSession player)
 		{
-			_playerUiConnections[player].UiConnections.Remove(uiKey);
+			DebugTools.Assert(_playerUiConnectionSets.ContainsKey(player),
+				$"Tried to close UI connection for {player} but they were not in list of players.");
+
+			var uiConnections = _playerUiConnectionSets[player].UiConnections;
+
+			DebugTools.Assert(uiConnections.ContainsKey(uiKey),
+				$"Tried to close UI connection for {player} but but none existed for {nameof(uiKey)}.");
+
+			uiConnections.Remove(uiKey);
 			RaiseNetworkEvent(new CloseUiConnectionMessage(uiKey), player);
 		}
 
-		public void DirtyUiConnection(UiConnection ui, UiState newState)
+		public void DirtyUiState(Enum uiKey, IPlayerSession player, UiState newState)
 		{
+			DebugTools.Assert(_playerUiConnectionSets.ContainsKey(player),
+				$"Tried to dirty UI state  for {player} but they were not in list of players.");
+
+			var uiConnections = _playerUiConnectionSets[player].UiConnections;
+
+			DebugTools.Assert(uiConnections.ContainsKey(uiKey),
+				$"Tried to dirty UI state for {player} but but none existed for {nameof(uiKey)}.");
+
+			var ui = uiConnections[uiKey];
 			ui.State = newState;
 			if (!ui.Dirty)
 			{
@@ -67,6 +107,9 @@ namespace Content.Server.UI
 			}
 		}
 
+		/// <summary>
+		///		Sends states to all clients with a dirty UI state.
+		/// </summary>
 		private void SendDirtyStates()
 		{
 			while (_stateUpdateQueue.TryDequeue(out var tuple))
@@ -74,11 +117,8 @@ namespace Content.Server.UI
 				var (player, uiKey) = tuple;
 
 				// Check that UI and player still exist.
-				if (!_playerUiConnections.TryGetValue(player, out var playerData))
-				{
-					continue;
-				}
-				if (!playerData.UiConnections.TryGetValue(uiKey, out var ui))
+				if (!_playerUiConnectionSets.TryGetValue(player, out var playerData) ||
+					!playerData.UiConnections.TryGetValue(uiKey, out var ui))
 				{
 					continue;
 				}
@@ -93,10 +133,10 @@ namespace Content.Server.UI
 			switch (ev.NewStatus)
 			{
 				case SessionStatus.Connected:
-					_playerUiConnections.Add(ev.Session, new PlayerUiConnections());
+					_playerUiConnectionSets.Add(ev.Session, new PlayerUiConnectionSet());
 					break;
 				case SessionStatus.Disconnected:
-					_playerUiConnections.Remove(ev.Session);
+					_playerUiConnectionSets.Remove(ev.Session);
 					break;
 			}
 		}

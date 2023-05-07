@@ -1,5 +1,6 @@
 ﻿using Content.Shared.UI;
 using Robust.Shared.Network;
+using Robust.Shared.Utility;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Content.Client.UI
@@ -19,11 +20,23 @@ namespace Content.Client.UI
 			_net.Disconnect += NetOnDisconnect;
 		}
 
+		public override void Shutdown()
+		{
+			base.Shutdown();
+			_net.Disconnect += NetOnDisconnect;
+		}
+
+		/// <summary>
+		///		Checks if client has a state for a UI key.
+		/// </summary>
 		public bool HasUiState(Enum uiKey)
 		{
 			return _uiStates.ContainsKey(uiKey);
 		}
 
+		/// <summary>
+		///		Tries to get the UI state for a given key.
+		/// </summary>
 		public bool TryGetUiState(Enum uiKey, [NotNullWhen(true)] out UiState? uiState)
 		{
 			return _uiStates.TryGetValue(uiKey, out uiState);
@@ -34,25 +47,20 @@ namespace Content.Client.UI
 			var uiKey = msg.UiKey;
 			var state = msg.State;
 
-			if (!TryGetUiState(uiKey, out var loadedUi))
-			{
-				_uiStates.Add(uiKey, state);
-			}
-			else
-			{
-				Logger.Error($"Tried to add initial UI state with key: ({nameof(uiKey)})," +
-					$"but it already contained {nameof(loadedUi)}.");
-			}
+			DebugTools.Assert(!_uiStates.ContainsKey(uiKey),
+				$"Tried to add initial UI state for {nameof(uiKey)}, but it already had one.");
+
+			_uiStates.Add(uiKey, state);
 		}
 
 		private void CloseUiConnection(CloseUiConnectionMessage msg)
 		{
 			var uiKey = msg.UiKey;
 
-			if (!_uiStates.Remove(uiKey))
-			{
-				Logger.Error($"Tried set remove state of UI with key: {nameof(uiKey)} but none existed.");
-			}
+			DebugTools.Assert(_uiStates.ContainsKey(uiKey),
+				$"Tried set remove state of UI with key: {nameof(uiKey)} but none existed.");
+
+			_uiStates.Remove(uiKey);
 		}
 
 		private void HandleState(StateUiConnectionMessage msg)
@@ -60,14 +68,10 @@ namespace Content.Client.UI
 			var uiKey = msg.UiKey;
 			var state = msg.State;
 
-			if (_uiStates.ContainsKey(uiKey))
-			{
-				_uiStates[uiKey] = state;
-			}
-			else
-			{
-				Logger.Error($"Tried set state of UI with key: {nameof(uiKey)} but none existed.");
-			}
+			DebugTools.Assert(_uiStates.ContainsKey(uiKey),
+				$"Tried set state of UI with key: {nameof(uiKey)} but none existed.");
+
+			_uiStates[uiKey] = state;
 		}
 
 		private void NetOnDisconnect(object? sender, NetDisconnectedArgs e)
