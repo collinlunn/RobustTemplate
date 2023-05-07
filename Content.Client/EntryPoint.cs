@@ -48,7 +48,6 @@ public sealed class EntryPoint : GameClient
 
 		// DEVNOTE: This is generally where you'll be setting up the IoCManager further.
 
-		IoCManager.Resolve<ClientUiStateManager>().Initialize(); //registers net messages for ui man
 		IoCManager.Resolve<StyleSheetManager>().Initialize(); //Load a stylesheet into the IUserInterfaceManager so UI works
     }
 

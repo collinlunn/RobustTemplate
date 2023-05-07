@@ -3,8 +3,8 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared.Lobby
 {
-	[Serializable, NetSerializable]
-	public sealed class LobbyUiState : UiState
+	[Serializable, NetSerializable, Virtual]
+	public class LobbyUiState : UiState
 	{
 
 	}

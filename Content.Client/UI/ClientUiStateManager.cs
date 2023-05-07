@@ -1,105 +1,82 @@
 ﻿using Content.Shared.UI;
 using Robust.Shared.Network;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Content.Client.UI
 {
-	public sealed class ClientUiStateManager
+	public sealed class ClientUiStateManager : EntitySystem
 	{
 		[Dependency] private readonly IClientNetManager _net = default!;
 
-		private readonly Dictionary<uint, UiState> _uiStates = new();
+		private readonly Dictionary<Enum, UiState> _uiStates = new();
 
-		public void Initialize()
+		public override void Initialize()
 		{
-			_net.RegisterNetMessage<MsgUiState>(HandleUiMessage);
+			base.Initialize();
+			SubscribeNetworkEvent<OpenUiConnectionMessage>(OpenUiConnection);
+			SubscribeNetworkEvent<CloseUiConnectionMessage>(CloseUiConnection);
+			SubscribeNetworkEvent<StateUiConnectionMessage>(HandleState);
 			_net.Disconnect += NetOnDisconnect;
 		}
 
-		private void HandleUiMessage(MsgUiState message)
+		public bool HasUiState(Enum uiKey)
 		{
-			var id = message.Id;
-			var uiMessage = message.Message;
+			return _uiStates.ContainsKey(uiKey);
+		}
 
-			switch (uiMessage)
+		public bool TryGetUiState(Enum uiKey, [NotNullWhen(true)] out UiState? uiState)
+		{
+			return _uiStates.TryGetValue(uiKey, out uiState);
+		}
+
+		private void OpenUiConnection(OpenUiConnectionMessage msg)
+		{
+			var uiKey = msg.UiKey;
+			var state = msg.State;
+
+			if (!TryGetUiState(uiKey, out var loadedUi))
 			{
-				case LoadUiMessage loadUi:
-					LoadUi(id, loadUi.State);
-					break;
+				_uiStates.Add(uiKey, state);
+			}
+			else
+			{
+				Logger.Error($"Tried to add initial UI state with key: ({nameof(uiKey)})," +
+					$"but it already contained {nameof(loadedUi)}.");
+			}
+		}
 
-				case UnloadUiMessage:
-					UnloadUi(id);
-					break;
+		private void CloseUiConnection(CloseUiConnectionMessage msg)
+		{
+			var uiKey = msg.UiKey;
 
-				case UiStateMessage uiState:
-					HandleState(id, uiState.State);
-					break;
+			if (!_uiStates.Remove(uiKey))
+			{
+				Logger.Error($"Tried set remove state of UI with key: {nameof(uiKey)} but none existed.");
+			}
+		}
 
-				default:
-					Logger.Error($"Received a UI message of an unhandled type: {message.GetType()}");
-					break;
+		private void HandleState(StateUiConnectionMessage msg)
+		{
+			var uiKey = msg.UiKey;
+			var state = msg.State;
+
+			if (_uiStates.ContainsKey(uiKey))
+			{
+				_uiStates[uiKey] = state;
+			}
+			else
+			{
+				Logger.Error($"Tried set state of UI with key: {nameof(uiKey)} but none existed.");
 			}
 		}
 
 		private void NetOnDisconnect(object? sender, NetDisconnectedArgs e)
 		{
-			foreach (var tuple in _uiStates)
+			foreach (var uiKey in _uiStates.Keys)
 			{
-				IoCManager.Resolve<EntityManager>().EventBus.RaiseEvent(EventSource.Local, new UiConnectionUnloadedEvent());
+				//TODO?
 			}
 			_uiStates.Clear();
 		}
-
-		private void LoadUi(uint id, UiState initialState)
-		{
-			if (!_uiStates.TryGetValue(id, out var loadedUi))
-			{
-				_uiStates.Add(id, initialState);
-				IoCManager.Resolve<EntityManager>().EventBus.RaiseEvent(EventSource.Local, new UiConnectionLoadedEvent(initialState));
-			}
-			else
-			{
-				Logger.Error($"Tried to load a UI ({initialState.GetType()}) but ID ({id}) was already in use by {loadedUi.GetType()}.");
-			}
-		}
-
-		private void UnloadUi(uint id)
-		{
-			if (IdHasConnection(id))
-			{
-				IoCManager.Resolve<EntityManager>().EventBus.RaiseEvent(EventSource.Local, new UiConnectionUnloadedEvent());
-				_uiStates.Remove(id);
-			}
-		}
-
-		private void HandleState(uint id, UiState uiState)
-		{
-			if (IdHasConnection(id))
-			{
-				_uiStates[id] = uiState;
-				IoCManager.Resolve<EntityManager>().EventBus.RaiseEvent(EventSource.Local, new UiStateReceivedEvent(uiState));
-			}
-		}
-
-		private bool IdHasConnection(uint id)
-		{
-			var hasConnection = _uiStates.ContainsKey(id);
-
-			if (!hasConnection)
-			{
-				Logger.Error($"Tried to get UI at ID: {id} but none existed.");
-			}
-
-			return hasConnection;
-		}
-
-		//private void SendMsgUi(uint id, BaseUiMessage message)
-		//{
-		//	var msgUi = new MsgUi
-		//	{
-		//		Id = id,
-		//		Message = message
-		//	};
-		//	_net.ClientSendMessage(msgUi);
-		//}
 	}
 }

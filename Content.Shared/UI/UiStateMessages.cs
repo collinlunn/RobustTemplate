@@ -2,52 +2,56 @@
 
 namespace Content.Shared.UI
 {
-	/// <summary>
-	///		Base message for all UI communication.
-	/// </summary>
 	[Serializable, NetSerializable]
-	public abstract class BaseUiStateMessage
+	public abstract class BaseUiConnectionMessage : EntityEventArgs
 	{
+		/// <summary>
+		///		The key is that client and server systems used to identify which ui states are for them.
+		///		Different UIs will make different keys.
+		/// </summary>
+		public Enum UiKey { get; }
 
+		public BaseUiConnectionMessage(Enum uiKey)
+		{
+			UiKey = uiKey;
+		}
 	}
 
 	/// <summary>
-	///		For sending the initial state of a ui to a client.
-	///		This is a seperate type of message from regularly sending the state to catch
-	///		bugs where a state is sent before "loading" the ui.
+	///		For sending the initial state of a ui to a client, sent from server -> client.
 	/// </summary>
 	[Serializable, NetSerializable]
-	public sealed class LoadUiMessage : BaseUiStateMessage
+	public sealed class OpenUiConnectionMessage : BaseUiConnectionMessage
 	{
-		/// <summary>
-		///		The initial value of the state of this UI.
-		/// </summary>
 		public UiState State { get; }
 
-		public LoadUiMessage(UiState state)
+		public OpenUiConnectionMessage(Enum uiKey, UiState state) : base(uiKey)
 		{
 			State = state;
 		}
 	}
 
 	/// <summary>
-	///		For unloading a UI on a client, sent from server -> client.
+	///		For deleting a UI state on a client, sent from server -> client.
 	/// </summary>
 	[Serializable, NetSerializable]
-	public sealed class UnloadUiMessage : BaseUiStateMessage
+	public sealed class CloseUiConnectionMessage : BaseUiConnectionMessage
 	{
+		public CloseUiConnectionMessage(Enum uiKey) : base(uiKey)
+		{
 
+		}
 	}
 
 	/// <summary>
-	///		Base message for transmitting UI state, sent from server -> client.
+	///		For transmitting UI state, sent from server -> client.
 	/// </summary>
 	[Serializable, NetSerializable]
-	public sealed class UiStateMessage : BaseUiStateMessage
+	public sealed class StateUiConnectionMessage : BaseUiConnectionMessage
 	{
 		public UiState State { get; }
 
-		public UiStateMessage(UiState state)
+		public StateUiConnectionMessage(Enum uiKey, UiState state) : base(uiKey)
 		{
 			State = state;
 		}

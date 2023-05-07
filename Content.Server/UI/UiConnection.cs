@@ -6,7 +6,7 @@ namespace Content.Server.UI
 	[Access(typeof(ServerUiStateManager))]
 	public sealed class UiConnection
 	{
-		public uint Id { get; }
+		public Enum UiKey { get; }
 
 		public IPlayerSession Player { get; }
 
@@ -14,17 +14,11 @@ namespace Content.Server.UI
 
 		public bool Dirty;
 
-		public UiConnection(uint id, IPlayerSession player, UiState state)
+		public UiConnection(Enum uiKey, IPlayerSession player, UiState state)
 		{
-			Id = id;
+			UiKey = uiKey;
 			Player = player;
 			State = state;
-		}
-
-		[Access(Other = AccessPermissions.ReadWriteExecute)]
-		public void Unload()
-		{
-			IoCManager.Resolve<ServerUiStateManager>().UnloadUi(this);
 		}
 	}
 }

@@ -2,8 +2,6 @@
 using Robust.Client.UserInterface;
 using Robust.Client;
 using Robust.Client.UserInterface.Controllers;
-using Robust.Shared.GameObjects;
-using Robust.Shared.IoC;
 using Robust.Shared.Network;
 using Robust.Client.UserInterface.Controls;
 using Content.Shared.Lobby;
@@ -19,6 +17,8 @@ namespace Content.Client.Lobby
 		[Dependency] private readonly IClientNetManager _clientNetManager = default!;
 		[Dependency] private readonly IGameController _gameController = default!;
 
+		private LobbyUiState _uiState = new PlaceholderLobbyState();
+
 		private LobbyHud? _lobbyHud;
 
 		public void OnStateEntered(LobbyState state)
@@ -27,7 +27,7 @@ namespace Content.Client.Lobby
 			_lobbyHud = new LobbyHud();
 			_lobbyHud.StartGameButton.OnPressed += _ =>
 			{
-				//_entityNetManager.SendSystemNetworkMessage(new StartGamePressedEvent());
+				//entityNetManager.SendSystemNetworkMessage(new StartGamePressedEvent());
 			};
 			_lobbyHud.StartMappingButton.OnPressed += _ =>
 			{
@@ -50,6 +50,31 @@ namespace Content.Client.Lobby
 		{
 			_lobbyHud?.Dispose();
 			_lobbyHud = null;
+		}
+
+		public void SetState(LobbyUiState state)
+		{
+			_uiState = state;
+			UpdateHudState();
+		}
+
+		public void ClearState()
+		{
+			_uiState = new PlaceholderLobbyState();
+			UpdateHudState();
+		}
+
+		private void UpdateHudState()
+		{
+			if (_lobbyHud != null)
+			{
+				//Set update UI's state
+			}
+		}
+
+		private sealed class PlaceholderLobbyState : LobbyUiState
+		{
+
 		}
 	}
 }

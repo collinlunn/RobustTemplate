@@ -1,136 +1,104 @@
 using Content.Shared.UI;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
-using Robust.Shared.Network;
 
 namespace Content.Server.UI
 {
-	public sealed class ServerUiStateManager
+	public sealed class ServerUiStateManager : EntitySystem
 	{
 		[Dependency] private readonly IPlayerManager _players = default!;
-		[Dependency] private readonly IServerNetManager _net = default!;
 
 		/// <summary>
 		///		Set of connected players with their set of active ui connections.
 		/// </summary>
-		private readonly Dictionary<IPlayerSession, PlayerUiData> _playerData = new();
+		private readonly Dictionary<IPlayerSession, PlayerUiConnections> _playerUiConnections = new();
 
-		private sealed class PlayerUiData
+		private sealed class PlayerUiConnections
 		{
-			public uint NextId = 1;
-			public readonly Dictionary<uint, UiConnection> UiConnections = new();
+			public readonly Dictionary<Enum, UiConnection> UiConnections = new();
 		}
 
 		/// <summary>
-		///		Set of players with a dirty ui state to update, with the id of the ui to update.
+		///		Set of players with a dirty ui state to update, with the key of the ui to update.
 		/// </summary>
-		private readonly Queue<(IPlayerSession player, uint id)> _stateUpdateQueue = new ();
+		private readonly Queue<(IPlayerSession player, Enum uiKey)> _stateUpdateQueue = new();
 
-		public void Initialize()
+		public override void Initialize()
 		{
-			_net.RegisterNetMessage<MsgUiState>(); //HandleUiMessage
+			base.Initialize();
 			_players.PlayerStatusChanged += PlayerStatusChanged;
 		}
 
-		public UiConnection LoadUi(IPlayerSession player, UiState? state = null)
+		public override void Update(float frameTime)
 		{
-			var initialState = state ?? new DummyUiState();
+			base.Update(frameTime);
+			SendDirtyStates();
+		}
 
-			var data = _playerData[player];
-			var newId = data.NextId++;
-			var ui = new UiConnection(newId, player, initialState);
-			data.UiConnections.Add(newId, ui);
+		public UiConnection OpenUiConnection(Enum uiKey, IPlayerSession player, UiState? state = null)
+		{
+			if (state == null)
+			{
+				Logger.Debug($"Loaded UI {nameof(uiKey)} with dummy UI state.");
+				state = new DummyUiState();
+			}
 
-			SendMsgUi(ui, new LoadUiMessage(initialState));
+			var data = _playerUiConnections[player];
+			var ui = new UiConnection(uiKey, player, state);
+			data.UiConnections.Add(uiKey, ui);
+
+			RaiseNetworkEvent(new OpenUiConnectionMessage(uiKey, state), player);
 			return ui;
 		}
 
-		public void UnloadUi(UiConnection ui)
+		public void CloseUiConnection(Enum uiKey, IPlayerSession player)
 		{
-			_playerData[ui.Player].UiConnections.Remove(ui.Id);
-			SendMsgUi(ui, new UnloadUiMessage());
+			_playerUiConnections[player].UiConnections.Remove(uiKey);
+			RaiseNetworkEvent(new CloseUiConnectionMessage(uiKey), player);
 		}
 
-		public void DirtyUi(UiConnection ui, UiState newState)
+		public void DirtyUiConnection(UiConnection ui, UiState newState)
 		{
 			ui.State = newState;
 			if (!ui.Dirty)
 			{
 				ui.Dirty = true;
-				QueueStateUpdate(ui);
+				_stateUpdateQueue.Enqueue((ui.Player, ui.UiKey));
 			}
 		}
 
-		public void SendDirtyStates()
+		private void SendDirtyStates()
 		{
 			while (_stateUpdateQueue.TryDequeue(out var tuple))
 			{
-				var (player, id) = tuple;
+				var (player, uiKey) = tuple;
 
 				// Check that UI and player still exist.
-				if (_playerData.TryGetValue(player, out var playerData) && playerData.UiConnections.TryGetValue(id, out var ui))
+				if (!_playerUiConnections.TryGetValue(player, out var playerData))
 				{
-					ui.Dirty = false;
-					SendMsgUi(ui, new UiStateMessage(ui.State));
+					continue;
 				}
-			}
-		}
-
-		private void QueueStateUpdate(UiConnection ui)
-		{
-			_stateUpdateQueue.Enqueue((ui.Player, ui.Id));
-		}
-
-		//private void HandleUiMessage(MsgUi message)
-		//{
-		//	var id = message.Id;
-		//	var uiMessage = message.Message;
-
-		//	if (!_players.TryGetSessionByChannel(message.MsgChannel, out var player))
-		//	{
-		//		return;
-		//	}
-		//	if (!_playerData.TryGetValue(player, out var playerUiData))
-		//	{
-		//		return;
-		//	}
-		//	if (!playerUiData.LoadedUis.TryGetValue(id, out var ui))
-		//	{
-		//		Logger.Error($"Received a UI message from {player} for ID {id} but none existed.");
-		//		return;
-		//	}
-
-		//	//Placeholder
-		//}
-
-		private void PlayerStatusChanged(object? sender, SessionStatusEventArgs e)
-		{
-			if (e.NewStatus == SessionStatus.Connected)
-			{
-				_playerData.Add(e.Session, new PlayerUiData());
-			}
-			else if (e.NewStatus == SessionStatus.Disconnected)
-			{
-				if (_playerData.TryGetValue(e.Session, out var playerData))
+				if (!playerData.UiConnections.TryGetValue(uiKey, out var ui))
 				{
-					foreach (var ui in playerData.UiConnections.Values)
-					{
-						UnloadUi(ui);
-					}
-
-					_playerData.Remove(e.Session);
+					continue;
 				}
+
+				ui.Dirty = false;
+				RaiseNetworkEvent(new StateUiConnectionMessage(uiKey, ui.State), player);
 			}
 		}
 
-		private void SendMsgUi(UiConnection ui, BaseUiStateMessage message)
+		private void PlayerStatusChanged(object? sender, SessionStatusEventArgs ev)
 		{
-			var msgUi = new MsgUiState
+			switch (ev.NewStatus)
 			{
-				Id = ui.Id,
-				Message = message
-			};
-			_net.ServerSendMessage(msgUi, ui.Player.ConnectedClient);
+				case SessionStatus.Connected:
+					_playerUiConnections.Add(ev.Session, new PlayerUiConnections());
+					break;
+				case SessionStatus.Disconnected:
+					_playerUiConnections.Remove(ev.Session);
+					break;
+			}
 		}
 	}
 }

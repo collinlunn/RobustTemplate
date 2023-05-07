@@ -9,6 +9,5 @@ internal static class ServerContentIoC
     {
 		// DEVNOTE: IoCManager registrations for the server go here and only here.
 		IoCManager.Register<IAdminConsoleManager, AdminConsoleManager>();
-		IoCManager.Register<ServerUiStateManager, ServerUiStateManager>();
 	}
 }

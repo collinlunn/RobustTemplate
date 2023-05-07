@@ -19,8 +19,6 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
 	private string _mapToLoad = "/Maps/default_map.yml";
 
-	private readonly List<UiConnection> _lobbyUis = new();
-
 	public override void Initialize()
     {
         base.Initialize();
@@ -41,52 +39,43 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
 			case SessionStatus.InGame:
 				RaiseNetworkEvent(new LobbyJoinedEvent(), session);
-				var ui = _uiState.LoadUi(session, new LobbyUiState());
-				_lobbyUis.Add(ui);
+				_uiState.OpenUiConnection(LobbyUiKey.Key, session, new LobbyUiState());
 				break;
 		}
     }
 
     public void OnStartGamePressed()
     {
-        var gameStartedEvent = new GameStartedEvent();
-        RaiseLocalEvent(gameStartedEvent);
-
 		var mapId = _mapManager.CreateMap();
 		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
 
 		var spawnVector = new Vector2i(0, 0);
         var spawnCoord = new MapCoordinates(spawnVector, mapId);
-		SpawnPlayers(gameStartedEvent, "TestPlayer", spawnCoord);
+		SpawnPlayers("TestPlayer", spawnCoord);
 
     }
 
 	public void OnStartMappingPressed()
 	{
-		var gameStartedEvent = new GameStartedEvent();
-		RaiseLocalEvent(gameStartedEvent);
-
 		var mapId = _mapManager.CreateMap();
 		_mapManager.AddUninitializedMap(mapId); //set as uninitialized so map can be saved to a file correctly
 		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
 
 		var spawnVector = new Vector2i(0, 0);
 		var spawnCoord = new MapCoordinates(spawnVector, mapId);
-		SpawnPlayers(gameStartedEvent, "TestMappingPlayer", spawnCoord);
+		SpawnPlayers("TestMappingPlayer", spawnCoord);
 	}
 
-	private void SpawnPlayers(EntityEventArgs startEvent, string playerProto, MapCoordinates spawnCoords)
+	private void SpawnPlayers(string playerProto, MapCoordinates spawnCoords)
 	{
+		var gameStartedEvent = new GameStartedEvent();
+
 		foreach (var playerSession in _playerManager.ServerSessions)
 		{
-			RaiseNetworkEvent(startEvent, playerSession);
+			RaiseNetworkEvent(gameStartedEvent, playerSession);
 			var playerEntity = EntityManager.SpawnEntity(playerProto, spawnCoords);
 			playerSession.AttachToEntity(playerEntity);
+			_uiState.CloseUiConnection(LobbyUiKey.Key, playerSession);
 		}
-		foreach (var ui in _lobbyUis)
-		{
-			ui.Unload();
-		}
-		_lobbyUis.Clear();
 	}
 }
