@@ -23,9 +23,11 @@ public sealed class ServerLobbySystem : SharedLobbySystem
     {
         base.Initialize();
         _playerManager.PlayerStatusChanged += PlayerStatusChanged;
+		SubscribeNetworkEvent<StartGameButtonPressed>(OnStartGamePressed);
+		SubscribeNetworkEvent<StartMappingButtonPressed>(OnStartMappingPressed);
 	}
 
-    private void PlayerStatusChanged(object? sender, SessionStatusEventArgs args)
+	private void PlayerStatusChanged(object? sender, SessionStatusEventArgs args)
     {
         var session = args.Session;
 
@@ -44,7 +46,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		}
     }
 
-    public void OnStartGamePressed()
+    public void OnStartGamePressed(StartGameButtonPressed message)
     {
 		var mapId = _mapManager.CreateMap();
 		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
@@ -52,10 +54,9 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		var spawnVector = new Vector2i(0, 0);
         var spawnCoord = new MapCoordinates(spawnVector, mapId);
 		SpawnPlayers("TestPlayer", spawnCoord);
-
     }
 
-	public void OnStartMappingPressed()
+	public void OnStartMappingPressed(StartMappingButtonPressed message)
 	{
 		var mapId = _mapManager.CreateMap();
 		_mapManager.AddUninitializedMap(mapId); //set as uninitialized so map can be saved to a file correctly

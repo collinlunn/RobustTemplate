@@ -1,4 +1,4 @@
-﻿using Content.Shared.UI;
+using Content.Shared.UI;
 using Robust.Shared.Network;
 using Robust.Shared.Utility;
 using System.Diagnostics.CodeAnalysis;

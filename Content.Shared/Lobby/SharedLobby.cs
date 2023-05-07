@@ -27,4 +27,15 @@ namespace Content.Shared.Lobby
 
 	}
 
+	[Serializable, NetSerializable]
+	public sealed class StartGameButtonPressed : EntityEventArgs
+	{
+
+	}
+
+	[Serializable, NetSerializable]
+	public sealed class StartMappingButtonPressed : EntityEventArgs
+	{
+
+	}
 }

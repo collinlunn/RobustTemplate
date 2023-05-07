@@ -18,6 +18,7 @@ namespace Content.Client.Lobby
 		public LobbyUiState DefaultState => new DefaultLobbyState();
 
 		[Dependency] private readonly IUserInterfaceManager _userInterface = default!;
+		[Dependency] private readonly IEntityNetworkManager _entityNetManager = default!;
 		[Dependency] private readonly IClientNetManager _clientNetManager = default!;
 		[Dependency] private readonly IGameController _gameController = default!;
 
@@ -50,11 +51,11 @@ namespace Content.Client.Lobby
 
 			_lobbyHud.StartGameButton.OnPressed += _ =>
 			{
-				//IoCManager.Resolve<IEntityManager>.(new StartGamePressedEvent());
+				_entityNetManager.SendSystemNetworkMessage(new StartGameButtonPressed());
 			};
 			_lobbyHud.StartMappingButton.OnPressed += _ =>
 			{
-				//_entityNetManager.SendSystemNetworkMessage(new StartMappingPressedEvent());
+				_entityNetManager.SendSystemNetworkMessage(new StartMappingButtonPressed());
 			};
 			_lobbyHud.DisconnectButton.OnPressed += _ =>
 			{
