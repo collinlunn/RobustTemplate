@@ -12,11 +12,8 @@ using Content.Shared.UI;
 namespace Content.Client.Lobby
 {
 	[UsedImplicitly]
-	public sealed class LobbyHudController : UIController, IOnStateChanged<LobbyState>
+	public sealed class LobbyHudController : UIController, IOnStateChanged<LobbyState>, IUiStateSubscriber
 	{
-		public Enum UiKey => LobbyUiKey.Key;
-		public LobbyUiState DefaultState => new DefaultLobbyState();
-
 		[Dependency] private readonly IUserInterfaceManager _userInterface = default!;
 		[Dependency] private readonly IEntityNetworkManager _entityNetManager = default!;
 		[Dependency] private readonly IClientNetManager _clientNetManager = default!;
@@ -28,26 +25,11 @@ namespace Content.Client.Lobby
 
 		private LobbyHud? _lobbyHud;
 
-		public override void Initialize()
-		{
-			base.Initialize();
-			SubscribeNetworkEvent<OpenUiConnectionMessage>((msg,_) => TrySetState(msg.UiKey, msg.State));
-			SubscribeNetworkEvent<CloseUiConnectionMessage>((msg, _) => TrySetState(msg.UiKey, DefaultState));
-			SubscribeNetworkEvent<StateUiConnectionMessage>((msg, _) => TrySetState(msg.UiKey, msg.State));
-		}
-
 		public void OnStateEntered(LobbyState state)
 		{
 			DebugTools.Assert(_lobbyHud == null);
 			_lobbyHud = new LobbyHud();
-			if (_uiStateMan.TryGetUiState(UiKey, out var uiState))
-			{
-				if (uiState is not LobbyUiState lobbyUiState)
-					throw new Exception("Incompatible UI state under lobby UI key.");
-				_uiState = lobbyUiState;
-			}
-			_uiState ??= DefaultState;
-			_lobbyHud.SetState(_uiState);
+			//TODO Add sub
 
 			_lobbyHud.StartGameButton.OnPressed += _ =>
 			{
@@ -78,9 +60,18 @@ namespace Content.Client.Lobby
 
 		private void TrySetState(Enum uiKey, UiState state)
 		{
-			if (uiKey != UiKey)
+			if (state is not LobbyUiState lobbyState)
 				return;
 
+
+		}
+
+		public Enum UiKey => LobbyUiKey.Key;
+
+		public UiState DefaultState => new LobbyUiState();
+
+		public void SetState(UiState state)
+		{
 			if (state is not LobbyUiState lobbyState)
 				return;
 
@@ -88,9 +79,14 @@ namespace Content.Client.Lobby
 			_lobbyHud?.SetState(_uiState);
 		}
 
-		private sealed class DefaultLobbyState : LobbyUiState
+		public void AfterUiConnectionOpened()
 		{
+			//Do nothing
+		}
 
+		public void AfterUiConnectionClosed()
+		{
+			//Do nothing
 		}
 	}
 }

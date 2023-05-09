@@ -9,7 +9,7 @@ namespace Content.Client.UI
 	{
 		[Dependency] private readonly IClientNetManager _net = default!;
 
-		private readonly Dictionary<Enum, UiState> _uiStates = new();
+		private readonly Dictionary<Enum, ClientUiConnection> _uiConnections = new();
 
 		public override void Initialize()
 		{
@@ -23,18 +23,25 @@ namespace Content.Client.UI
 		public override void Shutdown()
 		{
 			base.Shutdown();
-			_net.Disconnect += NetOnDisconnect;
+			_net.Disconnect -= NetOnDisconnect;
 		}
 
-		public UiState? GetUiStateOrNull(Enum uiKey)
+		public void AddSubscriber(IUiStateSubscriber subscriber)
 		{
-			_uiStates.TryGetValue(uiKey, out var value);
-			return value;
-		}
+			var uiKey = subscriber.UiKey;
 
-		public bool TryGetUiState(Enum uiKey, [NotNullWhen(true)] out UiState? uiState)
-		{
-			return _uiStates.TryGetValue(uiKey, out uiState);
+			if (_uiConnections.TryGetValue(uiKey, out var connection))
+			{
+				connection.Subscribers.Add(subscriber);
+				//send current state? notify of open?
+			}
+			else
+			{
+				var newConnection = new ClientUiConnection(uiKey);
+				_uiConnections.Add(uiKey, newConnection);
+				newConnection.Subscribers.Add(subscriber);
+				//send placeholder state?
+			}
 		}
 
 		private void OpenUiConnection(OpenUiConnectionMessage msg)
@@ -42,20 +49,26 @@ namespace Content.Client.UI
 			var uiKey = msg.UiKey;
 			var state = msg.State;
 
-			DebugTools.Assert(!_uiStates.ContainsKey(uiKey),
-				$"Tried to add initial UI state for {nameof(uiKey)}, but it already had one.");
-
-			_uiStates.Add(uiKey, state);
+			if (_uiConnections.TryGetValue(uiKey, out var connection))
+			{
+				connection.ServerUiConnectionOpened(state);
+			}
+			else
+			{
+				var newConnection = new ClientUiConnection(uiKey);
+				_uiConnections.Add(uiKey, newConnection);
+				newConnection.ServerUiConnectionOpened(state);
+			}
 		}
 
 		private void CloseUiConnection(CloseUiConnectionMessage msg)
 		{
 			var uiKey = msg.UiKey;
 
-			DebugTools.Assert(_uiStates.ContainsKey(uiKey),
-				$"Tried set remove state of UI with key: {nameof(uiKey)} but none existed.");
+			UiConnection(uiKey).ServerUiConnectionClosed();
 
-			_uiStates.Remove(uiKey);
+			var keyFound = _uiConnections.Remove(uiKey);
+			DebugTools.Assert(keyFound, $"Tried to remove connection for {nameof(uiKey)}, but none existed.");
 		}
 
 		private void HandleState(StateUiConnectionMessage msg)
@@ -63,19 +76,24 @@ namespace Content.Client.UI
 			var uiKey = msg.UiKey;
 			var state = msg.State;
 
-			DebugTools.Assert(_uiStates.ContainsKey(uiKey),
-				$"Tried set state of UI with key: {nameof(uiKey)} but none existed.");
-
-			_uiStates[uiKey] = state;
+			UiConnection(uiKey).ServerUiStateReceived(state);
 		}
 
 		private void NetOnDisconnect(object? sender, NetDisconnectedArgs e)
 		{
-			foreach (var uiKey in _uiStates.Keys)
+			foreach (var connection in _uiConnections.Values)
 			{
-				//TODO?
+				connection.ServerUiConnectionClosed();
 			}
-			_uiStates.Clear();
+			_uiConnections.Clear();
+		}
+
+		private ClientUiConnection UiConnection(Enum uiKey)
+		{
+			DebugTools.Assert(_uiConnections.ContainsKey(uiKey),
+				$"Tried to get UI connection with key: {nameof(uiKey)} but none existed.");
+
+			return _uiConnections[uiKey];
 		}
 	}
 }

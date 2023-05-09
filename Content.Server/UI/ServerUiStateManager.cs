@@ -16,7 +16,7 @@ namespace Content.Server.UI
 
 		private sealed class PlayerUiConnectionSet
 		{
-			public readonly Dictionary<Enum, UiConnection> UiConnections = new();
+			public readonly Dictionary<Enum, ServerUiConnection> UiConnections = new();
 		}
 
 		/// <summary>
@@ -63,7 +63,7 @@ namespace Content.Server.UI
 			DebugTools.Assert(!connectionSet.ContainsKey(uiKey),
 				$"Tried to open UI connection for {player} but {nameof(uiKey)} was already in use.");
 
-			var ui = new UiConnection(uiKey, player, state);
+			var ui = new ServerUiConnection(uiKey, player, state);
 			connectionSet.Add(uiKey, ui);
 
 			RaiseNetworkEvent(new OpenUiConnectionMessage(uiKey, state), player);

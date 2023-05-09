@@ -4,7 +4,7 @@ using Robust.Server.Player;
 namespace Content.Server.UI
 {
 	[Access(typeof(ServerUiStateManager))]
-	public sealed class UiConnection
+	public sealed class ServerUiConnection
 	{
 		public Enum UiKey { get; }
 
@@ -14,7 +14,7 @@ namespace Content.Server.UI
 
 		public bool Dirty;
 
-		public UiConnection(Enum uiKey, IPlayerSession player, UiState state)
+		public ServerUiConnection(Enum uiKey, IPlayerSession player, UiState state)
 		{
 			UiKey = uiKey;
 			Player = player;
