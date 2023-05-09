@@ -8,19 +8,17 @@ namespace Content.Client.UI
 	{
 		public Enum UiKey { get; }
 
-		public readonly List<IUiStateSubscriber> Subscribers = new();
+		private readonly List<IUiStateSubscriber> _subscribers = new();
 		
 		/// <summary>
-		///		Tracks the status of the server's connection.
-		///		For error-catching.
+		///		Tracks the status of the server's ui connection.
 		/// </summary>
-		private ServerConnectionStatus Status = ServerConnectionStatus.NotOpen;
+		private UiConnectionStatus Status = UiConnectionStatus.NotOpen;
 
 		/// <summary>
 		///		The last state sent by the server for this key. Null if no state is available.
-		///		For error-catching.
 		/// </summary>
-		private UiState? LatestState;
+		private UiState? State;
 
 		public ClientUiConnection(Enum uiKey)
 		{
@@ -29,53 +27,67 @@ namespace Content.Client.UI
 
 		public void ServerUiConnectionOpened(UiState state)
 		{
-			//We are either opening or reopening the connection.
-			DebugTools.Assert(Status == ServerConnectionStatus.NotOpen || Status == ServerConnectionStatus.Closed);
-			LatestState = state;
+			DebugTools.Assert(Status == UiConnectionStatus.NotOpen || Status == UiConnectionStatus.Closed);
+			Status = UiConnectionStatus.Open;
 
-			Status = ServerConnectionStatus.Open;
+			State = state;
 
-			foreach (var subscriber in Subscribers)
-			{
-				subscriber.SetState(state);
-				subscriber.AfterUiConnectionOpened();
-			}
+			SetSubscriberStates();
 		}
 
 		public void ServerUiStateReceived(UiState state)
 		{
-			//Should already be open and have a state from the opening
-			DebugTools.Assert(Status == ServerConnectionStatus.Open);
-			DebugTools.Assert(LatestState != null);
-			LatestState = state;
+			DebugTools.Assert(Status == UiConnectionStatus.Open);
 
-			foreach (var subscriber in Subscribers)
-			{
-				subscriber.SetState(state);
-			}
+			DebugTools.Assert(State != null);
+			State = state;
+
+			SetSubscriberStates();
 		}
 
 		public void ServerUiConnectionClosed()
 		{
-			//Should only be able to close if we are already open
-			DebugTools.Assert(Status == ServerConnectionStatus.Open);
-			DebugTools.Assert(LatestState != null);
-			LatestState = null;
+			DebugTools.Assert(Status == UiConnectionStatus.Open);
+			Status = UiConnectionStatus.Closed;
 
-			Status = ServerConnectionStatus.Closed;
+			DebugTools.Assert(State != null);
+			State = null;
 
-			foreach (var subscriber in Subscribers)
+			SetSubscriberStates();
+		}
+
+		public void AddSubscriber(IUiStateSubscriber subscriber)
+		{
+			DebugTools.Assert(!_subscribers.Contains(subscriber));
+			_subscribers.Add(subscriber);
+			SetState(subscriber);
+		}
+
+		public void RemoveSubscriber(IUiStateSubscriber subscriber)
+		{
+			DebugTools.Assert(_subscribers.Contains(subscriber));
+			_subscribers.Remove(subscriber);
+		}
+
+		private void SetState(IUiStateSubscriber subscriber)
+		{
+			DebugTools.Assert(_subscribers.Contains(subscriber));
+			subscriber.SetState(State ?? subscriber.DefaultState, Status);
+		}
+
+		private void SetSubscriberStates()
+		{
+			foreach (var subscriber in _subscribers)
 			{
-				subscriber.SetState(subscriber.DefaultState);
-				subscriber.AfterUiConnectionClosed();
+				SetState(subscriber);
 			}
 		}
+	}
 
-		private enum ServerConnectionStatus
-		{
-			NotOpen, //Either this connection was just constructed, or a client opened this connecton pending a server state.
-			Open, //A server state was received
-			Closed, //The server has discarded the state
-		}
+	public enum UiConnectionStatus
+	{
+		NotOpen, //a client subscribed to this but no server state has arrived
+		Open, //A server state was received
+		Closed, //The server has discarded the state
 	}
 }

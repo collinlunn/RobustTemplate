@@ -21,15 +21,13 @@ namespace Content.Client.Lobby
 
 		[UISystemDependency] private readonly ClientUiStateManager _uiStateMan = default!;
 
-		private LobbyUiState? _uiState;
-
 		private LobbyHud? _lobbyHud;
 
 		public void OnStateEntered(LobbyState state)
 		{
 			DebugTools.Assert(_lobbyHud == null);
 			_lobbyHud = new LobbyHud();
-			//TODO Add sub
+			_uiStateMan.AddSubscriber(this);
 
 			_lobbyHud.StartGameButton.OnPressed += _ =>
 			{
@@ -58,35 +56,16 @@ namespace Content.Client.Lobby
 			_lobbyHud = null;
 		}
 
-		private void TrySetState(Enum uiKey, UiState state)
-		{
-			if (state is not LobbyUiState lobbyState)
-				return;
-
-
-		}
-
 		public Enum UiKey => LobbyUiKey.Key;
 
-		public UiState DefaultState => new LobbyUiState();
+		public UiState DefaultState => new LobbyUiState(2);
 
-		public void SetState(UiState state)
+		public void SetState(UiState state, UiConnectionStatus status)
 		{
 			if (state is not LobbyUiState lobbyState)
 				return;
 
-			_uiState = lobbyState;
-			_lobbyHud?.SetState(_uiState);
-		}
-
-		public void AfterUiConnectionOpened()
-		{
-			//Do nothing
-		}
-
-		public void AfterUiConnectionClosed()
-		{
-			//Do nothing
+			_lobbyHud?.SetState(lobbyState);
 		}
 	}
 }

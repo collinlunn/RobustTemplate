@@ -1,7 +1,6 @@
 using Content.Shared.UI;
 using Robust.Shared.Network;
 using Robust.Shared.Utility;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Content.Client.UI
 {
@@ -30,18 +29,19 @@ namespace Content.Client.UI
 		{
 			var uiKey = subscriber.UiKey;
 
-			if (_uiConnections.TryGetValue(uiKey, out var connection))
+			if (!_uiConnections.TryGetValue(uiKey, out var connection))
 			{
-				connection.Subscribers.Add(subscriber);
-				//send current state? notify of open?
+				connection = new ClientUiConnection(uiKey);
+				_uiConnections.Add(uiKey, connection);
 			}
-			else
-			{
-				var newConnection = new ClientUiConnection(uiKey);
-				_uiConnections.Add(uiKey, newConnection);
-				newConnection.Subscribers.Add(subscriber);
-				//send placeholder state?
-			}
+			connection.AddSubscriber(subscriber);
+		}
+
+		public void RemoveSubscriber(IUiStateSubscriber subscriber)
+		{
+			var uiKey = subscriber.UiKey;
+
+			UiConnection(uiKey).RemoveSubscriber(subscriber);
 		}
 
 		private void OpenUiConnection(OpenUiConnectionMessage msg)
@@ -49,16 +49,13 @@ namespace Content.Client.UI
 			var uiKey = msg.UiKey;
 			var state = msg.State;
 
-			if (_uiConnections.TryGetValue(uiKey, out var connection))
+			if (!_uiConnections.TryGetValue(uiKey, out var connection))
 			{
-				connection.ServerUiConnectionOpened(state);
+				connection = new ClientUiConnection(uiKey);
+				_uiConnections.Add(uiKey, connection);
 			}
-			else
-			{
-				var newConnection = new ClientUiConnection(uiKey);
-				_uiConnections.Add(uiKey, newConnection);
-				newConnection.ServerUiConnectionOpened(state);
-			}
+			connection.ServerUiConnectionOpened(state);
+
 		}
 
 		private void CloseUiConnection(CloseUiConnectionMessage msg)
@@ -66,9 +63,6 @@ namespace Content.Client.UI
 			var uiKey = msg.UiKey;
 
 			UiConnection(uiKey).ServerUiConnectionClosed();
-
-			var keyFound = _uiConnections.Remove(uiKey);
-			DebugTools.Assert(keyFound, $"Tried to remove connection for {nameof(uiKey)}, but none existed.");
 		}
 
 		private void HandleState(StateUiConnectionMessage msg)
@@ -85,7 +79,6 @@ namespace Content.Client.UI
 			{
 				connection.ServerUiConnectionClosed();
 			}
-			_uiConnections.Clear();
 		}
 
 		private ClientUiConnection UiConnection(Enum uiKey)

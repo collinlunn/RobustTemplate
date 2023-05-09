@@ -6,7 +6,12 @@ namespace Content.Shared.Lobby
 	[Serializable, NetSerializable, Virtual]
 	public class LobbyUiState : UiState
 	{
+		public int DummyNumber = 0;
 
+		public LobbyUiState(int num)
+		{
+			DummyNumber = num;
+		}
 	}
 
 	[Serializable, NetSerializable]

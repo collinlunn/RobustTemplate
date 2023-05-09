@@ -1,8 +1,10 @@
 ﻿using Content.Shared.UI;
-using System;
 
 namespace Content.Client.UI
 {
+	/// <summary>
+	///		For ui's that want to be notified of incoming server ui states.
+	/// </summary>
 	public interface IUiStateSubscriber
 	{
 		/// <summary>
@@ -16,20 +18,9 @@ namespace Content.Client.UI
 		public UiState DefaultState { get; }
 
 		/// <summary>
-		///		Passes a state the the UI.
+		///		Passes a state to the UI
+		///		The status specifies what is happening with the sever ui connection.
 		/// </summary>
-		public void SetState(UiState state);
-
-		/// <summary>
-		///		Notifies this UI that the server has sent a state.
-		///		This is called after the new state has been set.
-		/// </summary>
-		public void AfterUiConnectionOpened();
-
-		/// <summary>
-		///		Notifies this UI that the server has discarded its state.
-		///		This is called after the default state has been set.
-		/// </summary>
-		public void AfterUiConnectionClosed();
+		public void SetState(UiState state, UiConnectionStatus status);
 	}
 }
