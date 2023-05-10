@@ -9,5 +9,5 @@ public static class ContentKeyFunctions
 	public static readonly BoundKeyFunction OpenMappingCommandWindow = "OpenMappingCommandWindow";
 	public static readonly BoundKeyFunction OpenEntitySpawnWindow = "OpenEntitySpawnWindow";
 	public static readonly BoundKeyFunction OpenTileSpawnWindow = "OpenTileSpawnWindow";
-
+	public static readonly BoundKeyFunction OpenVV = "OpenVV";
 }

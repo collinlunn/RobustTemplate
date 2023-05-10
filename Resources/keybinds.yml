@@ -36,6 +36,9 @@ binds: # These are all the current engine keybinds.
 - function: OpenTileSpawnWindow
   type: State
   key: F6
+- function: OpenVV
+  type: State
+  key: MouseRight
 - function: MoveUp
   type: State
   key: W

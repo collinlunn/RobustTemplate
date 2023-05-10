@@ -17,6 +17,8 @@ namespace Content.Client.Input
 			mapping.AddFunction(ContentKeyFunctions.OpenMappingCommandWindow);
 			mapping.AddFunction(ContentKeyFunctions.OpenEntitySpawnWindow);
 			mapping.AddFunction(ContentKeyFunctions.OpenTileSpawnWindow);
+			mapping.AddFunction(ContentKeyFunctions.OpenVV);
+
 		}
 	}
 }
