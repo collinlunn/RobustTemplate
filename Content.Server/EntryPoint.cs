@@ -43,7 +43,7 @@ public sealed class EntryPoint : GameServer
         }
         factory.GenerateNetIds();
 
-		IoCManager.Resolve<IAdminConsoleManager>().SetAsActiveConsoleManager();
+		IoCManager.Resolve<ServerAdminManager>().SetAsActiveConsoleManager();
         // DEVNOTE: This is generally where you'll be setting up the IoCManager further.
     }
 

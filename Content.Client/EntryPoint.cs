@@ -1,3 +1,4 @@
+using Content.Client.Admin;
 using Content.Client.Input;
 using Content.Client.MainMenu;
 using Content.Client.StyleSheets;
@@ -49,9 +50,10 @@ public sealed class EntryPoint : GameClient
 		// DEVNOTE: This is generally where you'll be setting up the IoCManager further.
 
 		IoCManager.Resolve<StyleSheetManager>().Initialize(); //Load a stylesheet into the IUserInterfaceManager so UI works
-    }
+		IoCManager.Resolve<ClientAdminManager>().SetAsActiveConsoleManager();
+	}
 
-    public override void PostInit()
+	public override void PostInit()
     {
         base.PostInit();
 		ContentContexts.SetupContexts(_inputManager.Contexts);

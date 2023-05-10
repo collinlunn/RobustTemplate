@@ -1,52 +1,48 @@
 ﻿using Robust.Server.Console;
 using Robust.Server.Player;
-using Robust.Shared.IoC;
 
 namespace Content.Server.Admin
 {
-	public interface IAdminConsoleManager
-	{
-		void SetAsActiveConsoleManager();
-	}
-
-	/// <summary>
-	///		Placeholder console manager that approves everything.
-	/// </summary>
-	public sealed class AdminConsoleManager : IAdminConsoleManager, IConGroupControllerImplementation
+	public sealed class ServerAdminManager : IConGroupControllerImplementation
 	{
 		[Dependency] private readonly IConGroupController _conGroup = default!;
 
-		void IAdminConsoleManager.SetAsActiveConsoleManager()
+		public void SetAsActiveConsoleManager()
 		{
 			_conGroup.Implementation = this;
 		}
 
 		public bool CanAdminMenu(IPlayerSession session)
 		{
-			return true;
+			return IsAdmin(session);
 		}
 
 		public bool CanAdminPlace(IPlayerSession session)
 		{
-			return true;
+			return IsAdmin(session);
 		}
 
 		public bool CanAdminReloadPrototypes(IPlayerSession session)
 		{
-			return true;
+			return IsAdmin(session);
 		}
 
 		public bool CanCommand(IPlayerSession session, string cmdName)
 		{
-			return true;
+			return IsAdmin(session);
 		}
 
 		public bool CanScript(IPlayerSession session)
 		{
-			return true;
+			return IsAdmin(session);
 		}
 
 		public bool CanViewVar(IPlayerSession session)
+		{
+			return IsAdmin(session);
+		}
+
+		private bool IsAdmin(IPlayerSession session)
 		{
 			return true;
 		}
