@@ -20,6 +20,7 @@ namespace Content.Client.StyleSheets
 		private readonly Color ButtonColorDefault = Color.FromHex("#1a1a1a");
 		private readonly Color ButtonColorPressed = Color.FromHex("#575b7f");
 		private readonly Color ButtonColorHover = Color.FromHex("#242424");
+		private readonly Color ButtonColorDisabled = Color.FromHex("#6a2e2e");
 
 		private StyleRule DefaultFontRule()
 		{
@@ -141,6 +142,12 @@ namespace Content.Client.StyleSheets
 				{
 					new StyleProperty(Button.StylePropertyModulateSelf, ButtonColorHover),
 				});
+			var buttonDisabledColor = new StyleRule(
+				new SelectorElement(typeof(Button), null, null, new[] { Button.StylePseudoClassDisabled }),
+				new[]
+				{
+					new StyleProperty(Button.StylePropertyModulateSelf, ButtonColorDisabled),
+				});
 
 			return new List<StyleRule>
 			{
@@ -148,6 +155,7 @@ namespace Content.Client.StyleSheets
 				buttonDefaultColor,
 				buttonPressedColor,
 				buttonHoverColor,
+				buttonDisabledColor,
 			};
 		}
 
