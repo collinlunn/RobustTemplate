@@ -55,6 +55,8 @@ public sealed class EntryPoint : GameServer
 		_configMan.SetCVar(CVars.NetTickrate, 10);
 		_configMan.SetCVar(CVars.TargetMinimumTickrate, 10);
 		_configMan.SetCVar(CVars.NetPVS, false);
+
+		_configMan.SetCVar(CVars.GridSplitting, false);
 #endif
 		// DEVNOTE: Can also initialize IoC stuff more here.
 	}
