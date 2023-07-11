@@ -56,6 +56,13 @@ namespace Content.Client.UI
 			SetSubscriberStates();
 		}
 
+		public void OnNetDisconnected()
+		{
+			Status = UiConnectionStatus.Closed;
+			State = null;
+			SetSubscriberStates();
+		}
+
 		public void AddSubscriber(IUiStateSubscriber subscriber)
 		{
 			DebugTools.Assert(!_subscribers.Contains(subscriber));

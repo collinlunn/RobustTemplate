@@ -54,6 +54,7 @@ namespace Content.Client.Lobby
 		{
 			_lobbyHud?.Dispose();
 			_lobbyHud = null;
+			_uiStateMan.RemoveSubscriber(this);
 		}
 
 		public Enum UiKey => LobbyUiKey.Key;

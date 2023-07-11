@@ -77,7 +77,7 @@ namespace Content.Client.UI
 		{
 			foreach (var connection in _uiConnections.Values)
 			{
-				connection.ServerUiConnectionClosed();
+				connection.OnNetDisconnected();
 			}
 		}
 
