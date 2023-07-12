@@ -16,9 +16,9 @@ namespace Content.Client.UI
 		private UiConnectionStatus Status = UiConnectionStatus.NotOpen;
 
 		/// <summary>
-		///		The last state sent by the server for this key. Null if no state is available.
+		///		The last state sent by the server for this key.
 		/// </summary>
-		private UiState? State;
+		private UiState State = new DefaultUiState();
 
 		public ClientUiConnection(Enum uiKey)
 		{
@@ -51,7 +51,7 @@ namespace Content.Client.UI
 			Status = UiConnectionStatus.Closed;
 
 			DebugTools.Assert(State != null);
-			State = null;
+			ClearState();
 
 			SetSubscriberStates();
 		}
@@ -59,7 +59,7 @@ namespace Content.Client.UI
 		public void OnNetDisconnected()
 		{
 			Status = UiConnectionStatus.Closed;
-			State = null;
+			ClearState();
 			SetSubscriberStates();
 		}
 
@@ -79,7 +79,7 @@ namespace Content.Client.UI
 		private void SetState(IUiStateSubscriber subscriber)
 		{
 			DebugTools.Assert(_subscribers.Contains(subscriber));
-			subscriber.SetState(State ?? subscriber.DefaultState, Status);
+			subscriber.SetState(State, Status);
 		}
 
 		private void SetSubscriberStates()
@@ -89,6 +89,11 @@ namespace Content.Client.UI
 				SetState(subscriber);
 			}
 		}
+
+		private void ClearState()
+		{
+			State = new DefaultUiState();
+		}
 	}
 
 	public enum UiConnectionStatus
@@ -96,5 +101,13 @@ namespace Content.Client.UI
 		NotOpen, //a client subscribed to this but no server state has arrived
 		Open, //A server state was received
 		Closed, //The server has discarded the state
+	}
+
+	/// <summary>
+	///		Ui state to default to when server has not provided any.
+	/// </summary>
+	public sealed class DefaultUiState : UiState
+	{
+
 	}
 }
