@@ -18,6 +18,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 	[Dependency] private readonly ServerUiStateManager _uiState = default!;
 
 	private string _mapToLoad = "/Maps/default_map.yml";
+	private bool _gameStarted = false;
 
 	public override void Initialize()
     {
@@ -48,6 +49,10 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
     public void OnStartGamePressed(StartGameButtonPressed message)
     {
+		if (_gameStarted)
+			return;
+		_gameStarted = true;
+
 		var mapId = _mapManager.CreateMap();
 		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
 
@@ -58,6 +63,10 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
 	public void OnStartMappingPressed(StartMappingButtonPressed message)
 	{
+		if (_gameStarted)
+			return;
+		_gameStarted = true;
+
 		var mapId = _mapManager.CreateMap();
 		_mapManager.AddUninitializedMap(mapId); //set as uninitialized so map can be saved to a file correctly
 		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
