@@ -8,7 +8,22 @@
       interfaces:
       - key: enum.TestUiKey.Key
         type: TestBoundUserInterface
-        
+
+- type: entity
+  id: TestWall
+  components:
+    - type: Sprite
+      texture: Terrain/test_wall.png
+    - type: Physics
+      bodyType: Static
+    - type: Fixtures
+      fixtures:
+        - shape:
+            !type:PhysShapeAabb
+            bounds: "-1,-1,1,1"
+          layer:
+            - Impassable
+            
 - type: entity
   id: TestPlayer
   components:
