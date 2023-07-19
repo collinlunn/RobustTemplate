@@ -17,5 +17,11 @@
             <Button Name="SaveMapButton" Text="Save"/>
             <LineEdit Name="SavePath" PlaceHolder="Map Path..." Text="new_map.yml" SetWidth="200"/>
         </BoxContainer>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="5">
+            <Button Name="ToggleLightButton" Text="Toggle Light" ToggleMode="True"/>
+            <Button Name="TogglFovButton" Text="Toggle Fov" ToggleMode="True"/>
+            <Button Name="TogglHardFovButton" Text="Toggle Hard Fov" ToggleMode="True"/>
+            <Button Name="ToggleShadowsButton" Text="Toggle Shadows" ToggleMode="True"/>
+        </BoxContainer>
     </BoxContainer>
 </DefaultWindow>
