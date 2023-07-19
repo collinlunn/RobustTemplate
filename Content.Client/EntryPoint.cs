@@ -63,9 +63,6 @@ public sealed class EntryPoint : GameClient
 		IoCManager.Resolve<IConfigurationManager>().OverrideDefault(CVars.NetFakeLagMin, 0.05f); 
 #endif
 
-        // DEVNOTE: The line below will disable lighting, so you can see in-game sprites without the need for lights
-        IoCManager.Resolve<ILightManager>().Enabled = false;
-
 		_stateManager.RequestStateChange<MainMenuState>(); //bring up the main menu
 		//If run level drops to initialize after disconnecting reopen the main menu
 		_baseClient.RunLevelChanged += (_, args) =>
