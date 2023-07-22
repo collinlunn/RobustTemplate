@@ -1,0 +1,12 @@
+<ingame:InGameHUDScreen
+    xmlns="https://spacestation14.io"
+    xmlns:ingame="clr-namespace:Content.Client.InGame"
+    Name="TestHUD" 
+    VerticalExpand="False"
+    VerticalAlignment="Bottom"
+    HorizontalAlignment="Center">
+    <BoxContainer Orientation="Vertical">
+        <Label Text="Test HUD Label"/>
+        <BoxContainer Name="FpsBox"  Orientation="Vertical"/>
+    </BoxContainer>
+</ingame:InGameHUDScreen>

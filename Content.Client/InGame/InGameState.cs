@@ -4,6 +4,7 @@ using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.Player;
 using Robust.Client.State;
+using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Input;
@@ -25,14 +26,17 @@ public sealed class InGameState : State
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
 	[Dependency] private readonly IEntityManager _entityManager = default!;
+	[Dependency] private readonly IUserInterfaceManager _uiManager = default!;
 
 	protected override void Startup()
     {
+		_uiManager.LoadScreen<InGameHUDScreen>();
         _inputManager.KeyBindStateChanged += OnKeyBindStateChanged;
     }
 
     protected override void Shutdown()
     {
+		_uiManager.UnloadScreen();
         _inputManager.KeyBindStateChanged -= OnKeyBindStateChanged;
     }
 
