@@ -46,34 +46,24 @@ public sealed class InGameState : State
 	/// <param name="args">Details what changed.</param>
     private void OnKeyBindStateChanged(ViewportBoundKeyEventArgs args)
     {
-		if (args.Viewport != null)
-		{
-			HandleInput(args);
-		}
-		else
-		{
-			//var viewPort = _uiManager.ActiveScreen!.GetWidget<>()!; 
-			//var newArgs = new ViewportBoundKeyEventArgs(args.KeyEventArgs, viewPort)
-			//HandleInput(newArgs);
-			HandleInput(args); //TODO: Look at why we'd want to sub in new viewport
-		}
+		var viewport = args.Viewport; // ?? _uiManager.MainViewport; to get entities/coords thru other ui elements
+		HandleInput(args.KeyEventArgs, viewport);
 	}
 
-	private void HandleInput(ViewportBoundKeyEventArgs args)
+	private void HandleInput(BoundKeyEventArgs keyEvent, Control? viewportControl)
 	{
 		if (!_entitySystemManager.TryGetEntitySystem(out InputSystem? inputSys))
 			return;
 
-		var keyEventArgs = args.KeyEventArgs;
-		var function = keyEventArgs.Function;
+		var function = keyEvent.Function;
 		var functionID = _inputManager.NetworkBindMap.KeyFunctionID(function);
 
 		EntityCoordinates coordinates = default;
 		EntityUid entityToClick = default;
-		if (args.Viewport is IViewportControl vp)
+		if (viewportControl is IViewportControl vp)
 		{
 			//Get entity under mouse when keybind state changed
-			var mousePosWorld = vp.ScreenToMap(keyEventArgs.PointerLocation.Position);
+			var mousePosWorld = vp.ScreenToMap(keyEvent.PointerLocation.Position);
 			if (TryGetClickedEntity(mousePosWorld, out var foundEntity))
 				entityToClick = (EntityUid)foundEntity;
 
@@ -83,13 +73,13 @@ public sealed class InGameState : State
 				EntityCoordinates.FromMap(_mapManager, mousePosWorld);
 		}
 
-		var message = new FullInputCmdMessage(_timing.CurTick, _timing.TickFraction, functionID, keyEventArgs.State,
-			coordinates, keyEventArgs.PointerLocation, entityToClick);
+		var message = new FullInputCmdMessage(_timing.CurTick, _timing.TickFraction, functionID, keyEvent.State,
+			coordinates, keyEvent.PointerLocation, entityToClick);
 
 		// client side command handlers will always be sent the local player session.
 		var session = _playerManager.LocalPlayer?.Session;
 		if (inputSys.HandleInputCommand(session, function, message))
-			keyEventArgs.Handle();
+			keyEvent.Handle();
 	}
 
     private bool TryGetClickedEntity(MapCoordinates coordinates, [NotNullWhen(true)] out EntityUid? foundEntity)
