@@ -7,6 +7,7 @@ using Robust.Client;
 using Robust.Client.Graphics;
 using Robust.Client.Input;
 using Robust.Client.State;
+using Robust.Client.UserInterface;
 using Robust.Shared;
 using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
@@ -21,7 +22,8 @@ public sealed class EntryPoint : GameClient
     [Dependency] private readonly IStateManager _stateManager = default!;
 	[Dependency] private readonly IBaseClient _baseClient = default!;
 	[Dependency] private readonly IInputManager _inputManager = default!;
-	
+	[Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
+
 	public override void PreInit()
 	{
 		ClientContentIoC.Register();
@@ -60,9 +62,9 @@ public sealed class EntryPoint : GameClient
 
 #if DEBUG
 		//fake latency to help reveal bugs while debugging on localhost
-		IoCManager.Resolve<IConfigurationManager>().OverrideDefault(CVars.NetFakeLagMin, 0.05f); 
+		IoCManager.Resolve<IConfigurationManager>().OverrideDefault(CVars.NetFakeLagMin, 0.05f);
 #endif
-
+		_userInterfaceManager.MainViewport.Visible = false; //Viewport will be re-added via a UiSheet
 		_stateManager.RequestStateChange<MainMenuState>(); //bring up the main menu
 		//If run level drops to initialize after disconnecting reopen the main menu
 		_baseClient.RunLevelChanged += (_, args) =>
