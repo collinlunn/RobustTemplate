@@ -56,6 +56,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalonia.Base", "RobustTool
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Robust.Shared.CompNetworkGenerator", "RobustToolbox\Robust.Shared.CompNetworkGenerator\Robust.Shared.CompNetworkGenerator.csproj", "{805A9BB1-038D-4911-9A29-8DA39C91FB5B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Content.Tools", "Content.Tools\Content.Tools.csproj", "{9C64805B-04B7-4E90-96A1-6B472512C464}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -330,6 +332,18 @@ Global
 		{805A9BB1-038D-4911-9A29-8DA39C91FB5B}.Release|x64.Build.0 = Release|Any CPU
 		{805A9BB1-038D-4911-9A29-8DA39C91FB5B}.Release|x86.ActiveCfg = Release|Any CPU
 		{805A9BB1-038D-4911-9A29-8DA39C91FB5B}.Release|x86.Build.0 = Release|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Debug|x64.Build.0 = Debug|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Debug|x86.Build.0 = Debug|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Release|x64.ActiveCfg = Release|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Release|x64.Build.0 = Release|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Release|x86.ActiveCfg = Release|Any CPU
+		{9C64805B-04B7-4E90-96A1-6B472512C464}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
