@@ -16,11 +16,6 @@ entities:
   - type: Broadphase
   - type: OccluderTree
 - uid: 1
-  type: TestEntity
-  components:
-  - parent: 0
-    type: Transform
-- uid: 2
   components:
   - type: MetaData
   - pos: -0.53125,-0.5
@@ -45,34 +40,40 @@ entities:
   - fixtures: []
     type: Fixtures
   - type: OccluderTree
-- uid: 3
+- uid: 2
   type: TestWall
   components:
   - pos: -1.5,6.5
-    parent: 2
+    parent: 1
+    type: Transform
+- uid: 3
+  type: TestWall
+  components:
+  - pos: -0.5,6.5
+    parent: 1
     type: Transform
 - uid: 4
   type: TestWall
   components:
-  - pos: -0.5,6.5
-    parent: 2
+  - pos: 0.5,6.5
+    parent: 1
     type: Transform
 - uid: 5
   type: TestWall
   components:
-  - pos: 0.5,6.5
-    parent: 2
+  - pos: 1.5,6.5
+    parent: 1
     type: Transform
 - uid: 6
   type: TestWall
   components:
-  - pos: 1.5,6.5
-    parent: 2
+  - pos: 2.5,6.5
+    parent: 1
     type: Transform
 - uid: 7
-  type: TestWall
+  type: Spawnpoint
   components:
-  - pos: 2.5,6.5
-    parent: 2
+  - pos: 0.5,2.5
+    parent: 1
     type: Transform
 ...

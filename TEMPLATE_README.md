@@ -7,6 +7,7 @@ From root dir:
 How to fix build if it mysteriously breaks:
 From root dir: 
     dotnet clean
+    dotnet restore      
     dotnet build
     dotnet run --project
     dotnet run --project Content.Client
@@ -14,8 +15,10 @@ From root dir:
 Breakpoint not setting? (source code is diff) - make a small change and rebuild
 
 TODO:
+    -> Mouse coord on spawning items out of line with mouse?
+
     make own launcher for client?
-    make spawn point
+    
     how do shaders work?
     copy yaml linter and test setup?
     How do the content.tools scripts work?

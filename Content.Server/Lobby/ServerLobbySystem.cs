@@ -1,3 +1,4 @@
+using Content.Server.Spawnpoint;
 using Content.Server.UI;
 using Content.Shared.Lobby;
 using JetBrains.Annotations;
@@ -56,10 +57,21 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		var mapId = _mapManager.CreateMap();
 		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
 
-		var spawnVector = new Vector2i(0, 0);
-        var spawnCoord = new MapCoordinates(spawnVector, mapId);
-		SpawnPlayers("TestPlayer", spawnCoord);
+		SpawnPlayers("TestPlayer");
     }
+
+	private void SpawnPlayers(string playerProto)
+	{
+		var gameStartedEvent = new GameStartedEvent();
+
+		foreach (var playerSession in _playerManager.ServerSessions)
+		{
+			var spawnEvent = new SpawnPlayerEvent(playerProto, playerSession);
+			RaiseLocalEvent(spawnEvent);
+			RaiseNetworkEvent(gameStartedEvent, playerSession);
+			_uiState.CloseUiConnection(LobbyUiKey.Key, playerSession);
+		}
+	}
 
 	public void OnStartMappingPressed(StartMappingButtonPressed message)
 	{
@@ -71,20 +83,18 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		_mapManager.AddUninitializedMap(mapId); //set as uninitialized so map can be saved to a file correctly
 		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
 
-		var spawnVector = new Vector2i(0, 0);
-		var spawnCoord = new MapCoordinates(spawnVector, mapId);
-		SpawnPlayers("TestMappingPlayer", spawnCoord);
+		SpawnMappingPlayers("TestMappingPlayer", mapId);
 	}
 
-	private void SpawnPlayers(string playerProto, MapCoordinates spawnCoords)
+	private void SpawnMappingPlayers(string playerProto, MapId mapId)
 	{
 		var gameStartedEvent = new GameStartedEvent();
 
 		foreach (var playerSession in _playerManager.ServerSessions)
 		{
+			var spawnEvent = new SpawnMappingPlayerEvent(playerProto, mapId, playerSession);
+			RaiseLocalEvent(spawnEvent);
 			RaiseNetworkEvent(gameStartedEvent, playerSession);
-			var playerEntity = EntityManager.SpawnEntity(playerProto, spawnCoords);
-			playerSession.AttachToEntity(playerEntity);
 			_uiState.CloseUiConnection(LobbyUiKey.Key, playerSession);
 		}
 	}

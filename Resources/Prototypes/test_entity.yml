@@ -3,11 +3,13 @@
   components:
     - type: Sprite
       texture: Interface/cross.png
-    - type: Test
-    - type: UserInterface
-      interfaces:
-      - key: enum.TestUiKey.Key
-        type: TestBoundUserInterface
+
+- type: entity
+  id: Spawnpoint
+  components:
+    - type: Sprite
+      texture: Interface/cross.png
+    - type: SpawnPoint
 
 - type: entity
   id: TestWall
