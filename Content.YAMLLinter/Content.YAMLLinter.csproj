@@ -5,6 +5,8 @@
 		<OutputPath>..\bin\Content.YAMLLinter\</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<ServerGarbageCollection>true</ServerGarbageCollection>
+		<Nullable>enable</Nullable>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>
