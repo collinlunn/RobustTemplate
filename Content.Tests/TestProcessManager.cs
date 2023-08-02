@@ -11,21 +11,21 @@ namespace Content.Tests
 {
     public static class TestProcessManager
     {
-        public static async Task<ServerIntegrationInstance> GetTestServer(TestProcessSettings settings = null)
+        public static async Task<ServerIntegrationInstance> GetTestServer(TestProcessSettings? settings = null)
         {
 			settings ??= new TestProcessSettings();
             var server = await GenerateServer(settings);
 			return server;
 		}
 
-		public static async Task<ClientIntegrationInstance> GetTestClient(TestProcessSettings settings = null)
+		public static async Task<ClientIntegrationInstance> GetTestClient(TestProcessSettings? settings = null)
 		{
 			settings ??= new TestProcessSettings();
 			var client = await GenerateClient(settings);
 			return client;
 		}
 
-		public static async Task<(ServerIntegrationInstance, ClientIntegrationInstance)> GetTestServerClient(TestProcessSettings settings = null)
+		public static async Task<(ServerIntegrationInstance, ClientIntegrationInstance)> GetTestServerClient(TestProcessSettings? settings = null)
         {
 			settings ??= new TestProcessSettings();
 			var client = await GenerateClient(settings);
