@@ -17,7 +17,6 @@ Breakpoint not setting? (source code is diff) - make a small change and rebuild
 TODO:
     make own launcher for client?
     how do shaders work?
-    copy yaml linter and test setup?
     how to have non-standard fov?
     how to make custom cursor?
     What to overlays do?

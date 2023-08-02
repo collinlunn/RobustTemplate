@@ -14,6 +14,11 @@ namespace Content.YAMLLinter
 	{
 		private static async Task<int> Main(string[] _)
 		{
+			return await RunLinter();
+		}
+
+		public static async Task<int> RunLinter()
+		{
 			var stopwatch = new Stopwatch();
 			stopwatch.Start();
 
