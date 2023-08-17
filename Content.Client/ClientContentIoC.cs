@@ -11,5 +11,6 @@ internal static class ClientContentIoC
         // DEVNOTE: IoCManager registrations for the client go here and only here.
         IoCManager.Register<StyleSheetManager>();
 		IoCManager.Register<ClientAdminManager>();
+		IoCManager.Register<CursorManager>();
 	}
 }

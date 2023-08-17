@@ -53,6 +53,7 @@ public sealed class EntryPoint : GameClient
 
 		IoCManager.Resolve<StyleSheetManager>().Initialize(); //Load a stylesheet into the IUserInterfaceManager so UI works
 		IoCManager.Resolve<ClientAdminManager>().SetAsActiveConsoleManager();
+		IoCManager.Resolve<CursorManager>().Initialize();
 	}
 
 	public override void PostInit()
