@@ -1,4 +1,4 @@
-<Control xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center">
+<Control xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center" MouseFilter="Pass">
     <PanelContainer>
         <BoxContainer Orientation="Vertical">
             <Label Text="Placeholder Lobby" Align="Center" Margin="3"/>
