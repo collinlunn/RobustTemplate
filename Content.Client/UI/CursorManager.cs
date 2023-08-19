@@ -14,11 +14,12 @@ namespace Content.Client.UI
 
 		private Vector2i _defaultHotSpot = new Vector2i(0, 0);
 		private string _defaultCursorPath = "/Textures/testMouse.png";
+		private ICursor _defaultCursor = default!;
 
 		public void Initialize()
 		{
-			var cursor = MakeCursor(_defaultCursorPath, _defaultHotSpot);
-			_userInterfaceManager.WorldCursor = cursor;
+			_defaultCursor = MakeCursor(_defaultCursorPath, _defaultHotSpot);
+			_userInterfaceManager.WorldCursor = _defaultCursor;
 		}
 
 		private ICursor MakeCursor(string imagePath, Vector2i hotSpot)
@@ -28,5 +29,26 @@ namespace Content.Client.UI
 			var cursor = _clyde.CreateCursor(image, hotSpot);
 			return cursor;
 		}
+
+		public void SetControlCursor(Control control)
+		{
+			foreach (var child in control.Children)
+			{
+				SetControlCursor(child);
+			}
+			if (control.DefaultCursorShape == Control.CursorShape.Arrow)
+			{
+				control.CustomCursorShape = _defaultCursor;
+			}
+		}
 	}
+
+	public static class CustomCursor
+	{
+		public static void SetCursor(Control control)
+		{
+			IoCManager.Resolve<CursorManager>().SetControlCursor(control);
+		}
+	}
+
 }

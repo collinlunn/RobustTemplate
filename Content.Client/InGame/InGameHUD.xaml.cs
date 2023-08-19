@@ -20,7 +20,6 @@ public sealed partial class InGameHUDScreen : UIScreen
 
 		var viewport = new MainViewportContainer(_eyeManager);
 		_eyeManager.MainViewport = viewport;
-		//viewport.DefaultCursorShape = CursorShape.Crosshair;
 		ViewportBox.AddChild(viewport);
 		SetAnchorPreset(ViewportBox, LayoutPreset.Wide);
 		SetAnchorPreset(viewport, LayoutPreset.Wide);
