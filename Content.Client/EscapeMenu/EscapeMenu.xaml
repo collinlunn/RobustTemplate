@@ -1,7 +1,7 @@
-﻿<DefaultWindow xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center">
+﻿<DefaultWindow xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center" Title="Escape Menu">
     <PanelContainer MaxSize="480 250">
         <BoxContainer Orientation="Vertical" Margin="15 15 15 15" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="5">
-            <Button Name="OptionsButton" Access="Public" Text="Options (TODO)" TextAlign="Center" MaxWidth="150"/>
+            <Button Name="OptionsButton" Access="Public" Text="Options" TextAlign="Center" MaxWidth="150"/>
             <Button Name="DisconnectButton" Access="Public" Text="Disconnect" TextAlign="Center" MaxWidth="150"/>
             <Button Name="QuitButton" Access="Public" Text="Quit" TextAlign="Center" MaxWidth="150"/>
         </BoxContainer>

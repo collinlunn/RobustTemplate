@@ -12,7 +12,10 @@
                     <LineEdit Name="AddressLineEdit" Access="Public" PlaceHolder="IP..." SetWidth="197" Margin="0 0 3 0"/>
                     <Button Name="ConnectButton" Access="Public" Text="Connect" SetWidth="197" Margin="3 0 0 0"/>
                 </BoxContainer>
-                <Button Name="QuitButton" Access="Public" Text="Quit" SetWidth="400" Margin="3"/>
+                <BoxContainer Orientation="Horizontal" Margin="3">
+                    <Button Name="OptionsButton" Access="Public" Text="Options" SetWidth="197" Margin="0 0 3 0"/>
+                    <Button Name="QuitButton" Access="Public" Text="Quit" SetWidth="197" Margin="3 0 0 0"/>
+                </BoxContainer>
             </BoxContainer>
         </PanelContainer>
     </BoxContainer>

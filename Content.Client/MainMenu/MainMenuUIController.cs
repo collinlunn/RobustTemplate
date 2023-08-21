@@ -4,13 +4,12 @@ using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.AuthLib;
 using Robust.Shared.Network;
 using Robust.Shared;
-using System;
-using Robust.Shared.IoC;
 using Robust.Client.UserInterface;
 using Robust.Shared.Configuration;
 using System.Text.RegularExpressions;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Utility;
+using Content.Client.OptionsMenu;
 
 namespace Content.Client.MainMenu
 {
@@ -37,6 +36,10 @@ namespace Content.Client.MainMenu
 
 			_mainMenu.ConnectButton.OnPressed += _ => OnConnectPressed(_mainMenu.ConnectButton.Text ?? "");
 			_mainMenu.ConnectToLocalHostButton.OnPressed += _ => OnConnectPressed("127.0.0.1");
+			_mainMenu.OptionsButton.OnPressed += _ =>
+			{
+				_userInterface.GetUIController<OptionsMenuController>().ToggleWindow();
+			};
 			_mainMenu.QuitButton.OnPressed += _ =>
 			{
 				_gameController.Shutdown("Client pressed quit button.");

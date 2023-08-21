@@ -1,21 +1,22 @@
 using Content.Client.InGame;
+using Content.Client.OptionsMenu;
 using JetBrains.Annotations;
 using Robust.Client;
+using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
-using Robust.Shared.IoC;
 using Robust.Shared.Network;
 using Robust.Shared.Utility;
-using System;
 
 namespace Content.Client.EscapeMenu;
 
 [UsedImplicitly]
-public sealed class EscapeMenuController : UIController, IOnStateEntered<InGameState>, IOnStateExited<InGameState>
+public sealed class EscapeMenuController : UIController, IOnStateChanged<InGameState>
 {
 	[Dependency] private readonly IGameController _gameController = default!;
 	[Dependency] private readonly IClientNetManager _netManager = default!;
+	[Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
 
 	private EscapeMenu? _escapeWindow;
 
@@ -23,11 +24,10 @@ public sealed class EscapeMenuController : UIController, IOnStateEntered<InGameS
     {
         DebugTools.Assert(_escapeWindow == null);
         _escapeWindow = UIManager.CreateWindow<EscapeMenu>();
-		_escapeWindow.Title = "Escape Menu";
 
 		_escapeWindow.OptionsButton.OnPressed += _ =>
 		{
-			throw new NotImplementedException(); //TODO Make options menu
+			_userInterfaceManager.GetUIController<OptionsMenuController>().ToggleWindow();
 		};
 		_escapeWindow.DisconnectButton.OnPressed += _ =>
 		{
