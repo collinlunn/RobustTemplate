@@ -1,87 +1,87 @@
 - type: entity
   id: TestEntity
   components:
-    - type: Sprite
-      texture: Interface/cross.png
+  - type: Sprite
+    texture: Interface/cross.png
 
 - type: entity
   id: Spawnpoint
   components:
-    - type: Sprite
-      texture: Interface/cross.png
-    - type: SpawnPoint
+  - type: Sprite
+    texture: Interface/cross.png
+  - type: SpawnPoint
 
 - type: entity
   id: TestWall
   placement:
     mode: SnapgridCenter
   components:
-    - type: Sprite
-      drawdepth: Walls
-      texture: Terrain/test_wall.png
-    - type: Occluder
-    - type: Transform
-      anchored: true
-    - type: Physics
-      bodyType: Static
-    - type: Fixtures
-      fixtures:
-        fix1:
-          shape:
-            !type:PhysShapeAabb
-            bounds: "-0.5,-0.5,0.5,0.5"
-          layer:
-            - Impassable
+  - type: Sprite
+    drawdepth: Walls
+    texture: Terrain/test_wall.png
+  - type: Occluder
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        layer:
+          - Impassable
             
 - type: entity
   id: TestPlayer
   components:
-    - type: Sprite
-      drawdepth: Mobs
-      texture: redCross.png
-    - type: Eye
-    - type: Input
-    - type: MoveButtonTracker
-    - type: MappingMovement
-      speed: 10
-    - type: PointLight
-      radius: 5.0
-      energy: 5.0
-    - type: Physics
-      bodyType: KinematicController
-    - type: Fixtures
-      fixtures:
-        fix1:
-          shape:
-            !type:PhysShapeCircle
-            radius: 0.5
-          mask:
-            - MobMask
-          layer:
-            - MobLayer
+  - type: Sprite
+    drawdepth: Mobs
+    texture: redCross.png
+  - type: Eye
+  - type: Input
+  - type: MoveButtonTracker
+  - type: MappingMovement
+    speed: 10
+  - type: PointLight
+    radius: 5.0
+    energy: 5.0
+  - type: Physics
+    bodyType: KinematicController
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.5
+        mask:
+          - MobMask
+        layer:
+          - MobLayer
             
 - type: entity
   id: TestMappingPlayer
   noSpawn: true
   save: false
   components:
-    - type: Sprite
-      drawdepth: Mobs
-      texture: blueCross.png
-    - type: Eye
-    - type: Input
-      context: "mapping"
-    - type: MoveButtonTracker
-    - type: MappingMovement
-      speed: 10
-    - type: PointLight
-      radius: 5.0
-      energy: 5.0
-    - type: Physics
-      ignorePaused: true
-      bodyType: KinematicController
-    - type: Fixtures
-      fixtures:
-        fix1:
-          shape:
-            !type:PhysShapeCircle
+  - type: Sprite
+    drawdepth: Mobs
+    texture: blueCross.png
+  - type: Eye
+  - type: Input
+    context: "mapping"
+  - type: MoveButtonTracker
+  - type: MappingMovement
+    speed: 10
+  - type: PointLight
+    radius: 5.0
+    energy: 5.0
+  - type: Physics
+    ignorePaused: true
+    bodyType: KinematicController
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
