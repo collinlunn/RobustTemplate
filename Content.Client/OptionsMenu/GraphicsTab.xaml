@@ -3,7 +3,10 @@
     HorizontalAlignment="Center"
     VerticalAlignment="Center"
     MinSize="450 450">
-    <BoxContainer Orientation="Horizontal">
-        <Label Text="Graphics"/>
+    <BoxContainer Orientation="Vertical">
+        <CheckBox Name="VSyncCheckBox" Text="VSync" />
+        <CheckBox Name="FullscreenCheckBox" Text="Fullscreen" />
+        <CheckBox Name="FpsCounterCheckBox" Text="Show FPS Counter" />
+        <Button Name="ApplyButton" Text="Apply"/>
     </BoxContainer>
 </Control>
