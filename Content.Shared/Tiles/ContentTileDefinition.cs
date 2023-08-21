@@ -28,13 +28,13 @@ namespace Content.Shared.Tiles
 		public string Name { get; private set; } = string.Empty;
 
 		[DataField("sprite")]
-		public ResourcePath? Sprite { get; private set; }
+		public ResPath? Sprite { get; private set; }
 
 		[DataField("variants")]
 		public byte Variants { get; set; } = 1;
 
 		[DataField("edgeSprites")]
-		public Dictionary<Direction, ResourcePath> EdgeSprites { get; } = new();
+		public Dictionary<Direction, ResPath> EdgeSprites { get; } = new();
 
 		[DataField("friction")]
 		public float Friction { get; private set; } = 0.0f;

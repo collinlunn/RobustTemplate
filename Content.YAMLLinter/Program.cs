@@ -52,7 +52,7 @@ namespace Content.YAMLLinter
 
 			await client.WaitPost(() =>
 			{
-				clientErrors = cPrototypeManager.ValidateDirectory(new ResourcePath("/Prototypes"));
+				clientErrors = cPrototypeManager.ValidateDirectory(new ResPath("/Prototypes"));
 			});
 
 			client.Dispose();
@@ -69,7 +69,7 @@ namespace Content.YAMLLinter
 
 			await server.WaitPost(() =>
 			{
-				serverErrors = sPrototypeManager.ValidateDirectory(new ResourcePath("/Prototypes"));
+				serverErrors = sPrototypeManager.ValidateDirectory(new ResPath("/Prototypes"));
 			});
 
 			server.Dispose();
