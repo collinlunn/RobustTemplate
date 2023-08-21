@@ -40,8 +40,9 @@ namespace Content.Client.StyleSheets
 				LineEditRule(),
 			};
 			styleRules.AddRange(ButtonRules());
+			styleRules.AddRange(CheckBoxRules());
 			styleRules.AddRange(WindowCloseButtonRules());
-
+			
 			return styleRules;
 		}
 	}

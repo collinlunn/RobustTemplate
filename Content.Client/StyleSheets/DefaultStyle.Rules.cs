@@ -16,6 +16,8 @@ namespace Content.Client.StyleSheets
 		private const string LineEditTexturePath = "/Textures/Interface/panelDark.png";
 		private const string ButtonTexturePath = "/Textures/Interface/panelWhite.png";
 		private const string TabContainerPanelTexturePath = "/Textures/Interface/tabPanel.png";
+		private const string CheckBoxUncheckedTexturePath = "/Textures/Interface/checkBoxChecked.png";
+		private const string CheckBoxCheckedTexturePath = "/Textures/Interface/checkBoxUnchecked.png";
 
 		private readonly Color ButtonColorDefault = Color.FromHex("#1a1a1a");
 		private readonly Color ButtonColorPressed = Color.FromHex("#575b7f");
@@ -156,6 +158,38 @@ namespace Content.Client.StyleSheets
 				buttonPressedColor,
 				buttonHoverColor,
 				buttonDisabledColor,
+			};
+		}
+
+		private List<StyleRule> CheckBoxRules()
+		{
+			var checkBoxUncheckedTexture = _resourceCache.GetResource<TextureResource>(CheckBoxUncheckedTexturePath);
+			var checkBoxCheckedTexture = _resourceCache.GetResource<TextureResource>(CheckBoxCheckedTexturePath);
+
+			var rule1 = new StyleRule(
+				new SelectorElement(typeof(TextureRect), new[] { CheckBox.StyleClassCheckBox }, null, null),
+				new[]
+				{
+					new StyleProperty(TextureRect.StylePropertyTexture, checkBoxUncheckedTexture),
+				});
+			var rule2 = new StyleRule(
+				new SelectorElement(typeof(TextureRect), new[] { CheckBox.StyleClassCheckBox, CheckBox.StyleClassCheckBoxChecked }, null, null),
+				new[]
+				{
+					new StyleProperty(TextureRect.StylePropertyTexture, checkBoxCheckedTexture),
+				});
+			var rule3 = new StyleRule(
+				new SelectorElement(typeof(BoxContainer), new[] { CheckBox.StyleClassCheckBox }, null, null),
+				new[]
+				{
+					new StyleProperty(BoxContainer.StylePropertySeparation, 10),
+				});
+
+			return new List<StyleRule>
+			{
+				//rule1,
+				//rule2,
+				//rule3,
 			};
 		}
 
