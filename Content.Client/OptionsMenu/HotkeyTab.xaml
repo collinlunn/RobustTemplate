@@ -1,0 +1,5 @@
+<Control xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <BoxContainer Orientation="Horizontal">
+        <Label Text="Hotkey"/>
+    </BoxContainer>
+</Control>

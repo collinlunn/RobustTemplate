@@ -1,0 +1,9 @@
+<Control
+    xmlns="https://spacestation14.io"
+    HorizontalAlignment="Center"
+    VerticalAlignment="Center"
+    MinSize="450 450">
+    <BoxContainer Orientation="Horizontal">
+        <Label Text="Graphics"/>
+    </BoxContainer>
+</Control>

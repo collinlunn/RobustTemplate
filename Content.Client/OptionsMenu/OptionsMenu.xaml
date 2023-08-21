@@ -1,5 +1,11 @@
-<DefaultWindow xmlns="https://spacestation14.io" HorizontalAlignment="Center" VerticalAlignment="Center">
-    <PanelContainer MaxSize="480 250">
-        <Label Text="TestOptions"/>
-    </PanelContainer>
+<DefaultWindow 
+    xmlns="https://spacestation14.io"
+    xmlns:tabs="clr-namespace:Content.Client.OptionsMenu"
+    HorizontalAlignment="Center"
+    VerticalAlignment="Center">
+    <TabContainer Name="Tabs">
+        <tabs:GraphicsTab/>
+        <tabs:AudioTab/>
+        <tabs:HotkeyTab/>
+    </TabContainer>
 </DefaultWindow>

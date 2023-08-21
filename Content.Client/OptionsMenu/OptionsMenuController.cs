@@ -1,4 +1,4 @@
-﻿using Robust.Client.UserInterface.Controllers;
+using Robust.Client.UserInterface.Controllers;
 
 namespace Content.Client.OptionsMenu
 {
