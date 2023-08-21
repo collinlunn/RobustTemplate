@@ -68,7 +68,7 @@ public sealed class InGameState : State
 				entityToClick = (EntityUid)foundEntity;
 
 			//Get coordinates of mouse when keybind state changed
-			coordinates = _mapManager.TryFindGridAt(mousePosWorld, out var grid) ?
+			coordinates = _mapManager.TryFindGridAt(mousePosWorld, out _, out var grid) ?
 				grid.MapToGrid(mousePosWorld) :
 				EntityCoordinates.FromMap(_mapManager, mousePosWorld);
 		}
