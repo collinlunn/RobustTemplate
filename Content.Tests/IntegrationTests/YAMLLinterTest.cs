@@ -1,20 +1,19 @@
-using System;
+﻿using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization.Markdown.Validation;
+using Robust.Shared.Utility;
+using Robust.Shared.Timing;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Content.Tests;
-using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization.Markdown.Validation;
-using Robust.Shared.Timing;
-using Robust.Shared.Utility;
 
-namespace Content.YAMLLinter
+namespace Content.Tests.IntegrationTests
 {
-	internal static class Program
+	[TestFixture]
+	public sealed class YAMLLinterTest
 	{
-		private static async Task<int> Main(string[] _)
+		[Test]
+		public async Task RunLinterTest()
 		{
-			return await RunLinter();
+			Assert.That(await RunLinter(), Is.EqualTo(0)); //returns 0 if no errors
 		}
 
 		public static async Task<int> RunLinter()
