@@ -33,12 +33,11 @@ namespace Content.Client.StyleSheets
 		{
 			var styleRules = new List<StyleRule>
 			{
-				DefaultFontRule(),
 				PanelContainerRule(),
 				TabContainerRule(),
-				GameTitleFontRule(),
 				LineEditRule(),
 			};
+			styleRules.AddRange(FontRules());
 			styleRules.AddRange(ButtonRules());
 			styleRules.AddRange(CheckBoxRules());
 			styleRules.AddRange(WindowCloseButtonRules());
