@@ -3,7 +3,7 @@ using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using System.Collections.Generic;
 
-namespace Content.Client.StyleSheets
+namespace Content.Client.StyleSheets.Default
 {
 	/// <summary>
 	///     Creates a stylesheet for UI.
@@ -19,6 +19,8 @@ namespace Content.Client.StyleSheets
 		private FontResource _fontResource;
 
 		private const string DefaultFontResourcePath = "/Fonts/NotoSans/NotoSans-Regular.ttf";
+
+		private const int DefaultMargin = 2;
 
 		public DefaultContentStyle(IResourceCache resourceCache)
 		{
