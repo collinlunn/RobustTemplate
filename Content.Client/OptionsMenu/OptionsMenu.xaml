@@ -2,7 +2,9 @@
     xmlns="https://spacestation14.io"
     xmlns:tabs="clr-namespace:Content.Client.OptionsMenu"
     HorizontalAlignment="Center"
-    VerticalAlignment="Center">
+    VerticalAlignment="Center"
+    MinSize="450 450"
+    Title="Options">
     <TabContainer Name="Tabs">
         <tabs:GraphicsTab/>
         <tabs:AudioTab/>

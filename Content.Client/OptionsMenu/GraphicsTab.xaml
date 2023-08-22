@@ -1,12 +1,10 @@
-<Control
-    xmlns="https://spacestation14.io"
-    HorizontalAlignment="Center"
-    VerticalAlignment="Center"
-    MinSize="450 450">
+<Control xmlns="https://spacestation14.io"
+         HorizontalAlignment="Left"
+         VerticalAlignment="Top">
     <BoxContainer Orientation="Vertical">
-        <CheckBox Name="VSyncCheckBox" Text="VSync" />
-        <CheckBox Name="FullscreenCheckBox" Text="Fullscreen" />
-        <CheckBox Name="FpsCounterCheckBox" Text="Show FPS Counter" />
-        <Button Name="ApplyButton" Text="Apply"/>
+        <CheckBox Name="VSyncCheckBox" Text="VSync" Margin="3"/>
+        <CheckBox Name="FullscreenCheckBox" Text="Fullscreen" Margin="3"/>
+        <CheckBox Name="FpsCounterCheckBox" Text="Show FPS Counter" Margin="3"/>
+        <Button Name="ApplyButton" Text="Apply" Margin="3"/>
     </BoxContainer>
 </Control>
