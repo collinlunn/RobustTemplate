@@ -51,7 +51,6 @@ public sealed class EntryPoint : GameClient
 
 		// DEVNOTE: This is generally where you'll be setting up the IoCManager further.
 
-		IoCManager.Resolve<StyleSheetManager>().Initialize(); //Load a stylesheet into the IUserInterfaceManager so UI works
 		IoCManager.Resolve<ClientAdminManager>().SetAsActiveConsoleManager();
 		IoCManager.Resolve<CursorManager>().Initialize();
 	}
@@ -65,6 +64,7 @@ public sealed class EntryPoint : GameClient
 		//fake latency to help reveal bugs while debugging on localhost
 		IoCManager.Resolve<IConfigurationManager>().OverrideDefault(CVars.NetFakeLagMin, 0.05f);
 #endif
+		IoCManager.Resolve<StyleSheetManager>().Initialize(); //Load a stylesheet into the IUserInterfaceManager so UI works
 		_userInterfaceManager.MainViewport.Visible = false; //Viewport will be re-added via a UiSheet
 		_stateManager.RequestStateChange<MainMenuState>(); //bring up the main menu
 		//If run level drops to initialize after disconnecting reopen the main menu

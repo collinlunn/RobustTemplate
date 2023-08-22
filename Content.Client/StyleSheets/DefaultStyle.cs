@@ -10,7 +10,7 @@ namespace Content.Client.StyleSheets
 	///     This is required so text and controls show up.
 	///     (Please note that this stylesheet is simple and incomplete.)
 	/// </summary>
-	public sealed partial class DefaultStyle
+	public sealed partial class DefaultContentStyle
 	{
 		public Stylesheet Stylesheet { get; }
 
@@ -20,7 +20,7 @@ namespace Content.Client.StyleSheets
 
 		private const string DefaultFontResourcePath = "/Fonts/NotoSans/NotoSans-Regular.ttf";
 
-		public DefaultStyle(IResourceCache resourceCache)
+		public DefaultContentStyle(IResourceCache resourceCache)
 		{
 			_resourceCache = resourceCache;
 			_fontResource = _resourceCache.GetResource<FontResource>(DefaultFontResourcePath);

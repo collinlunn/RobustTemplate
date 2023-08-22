@@ -1,6 +1,7 @@
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Shared.IoC;
+using Robust.Client.UserInterface.Stylesheets;
 
 namespace Content.Client.StyleSheets;
 
@@ -12,11 +13,12 @@ public sealed class StyleSheetManager
     [Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
     [Dependency] private readonly IResourceCache _resourceCache = default!;
 
-	public Stylesheet DefaultStyleSheet { get; private set; } = default!;
+	public Stylesheet DefaultContentStyleSheet { get; private set; } = default!;
         
     public void Initialize()
     {
-		DefaultStyleSheet = new DefaultStyle(_resourceCache).Stylesheet;
-		_userInterfaceManager.Stylesheet = DefaultStyleSheet;
+		_userInterfaceManager.SetDefaultTheme("DefaultContentTheme");
+		DefaultContentStyleSheet = new DefaultContentStyle(_resourceCache).Stylesheet;
+		_userInterfaceManager.Stylesheet = DefaultContentStyleSheet;
 	}
 }

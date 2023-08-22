@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Content.Client.StyleSheets
 {
-	public partial class DefaultStyle
+	public partial class DefaultContentStyle
 	{
 		public const string StyleClassLabelMainMenu = "LabelGameTitle";
 
