@@ -16,13 +16,15 @@ namespace Content.Client.StyleSheets
 		private const string LineEditTexturePath = "/Textures/Interface/panelDark.png";
 		private const string ButtonTexturePath = "/Textures/Interface/panelWhite.png";
 		private const string TabContainerPanelTexturePath = "/Textures/Interface/tabPanel.png";
-		private const string CheckBoxUncheckedTexturePath = "/Textures/Interface/checkBoxChecked.png";
-		private const string CheckBoxCheckedTexturePath = "/Textures/Interface/checkBoxUnchecked.png";
+		private const string CheckBoxUncheckedTexturePath = "/Textures/Interface/checkBoxUnchecked.png";
+		private const string CheckBoxCheckedTexturePath = "/Textures/Interface/checkBoxChecked.png";
 
 		private readonly Color ButtonColorDefault = Color.FromHex("#1a1a1a");
 		private readonly Color ButtonColorPressed = Color.FromHex("#575b7f");
 		private readonly Color ButtonColorHover = Color.FromHex("#242424");
 		private readonly Color ButtonColorDisabled = Color.FromHex("#6a2e2e");
+
+		private const int CheckBoxSeparation = 10;
 
 		private List<StyleRule> FontRules()
 		{
@@ -127,21 +129,26 @@ namespace Content.Client.StyleSheets
 
 		private List<StyleRule> CheckBoxRules()
 		{
-			var checkBoxUncheckedTexture = _resourceCache.GetResource<TextureResource>(CheckBoxUncheckedTexturePath);
-			var checkBoxCheckedTexture = _resourceCache.GetResource<TextureResource>(CheckBoxCheckedTexturePath);
-	
-			var rule1 = Element<TextureRect>()
+			var checkBoxUncheckedTexture = _resourceCache.GetResource<TextureResource>(CheckBoxUncheckedTexturePath).Texture;
+			var checkBoxCheckedTexture = _resourceCache.GetResource<TextureResource>(CheckBoxCheckedTexturePath).Texture;
+
+			var uncheckedTextureRule = Element<TextureRect>()
 				.Class(CheckBox.StyleClassCheckBox)
 				.Prop(TextureRect.StylePropertyTexture, checkBoxUncheckedTexture);
 
-			var rule2 = Element<TextureRect>()
+			var checkedTextureRule = Element<TextureRect>()
 				.Class(CheckBox.StyleClassCheckBoxChecked)
 				.Prop(TextureRect.StylePropertyTexture, checkBoxCheckedTexture);
 
+			var separationRule = Element<BoxContainer>()
+				.Class(CheckBox.StyleClassCheckBox)
+				.Prop(BoxContainer.StylePropertySeparation, CheckBoxSeparation);
+
 			return new List<StyleRule>
 			{
-				rule1,
-				rule2,
+				uncheckedTextureRule,
+				checkedTextureRule,
+				separationRule,
 			};
 		}
 

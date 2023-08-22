@@ -17,10 +17,16 @@ namespace Content.Client.OptionsMenu
 			RobustXamlLoader.Load(this);
 			IoCManager.InjectDependencies(this);
 
+			ApplyButton.OnPressed += _ => ApplyPressed();
+
+			UpdateButtons();
+		}
+
+		public void UpdateButtons()
+		{
 			VSyncCheckBox.Pressed = _cfg.GetCVar(CVars.DisplayVSync);
 			FullscreenCheckBox.Pressed = _cfg.GetCVar(CVars.DisplayWindowMode) == (int)WindowMode.Fullscreen;
 			//FpsCounterCheckBox.Pressed = _cfg.GetCVar(CVars.HudFpsVisible);
-			ApplyButton.OnPressed += _ => ApplyPressed();
 		}
 
 		private void ApplyPressed()
