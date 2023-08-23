@@ -1,6 +1,8 @@
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
+using Robust.Client.UserInterface.Controls;
+using static Robust.Client.UserInterface.StylesheetHelpers;
 
 namespace Content.Client.StyleSheets.Default
 {
@@ -43,6 +45,7 @@ namespace Content.Client.StyleSheets.Default
 				PanelContainerRule(),
 				TabContainerRule(),
 				LineEditRule(),
+				WindowRootRule(),
 			};
 			styleRules.AddRange(FontRules());
 			styleRules.AddRange(ButtonRules());
@@ -92,5 +95,18 @@ namespace Content.Client.StyleSheets.Default
 			styleBox.SetContentMarginOverride(StyleBox.Margin.All, DefaultContentMargin);
 			styleBox.SetPadding(StyleBox.Margin.All, DefaultPaddingMargin);
 		}
+
+		#region WindowRoot
+
+		private readonly Color WindowRootColor = Color.Black;
+
+		private StyleRule WindowRootRule()
+		{
+			var windowRootRule = Element<WindowRoot>()
+				.Prop(UIRoot.StylePropBackground, WindowRootColor);
+			return windowRootRule;
+		}
+
+		#endregion
 	}
 }
