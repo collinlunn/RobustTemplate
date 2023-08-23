@@ -2,6 +2,12 @@
          HorizontalAlignment="Left"
          VerticalAlignment="Top">
     <BoxContainer Orientation="Vertical">
-        <Label Text="Audio"/>
+        <BoxContainer Orientation="Horizontal" Margin="3">
+            <Label Text="Master Volume" />
+            <Slider Name="MasterVolumeSlider"
+                    MinSize="80 0"/>
+            <Label Name="CurrentMasterVolumeLabel" MinWidth="50"/>
+        </BoxContainer>
+        <Button Name="ApplyButton" Text="Apply" Margin="3"/>
     </BoxContainer>
 </Control>
