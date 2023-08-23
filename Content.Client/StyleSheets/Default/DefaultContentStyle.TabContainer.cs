@@ -16,9 +16,7 @@ namespace Content.Client.StyleSheets.Default
 
 		private StyleRule TabContainerRule()
 		{
-			var tabContainerPanelTex = _resourceCache.GetResource<TextureResource>(TabContainerPanelTexturePath);
-			var tabContainerPanel = new StyleBoxTexture { Texture = tabContainerPanelTex.Texture };
-			tabContainerPanel.SetPatchMargin(StyleBox.Margin.All, DefaultMargin);
+			var tabContainerPanel = GetStyleBoxTexture(TabContainerPanelTexturePath);
 
 			var tabContainerBoxActive = new StyleBoxFlat { BackgroundColor = TabContainerActiveTabColor };
 			tabContainerBoxActive.SetContentMarginOverride(StyleBox.Margin.Horizontal, TabContainerHorizontalMarginOverride);

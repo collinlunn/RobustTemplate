@@ -23,10 +23,7 @@ namespace Content.Client.StyleSheets.Default
 
 		private List<StyleRule> ButtonRules()
 		{
-			var buttonTexture = _resourceCache.GetResource<TextureResource>(ButtonTexturePath);
-			var buttonStyleBoxTexture = new StyleBoxTexture { Texture = buttonTexture };
-			buttonStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, DefaultMargin);
-			buttonStyleBoxTexture.SetExpandMargin(StyleBox.Margin.All, DefaultMargin);
+			var buttonStyleBoxTexture = GetStyleBoxTexture(ButtonTexturePath);
 
 			var buttonStyleBoxRule = Element<Button>()
 				.Prop(Button.StylePropertyStyleBox, buttonStyleBoxTexture);

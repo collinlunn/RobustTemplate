@@ -12,10 +12,7 @@ namespace Content.Client.StyleSheets.Default
 		private const string LineEditTexturePath = "/Textures/Interface/panelDark.png";
 		private StyleRule LineEditRule()
 		{
-			var lineEditTexture = _resourceCache.GetResource<TextureResource>(LineEditTexturePath);
-			var lineEditStyleBoxTexture = new StyleBoxTexture { Texture = lineEditTexture };
-			lineEditStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, DefaultMargin);
-			lineEditStyleBoxTexture.SetExpandMargin(StyleBox.Margin.All, DefaultMargin);
+			var lineEditStyleBoxTexture = GetStyleBoxTexture(LineEditTexturePath);
 
 			var lineEditRule = Element<LineEdit>()
 				.Prop(LineEdit.StylePropertyStyleBox, lineEditStyleBoxTexture);

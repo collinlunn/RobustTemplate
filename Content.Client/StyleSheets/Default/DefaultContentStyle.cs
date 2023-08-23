@@ -46,5 +46,23 @@ namespace Content.Client.StyleSheets.Default
 			
 			return styleRules;
 		}
+
+		private Texture GetTexture(string texturePath)
+		{
+			var texture = _resourceCache.GetResource<TextureResource>(texturePath);
+			return texture;
+		}
+
+		private StyleBoxTexture GetStyleBoxTexture(string texturePath)
+		{
+			var styleBoxTexture = new StyleBoxTexture 
+			{ 
+				Texture = GetTexture(texturePath)
+			};
+			styleBoxTexture.SetPatchMargin(StyleBox.Margin.All, DefaultMargin);
+			styleBoxTexture.SetExpandMargin(StyleBox.Margin.All, DefaultMargin);
+
+			return styleBoxTexture;
+		}
 	}
 }

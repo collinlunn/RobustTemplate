@@ -17,8 +17,8 @@ namespace Content.Client.StyleSheets.Default
 
 		private List<StyleRule> CheckBoxRules()
 		{
-			var checkBoxUncheckedTexture = _resourceCache.GetResource<TextureResource>(CheckBoxUncheckedTexturePath).Texture;
-			var checkBoxCheckedTexture = _resourceCache.GetResource<TextureResource>(CheckBoxCheckedTexturePath).Texture;
+			var checkBoxUncheckedTexture = GetTexture(CheckBoxUncheckedTexturePath);
+			var checkBoxCheckedTexture = GetTexture(CheckBoxCheckedTexturePath);
 
 			var uncheckedTextureRule = Element<TextureRect>()
 				.Class(CheckBox.StyleClassCheckBox)
