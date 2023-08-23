@@ -5,8 +5,12 @@
         <BoxContainer Orientation="Horizontal" Margin="3">
             <Label Text="Master Volume" />
             <Slider Name="MasterVolumeSlider"
-                    MinSize="80 0"/>
-            <Label Name="CurrentMasterVolumeLabel" MinWidth="50"/>
+                    MinValue="0"
+                    MaxValue="100"
+                    HorizontalExpand="True"
+                    MinSize="300 40"
+                    Rounded="True" />
+            <Label Name="CurrentMasterVolumeLabel"/>
         </BoxContainer>
         <Button Name="ApplyButton" Text="Apply" Margin="3"/>
     </BoxContainer>

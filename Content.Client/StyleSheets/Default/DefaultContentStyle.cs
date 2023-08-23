@@ -46,6 +46,7 @@ namespace Content.Client.StyleSheets.Default
 				TabContainerRule(),
 				LineEditRule(),
 				WindowRootRule(),
+				SliderRule(),
 			};
 			styleRules.AddRange(FontRules());
 			styleRules.AddRange(ButtonRules());
@@ -105,6 +106,52 @@ namespace Content.Client.StyleSheets.Default
 			var windowRootRule = Element<WindowRoot>()
 				.Prop(UIRoot.StylePropBackground, WindowRootColor);
 			return windowRootRule;
+		}
+
+		#endregion
+
+		#region Slider
+
+		private const string SliderFillTexturePath = "sliderFill.png";
+		private const string SliderOutlineTexturePath = "sliderOutline.png";
+		private const string SliderGrabberTexturePath = "sliderGrabber.png";
+
+		private StyleRule SliderRule()
+		{
+			var sliderFillBox = GetStyleBoxTexture(SliderFillTexturePath);
+			sliderFillBox.Modulate = Color.FromHex("#8a4389"); //purple
+
+			var sliderBackBox = GetStyleBoxTexture(SliderFillTexturePath);
+			sliderBackBox.Modulate = Color.FromHex("#ff004b"); //red
+
+			var sliderForeBox = GetStyleBoxTexture(SliderOutlineTexturePath);
+			sliderForeBox.Modulate = Color.FromHex("#0083ff"); //blue
+
+			var sliderGrabBox = GetStyleBoxTexture(SliderGrabberTexturePath);
+			sliderGrabBox.Modulate = Color.FromHex("#eec900"); //yellow
+
+			sliderFillBox.SetPatchMargin(StyleBox.Margin.All, 12);
+			sliderBackBox.SetPatchMargin(StyleBox.Margin.All, 12);
+			sliderForeBox.SetPatchMargin(StyleBox.Margin.All, 12);
+			sliderGrabBox.SetPatchMargin(StyleBox.Margin.All, 12);
+
+			sliderFillBox.SetPadding(StyleBox.Margin.All, 0);
+			sliderBackBox.SetPadding(StyleBox.Margin.All, 0);
+			sliderForeBox.SetPadding(StyleBox.Margin.All, 0);
+			sliderGrabBox.SetPadding(StyleBox.Margin.All, 0);
+
+			sliderFillBox.SetContentMarginOverride(StyleBox.Margin.All, 0);
+			sliderBackBox.SetContentMarginOverride(StyleBox.Margin.All, 0);
+			sliderForeBox.SetContentMarginOverride(StyleBox.Margin.All, 0);
+			sliderGrabBox.SetContentMarginOverride(StyleBox.Margin.All, 0);
+
+			var sliderRule = Element<Slider>()
+				.Prop(Slider.StylePropertyBackground, sliderBackBox)
+				.Prop(Slider.StylePropertyForeground, sliderForeBox)
+				.Prop(Slider.StylePropertyGrabber, sliderGrabBox)
+				.Prop(Slider.StylePropertyFill, sliderFillBox);
+
+			return sliderRule;
 		}
 
 		#endregion
