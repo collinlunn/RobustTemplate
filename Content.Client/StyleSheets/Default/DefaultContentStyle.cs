@@ -69,12 +69,13 @@ namespace Content.Client.StyleSheets.Default
 			return styleBoxTexture;
 		}
 
-		private StyleBox GetStyleBoxFlat(Color backGroundColor = default)
+		private StyleBox GetStyleBoxFlat(Color backGroundColor = default, Color borderColor = default, Thickness borderThickness = default)
 		{
 			var styleBoxFlat = new StyleBoxFlat
 			{ 
-				BackgroundColor = TabContainerActiveTabColor
-				//Other stuff
+				BackgroundColor = backGroundColor,
+				BorderColor = borderColor,
+				BorderThickness = borderThickness,
 			};
 			SetDefaultMargins(styleBoxFlat);
 			return styleBoxFlat;
