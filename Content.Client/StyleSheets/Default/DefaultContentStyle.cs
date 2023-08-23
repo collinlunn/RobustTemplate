@@ -61,7 +61,7 @@ namespace Content.Client.StyleSheets.Default
 			return texture;
 		}
 
-		private StyleBox GetStyleBoxTexture(string texturePath)
+		private StyleBoxTexture GetStyleBoxTexture(string texturePath)
 		{
 			var styleBoxTexture = new StyleBoxTexture 
 			{ 
@@ -72,7 +72,7 @@ namespace Content.Client.StyleSheets.Default
 			return styleBoxTexture;
 		}
 
-		private StyleBox GetStyleBoxFlat(Color backGroundColor = default, Color borderColor = default, Thickness borderThickness = default)
+		private StyleBoxFlat GetStyleBoxFlat(Color backGroundColor = default, Color borderColor = default, Thickness borderThickness = default)
 		{
 			var styleBoxFlat = new StyleBoxFlat
 			{ 
