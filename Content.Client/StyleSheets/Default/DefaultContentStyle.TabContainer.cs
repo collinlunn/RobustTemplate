@@ -9,20 +9,15 @@ namespace Content.Client.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{
-		private const string TabContainerPanelTexturePath = "/Textures/Interface/tabPanel.png";
+		private const string TabContainerPanelTexturePath = "tabPanel.png";
 		private readonly Color TabContainerActiveTabColor = new Color(64, 64, 64);
 		private readonly Color TabContainerInactiveTabColor = new Color(32, 32, 32);
-		private const int TabContainerHorizontalMarginOverride = 5;
 
 		private StyleRule TabContainerRule()
 		{
 			var tabContainerPanel = GetStyleBoxTexture(TabContainerPanelTexturePath);
-
-			var tabContainerBoxActive = new StyleBoxFlat { BackgroundColor = TabContainerActiveTabColor };
-			tabContainerBoxActive.SetContentMarginOverride(StyleBox.Margin.Horizontal, TabContainerHorizontalMarginOverride);
-
-			var tabContainerBoxInactive = new StyleBoxFlat { BackgroundColor = TabContainerInactiveTabColor };
-			tabContainerBoxInactive.SetContentMarginOverride(StyleBox.Margin.Horizontal, TabContainerHorizontalMarginOverride);
+			var tabContainerBoxActive = GetStyleBoxFlat(TabContainerActiveTabColor);
+			var tabContainerBoxInactive = GetStyleBoxFlat(TabContainerInactiveTabColor);
 
 			var tabContainerRule = Element<TabContainer>()
 				.Prop(TabContainer.StylePropertyPanelStyleBox, tabContainerPanel)

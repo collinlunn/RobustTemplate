@@ -1,7 +1,6 @@
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
-using System.Collections.Generic;
 
 namespace Content.Client.StyleSheets.Default
 {
@@ -20,7 +19,13 @@ namespace Content.Client.StyleSheets.Default
 
 		private const string DefaultFontResourcePath = "/Fonts/NotoSans/NotoSans-Regular.ttf";
 
-		private const int DefaultMargin = 2;
+		private const string TextureRoot = "/Textures/Interface/";
+
+		private const float DefaultPatchMargin = 2f; //Increasing shrinks the corners
+		private const int DefaultExpandMargin = 0; //Increasing pushes out how far the patch expands from the stylebox edge
+
+		private const int DefaultContentMargin = 2; //Margin inside stylebox edge
+		private const int DefaultPaddingMargin = 2; //Margin outside stylebox edge
 
 		public DefaultContentStyle(IResourceCache resourceCache)
 		{
@@ -49,20 +54,42 @@ namespace Content.Client.StyleSheets.Default
 
 		private Texture GetTexture(string texturePath)
 		{
-			var texture = _resourceCache.GetResource<TextureResource>(texturePath);
+			var texture = _resourceCache.GetResource<TextureResource>(TextureRoot + texturePath);
 			return texture;
 		}
 
-		private StyleBoxTexture GetStyleBoxTexture(string texturePath)
+		private StyleBox GetStyleBoxTexture(string texturePath)
 		{
 			var styleBoxTexture = new StyleBoxTexture 
 			{ 
 				Texture = GetTexture(texturePath)
 			};
-			styleBoxTexture.SetPatchMargin(StyleBox.Margin.All, DefaultMargin);
-			styleBoxTexture.SetExpandMargin(StyleBox.Margin.All, DefaultMargin);
-
+			SetDefaultPatchMargins(styleBoxTexture);
+			SetDefaultMargins(styleBoxTexture);
 			return styleBoxTexture;
+		}
+
+		private StyleBox GetStyleBoxFlat(Color backGroundColor = default)
+		{
+			var styleBoxFlat = new StyleBoxFlat
+			{ 
+				BackgroundColor = TabContainerActiveTabColor
+				//Other stuff
+			};
+			SetDefaultMargins(styleBoxFlat);
+			return styleBoxFlat;
+		}
+
+		private void SetDefaultPatchMargins(StyleBoxTexture styleBoxTexture)
+		{
+			styleBoxTexture.SetPatchMargin(StyleBox.Margin.All, DefaultPatchMargin);
+			styleBoxTexture.SetExpandMargin(StyleBox.Margin.All, DefaultExpandMargin);
+		}
+
+		private void SetDefaultMargins(StyleBox styleBox)
+		{
+			styleBox.SetContentMarginOverride(StyleBox.Margin.All, DefaultContentMargin);
+			styleBox.SetPadding(StyleBox.Margin.All, DefaultPaddingMargin);
 		}
 	}
 }

@@ -9,7 +9,7 @@ namespace Content.Client.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{
-		private const string LineEditTexturePath = "/Textures/Interface/panelDark.png";
+		private const string LineEditTexturePath = "panelDark.png";
 		private StyleRule LineEditRule()
 		{
 			var lineEditStyleBoxTexture = GetStyleBoxTexture(LineEditTexturePath);

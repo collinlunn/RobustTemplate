@@ -10,8 +10,8 @@ namespace Content.Client.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{
-		private const string CheckBoxUncheckedTexturePath = "/Textures/Interface/checkBoxUnchecked.png";
-		private const string CheckBoxCheckedTexturePath = "/Textures/Interface/checkBoxChecked.png";
+		private const string CheckBoxUncheckedTexturePath = "checkBoxUnchecked.png";
+		private const string CheckBoxCheckedTexturePath = "checkBoxChecked.png";
 
 		private const int CheckBoxSeparation = 10;
 

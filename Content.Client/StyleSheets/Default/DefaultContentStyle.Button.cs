@@ -10,13 +10,13 @@ namespace Content.Client.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{
-		private const string ButtonTexturePath = "/Textures/Interface/panelWhite.png";
+		private const string ButtonTexturePath = "panelWhite.png";
 		private readonly Color ButtonColorDefault = Color.FromHex("#1a1a1a");
 		private readonly Color ButtonColorPressed = Color.FromHex("#575b7f");
 		private readonly Color ButtonColorHover = Color.FromHex("#242424");
 		private readonly Color ButtonColorDisabled = Color.FromHex("#6a2e2e");
 
-		private const string WindowCloseButtonTexturePath = "/Textures/Interface/cross.png";
+		private const string WindowCloseButtonTexturePath = "cross.png";
 		private readonly Color WindowCloseButtonColorDefault = Color.FromHex("#BB88BB");
 		private readonly Color WindowCloseButtonColorHover = Color.FromHex("#DD88DD");
 		private readonly Color WindowCloseButtonColorPressed = Color.FromHex("#FFCCFF");
@@ -56,7 +56,7 @@ namespace Content.Client.StyleSheets.Default
 
 		private List<StyleRule> WindowCloseButtonRules()
 		{
-			var textureCloseButton = _resourceCache.GetResource<TextureResource>(WindowCloseButtonTexturePath).Texture;
+			var textureCloseButton = GetTexture(WindowCloseButtonTexturePath);
 
 			var windowCloseButtonTextureRule = Element<TextureButton>()
 				.Class(DefaultWindow.StyleClassWindowCloseButton)

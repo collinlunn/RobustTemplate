@@ -10,7 +10,7 @@ namespace Content.Client.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{
-		private const string PanelContainerTexturePath = "/Textures/Interface/panelGrey.png";
+		private const string PanelContainerTexturePath = "panelGrey.png";
 
 		private StyleRule PanelContainerRule()
 		{
