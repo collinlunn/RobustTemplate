@@ -128,7 +128,6 @@ namespace Content.Client.StyleSheets.Default
 			sliderForeBox.Modulate = Color.FromHex("#0083ff"); //blue
 
 			var sliderGrabBox = GetStyleBoxTexture(SliderGrabberTexturePath);
-			sliderGrabBox.Modulate = Color.FromHex("#eec900"); //yellow
 
 			sliderFillBox.SetPatchMargin(StyleBox.Margin.All, 12);
 			sliderBackBox.SetPatchMargin(StyleBox.Margin.All, 12);

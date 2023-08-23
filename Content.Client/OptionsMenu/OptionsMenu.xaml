@@ -3,7 +3,7 @@
     xmlns:tabs="clr-namespace:Content.Client.OptionsMenu"
     HorizontalAlignment="Center"
     VerticalAlignment="Center"
-    MinSize="450 450"
+    SetSize="450 450"
     Title="Options">
     <TabContainer Name="Tabs">
         <tabs:GraphicsTab/>

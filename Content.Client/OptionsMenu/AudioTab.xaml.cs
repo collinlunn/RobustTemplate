@@ -20,6 +20,12 @@ namespace Content.Client.OptionsMenu
 
 			ApplyButton.OnPressed += _ => ApplyPressed();
 			MasterVolumeSlider.Value = _cfg.GetCVar(CVars.AudioMasterVolume) * 100;
+
+			CurrentMasterVolumeLabel.Text = $"{MasterVolumeSlider.Value}%";
+			MasterVolumeSlider.OnValueChanged += range =>
+			{
+				CurrentMasterVolumeLabel.Text = $"{range.Value}%";
+			};
 		}
 
 		private void ApplyPressed()

@@ -2,16 +2,18 @@
          HorizontalAlignment="Left"
          VerticalAlignment="Top">
     <BoxContainer Orientation="Vertical">
-        <BoxContainer Orientation="Horizontal" Margin="3">
+        <BoxContainer Orientation="Horizontal" Margin="5">
             <Label Text="Master Volume" />
             <Slider Name="MasterVolumeSlider"
                     MinValue="0"
                     MaxValue="100"
-                    HorizontalExpand="True"
-                    MinSize="300 40"
-                    Rounded="True" />
+                    SetSize="250 30"
+                    Rounded="True"
+                    Margin="10 0 10 0"/>
             <Label Name="CurrentMasterVolumeLabel"/>
         </BoxContainer>
-        <Button Name="ApplyButton" Text="Apply" Margin="3"/>
+        <BoxContainer Orientation="Horizontal" Margin="5">
+            <Button Name="ApplyButton" Text="Apply" SetWidth ="200"/>
+        </BoxContainer>
     </BoxContainer>
 </Control>
