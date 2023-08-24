@@ -2,6 +2,7 @@
          HorizontalAlignment="Left"
          VerticalAlignment="Top">
     <BoxContainer Orientation="Vertical">
-        <Label Text="Hotkey"/>
+        <BoxContainer Name="KeybindsContainer" Orientation="Vertical" Margin="8 8 8 8"/>
+        <Button Name ="ResetAllButton" Text="Reset All" Margin="3"/>
     </BoxContainer>
 </Control>
