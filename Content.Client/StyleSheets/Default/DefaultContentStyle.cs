@@ -101,16 +101,20 @@ namespace Content.Client.StyleSheets.Default
 		private const string SliderOutlineTexturePath = "sliderOutline.png";
 		private const string SliderGrabberTexturePath = "sliderGrabber.png";
 
+		private readonly Color SliderFillColor = Color.FromHex("#2b8f2f");
+		private readonly Color SliderBackColor = Color.FromHex("#8f2b2b");
+		private readonly Color SliderForeColor = Color.FromHex("#010000");
+
 		private StyleRule SliderRule()
 		{
 			var sliderFillBox = GetStyleBoxTexture(SliderFillTexturePath);
-			sliderFillBox.Modulate = Color.FromHex("#8a4389"); //purple
+			sliderFillBox.Modulate = SliderFillColor;
 
 			var sliderBackBox = GetStyleBoxTexture(SliderFillTexturePath);
-			sliderBackBox.Modulate = Color.FromHex("#ff004b"); //red
+			sliderBackBox.Modulate = SliderBackColor;
 
 			var sliderForeBox = GetStyleBoxTexture(SliderOutlineTexturePath);
-			sliderForeBox.Modulate = Color.FromHex("#0083ff"); //blue
+			sliderForeBox.Modulate = SliderForeColor;
 
 			var sliderGrabBox = GetStyleBoxTexture(SliderGrabberTexturePath);
 
