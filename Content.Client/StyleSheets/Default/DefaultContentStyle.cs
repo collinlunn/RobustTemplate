@@ -23,11 +23,16 @@ namespace Content.Client.StyleSheets.Default
 
 		private const string TextureRoot = "/Textures/Interface/";
 
-		private const float DefaultPatchMargin = 2f; //Increasing shrinks the corners
-		private const int DefaultExpandMargin = 0; //Increasing pushes out how far the patch expands from the stylebox edge
-
-		private const int DefaultContentMargin = 2; //Margin inside stylebox edge
-		private const int DefaultPaddingMargin = 2; //Margin outside stylebox edge
+		/* Margin Notes:
+		 * 
+		 * StyleBox:
+		 * SetContentMargin: Margin inside stylebox edge
+		 * SetPadding: Margin outside stylebox edge
+		 *
+		 * StyleBoxTexture:
+		 * SetPatchMargin: Sets lines used to split image into patches
+		 * SetExpandMargin: How close image expands to edge
+		 */
 
 		public DefaultContentStyle(IResourceCache resourceCache)
 		{
@@ -71,17 +76,6 @@ namespace Content.Client.StyleSheets.Default
 			return styleBoxTexture;
 		}
 
-		private StyleBoxFlat GetStyleBoxFlat(Color backGroundColor = default, Color borderColor = default, Thickness borderThickness = default)
-		{
-			var styleBoxFlat = new StyleBoxFlat
-			{ 
-				BackgroundColor = backGroundColor,
-				BorderColor = borderColor,
-				BorderThickness = borderThickness,
-			};
-			return styleBoxFlat;
-		}
-
 		#region WindowRoot
 
 		private readonly Color WindowRootColor = Color.Black;
@@ -112,7 +106,6 @@ namespace Content.Client.StyleSheets.Default
 
 			var sliderBackBox = GetStyleBoxTexture(SliderFillTexturePath);
 			sliderBackBox.Modulate = SliderBackColor;
-
 			var sliderForeBox = GetStyleBoxTexture(SliderOutlineTexturePath);
 			sliderForeBox.Modulate = SliderForeColor;
 

@@ -16,8 +16,8 @@ namespace Content.Client.StyleSheets.Default
 		private StyleRule TabContainerRule()
 		{
 			var tabContainerPanel = GetStyleBoxTexture(TabContainerPanelTexturePath);
-			var tabContainerBoxActive = GetStyleBoxFlat(TabContainerActiveTabColor);
-			var tabContainerBoxInactive = GetStyleBoxFlat(TabContainerInactiveTabColor);
+			var tabContainerBoxActive = new StyleBoxFlat { BackgroundColor = TabContainerActiveTabColor };
+			var tabContainerBoxInactive = new StyleBoxFlat { BackgroundColor = TabContainerInactiveTabColor };
 
 			tabContainerPanel.SetPadding(StyleBox.Margin.Right, 4);
 			tabContainerBoxActive.SetPadding(StyleBox.Margin.Right, 4);
