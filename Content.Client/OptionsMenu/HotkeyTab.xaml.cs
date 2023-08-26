@@ -7,6 +7,7 @@ using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Input;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
+using System.Linq;
 using static Robust.Client.Input.Keyboard;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
 
@@ -21,6 +22,11 @@ namespace Content.Client.OptionsMenu
 
 		private readonly List<Key> _heldKeys = new();
 
+		private readonly List<HotKeyBox> _hoykeyBoxes = new();
+
+		private bool _currentlyRebinding = false;
+		private BoundKeyFunction _rebindingFunction;
+
 		public HotkeyTab()
 		{
 			RobustXamlLoader.Load(this);
@@ -30,58 +36,107 @@ namespace Content.Client.OptionsMenu
 			{
 				KeybindsContainer.AddChild(new Label { Text = hotkeySet.CategoryName });
 
-				foreach (var hotkey in hotkeySet.Hotkeys)
+				foreach (var function in hotkeySet.Functions)
 				{
-					var hotkeyBox = new HotKeyBox(hotkey);
-					KeybindsContainer.AddChild(hotkeyBox);
-					ResetAllButton.OnPressed += _ => ResetKeybind(hotkeyBox);
-					hotkeyBox.ResetButton.OnPressed += _ => ResetKeybind(hotkeyBox);
-					hotkeyBox.RebindButton.OnButtonUp += _ => StartRebinding(hotkeyBox);
-					UpdateButtons(hotkeyBox);
+					AddHotkeyBox(function);
 				}
+			}
+			UpdateAllHotkeyBoxes();
+			ResetAllButton.OnButtonUp += _ => ResetAllKeybinds();
+
+			void AddHotkeyBox(BoundKeyFunction function)
+			{
+				var hotkeyBox = new HotKeyBox(function);
+				_hoykeyBoxes.Add(hotkeyBox);
+				KeybindsContainer.AddChild(hotkeyBox);
+
+				hotkeyBox.ResetButton.OnButtonUp += _ => ResetKeybind(hotkeyBox);
+				hotkeyBox.RebindButton.OnButtonUp += _ => StartRebinding(hotkeyBox);
+			}
+		}
+
+		private void ResetAllKeybinds()
+		{
+			foreach (var hotkeyBox in _hoykeyBoxes)
+			{
+				ResetKeybind(hotkeyBox);
 			}
 		}
 
 		private void ResetKeybind(HotKeyBox hotkeyBox)
 		{
+			//Reseting the keybind is defered to the next frame
+			//Removing a keybind in the middle of InputManager handling a key input causes a crash
 			_keybindResets.Add(() =>
 			{
 				_inputManager.ResetBindingsFor(hotkeyBox.Function);
 				_inputManager.SaveToUserData();
-				UpdateButtons(hotkeyBox);
+				UpdateHotkeyBox(hotkeyBox);
 			});
 		}
 
-		private void UpdateButtons(HotKeyBox hotkeyBox)
+		private void UpdateAllHotkeyBoxes()
 		{
-			hotkeyBox.RebindButton.Text = _inputManager.GetKeyBinding(hotkeyBox.Function)
-				.GetKeyString();
+			foreach (var hotkeyBox in _hoykeyBoxes)
+			{
+				UpdateHotkeyBox(hotkeyBox);
+			}
+		}
+
+		private void UpdateHotkeyBox(HotKeyBox hotkeyBox)
+		{
+			hotkeyBox.RebindButton.Disabled = _currentlyRebinding;
+
+			hotkeyBox.RebindButton.Text = _rebindingFunction == hotkeyBox.Function ?
+				"Rebinding..." : _inputManager.GetKeyBinding(hotkeyBox.Function).GetKeyString();
 
 			hotkeyBox.ResetButton.Disabled = !_inputManager.IsKeyFunctionModified(hotkeyBox.Function);
 		}
 
-		private void StartRebinding(HotKeyBox hotkeyBox)
+		private void StartRebinding(HotKeyBox rebindingHotkeyBox)
 		{
-			hotkeyBox.RebindButton.Text = "Rebinding...";
+			_currentlyRebinding = true;
+			_rebindingFunction = rebindingHotkeyBox.Function;
+
+			UpdateAllHotkeyBoxes();
 
 			KeyEventAction handler = (_, _) => { };
-			handler = (keyEvent, type) => InterceptInput(keyEvent, type, handler, hotkeyBox);
+			handler = (keyEvent, type) => InterceptInput(keyEvent, type, handler, rebindingHotkeyBox);
 			_inputManager.FirstChanceOnKeyEvent += handler;
 		}
 
-		private void InterceptInput(KeyEventArgs keyEvent, KeyEventType type, KeyEventAction handler, HotKeyBox hotkeyBox)
+		private void InterceptInput(KeyEventArgs keyEvent, KeyEventType type, KeyEventAction handler, HotKeyBox rebindingHotkeyBox)
 		{
 			if (type == KeyEventType.Down)
 			{
 				_heldKeys.Add(keyEvent.Key);
 				return;
 			}
-			var currentBind = _inputManager.GetKeyBinding(hotkeyBox.Function);
+			else if (type == KeyEventType.Repeat)
+			{
+				return;
+			}
+			if (!_heldKeys.Any())
+			{
+				return;
+			}
 
-			_heldKeys.TryGetValue(0, out var primaryKey);
-			_heldKeys.TryGetValue(1, out var mod1);
-			_heldKeys.TryGetValue(2, out var mod2);
-			_heldKeys.TryGetValue(3, out var mod3);
+			RebindHotkey(rebindingHotkeyBox.Function, _heldKeys);
+			_inputManager.FirstChanceOnKeyEvent -= handler;
+			_heldKeys.Clear();
+			_currentlyRebinding = false;
+			_rebindingFunction = default;
+			UpdateAllHotkeyBoxes();
+		}
+
+		private void RebindHotkey(BoundKeyFunction function, List<Key> newKeys)
+		{
+			var currentBind = _inputManager.GetKeyBinding(function);
+
+			newKeys.TryGetValue(0, out var primaryKey);
+			newKeys.TryGetValue(1, out var mod1);
+			newKeys.TryGetValue(2, out var mod2);
+			newKeys.TryGetValue(3, out var mod3);
 
 			var newBind = new KeyBindingRegistration
 			{
@@ -98,9 +153,6 @@ namespace Content.Client.OptionsMenu
 			_inputManager.RemoveBinding(currentBind);
 			_inputManager.RegisterBinding(newBind);
 			_inputManager.SaveToUserData();
-			_inputManager.FirstChanceOnKeyEvent -= handler;
-			_heldKeys.Clear();
-			UpdateButtons(hotkeyBox);
 		}
 
 		protected override void FrameUpdate(FrameEventArgs args)
@@ -187,12 +239,12 @@ namespace Content.Client.OptionsMenu
 		{
 			public string CategoryName { get; private set; }
 
-			public List<BoundKeyFunction> Hotkeys { get; private set; }
+			public List<BoundKeyFunction> Functions { get; private set; }
 
-			public HotkeySet(string categoryName, List<BoundKeyFunction> hotkeys)
+			public HotkeySet(string categoryName, List<BoundKeyFunction> functions)
 			{
 				CategoryName = categoryName;
-				Hotkeys = hotkeys;
+				Functions = functions;
 			}
 		}
 	}
