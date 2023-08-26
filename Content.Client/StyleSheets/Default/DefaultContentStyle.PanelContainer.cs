@@ -15,6 +15,7 @@ namespace Content.Client.StyleSheets.Default
 		private StyleRule PanelContainerRule()
 		{
 			var panelContainerStyleBoxTexture = GetStyleBoxTexture(PanelContainerTexturePath);
+			panelContainerStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 2);
 
 			var panelContainerRule = Element<PanelContainer>()
 				.Prop(PanelContainer.StylePropertyPanel, panelContainerStyleBoxTexture);

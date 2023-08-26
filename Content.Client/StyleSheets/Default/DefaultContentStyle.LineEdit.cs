@@ -13,6 +13,8 @@ namespace Content.Client.StyleSheets.Default
 		private StyleRule LineEditRule()
 		{
 			var lineEditStyleBoxTexture = GetStyleBoxTexture(LineEditTexturePath);
+			lineEditStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 2);
+			lineEditStyleBoxTexture.SetContentMarginOverride(StyleBox.Margin.Left, 5);
 
 			var lineEditRule = Element<LineEdit>()
 				.Prop(LineEdit.StylePropertyStyleBox, lineEditStyleBoxTexture);

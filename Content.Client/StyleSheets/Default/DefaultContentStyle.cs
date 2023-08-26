@@ -68,8 +68,6 @@ namespace Content.Client.StyleSheets.Default
 			{ 
 				Texture = GetTexture(texturePath)
 			};
-			SetDefaultPatchMargins(styleBoxTexture);
-			SetDefaultMargins(styleBoxTexture);
 			return styleBoxTexture;
 		}
 
@@ -81,20 +79,7 @@ namespace Content.Client.StyleSheets.Default
 				BorderColor = borderColor,
 				BorderThickness = borderThickness,
 			};
-			SetDefaultMargins(styleBoxFlat);
 			return styleBoxFlat;
-		}
-
-		private void SetDefaultPatchMargins(StyleBoxTexture styleBoxTexture)
-		{
-			styleBoxTexture.SetPatchMargin(StyleBox.Margin.All, DefaultPatchMargin);
-			styleBoxTexture.SetExpandMargin(StyleBox.Margin.All, DefaultExpandMargin);
-		}
-
-		private void SetDefaultMargins(StyleBox styleBox)
-		{
-			styleBox.SetContentMarginOverride(StyleBox.Margin.All, DefaultContentMargin);
-			styleBox.SetPadding(StyleBox.Margin.All, DefaultPaddingMargin);
 		}
 
 		#region WindowRoot
@@ -133,16 +118,6 @@ namespace Content.Client.StyleSheets.Default
 			sliderBackBox.SetPatchMargin(StyleBox.Margin.All, 12);
 			sliderForeBox.SetPatchMargin(StyleBox.Margin.All, 12);
 			sliderGrabBox.SetPatchMargin(StyleBox.Margin.All, 12);
-
-			sliderFillBox.SetPadding(StyleBox.Margin.All, 0);
-			sliderBackBox.SetPadding(StyleBox.Margin.All, 0);
-			sliderForeBox.SetPadding(StyleBox.Margin.All, 0);
-			sliderGrabBox.SetPadding(StyleBox.Margin.All, 0);
-
-			sliderFillBox.SetContentMarginOverride(StyleBox.Margin.All, 0);
-			sliderBackBox.SetContentMarginOverride(StyleBox.Margin.All, 0);
-			sliderForeBox.SetContentMarginOverride(StyleBox.Margin.All, 0);
-			sliderGrabBox.SetContentMarginOverride(StyleBox.Margin.All, 0);
 
 			var sliderRule = Element<Slider>()
 				.Prop(Slider.StylePropertyBackground, sliderBackBox)

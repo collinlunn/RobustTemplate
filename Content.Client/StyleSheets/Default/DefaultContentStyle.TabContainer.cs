@@ -19,6 +19,12 @@ namespace Content.Client.StyleSheets.Default
 			var tabContainerBoxActive = GetStyleBoxFlat(TabContainerActiveTabColor);
 			var tabContainerBoxInactive = GetStyleBoxFlat(TabContainerInactiveTabColor);
 
+			tabContainerPanel.SetPadding(StyleBox.Margin.Right, 4);
+			tabContainerBoxActive.SetPadding(StyleBox.Margin.Right, 4);
+			tabContainerBoxInactive.SetPadding(StyleBox.Margin.Right, 4);
+
+			tabContainerPanel.SetPatchMargin(StyleBox.Margin.All, 2);
+
 			var tabContainerRule = Element<TabContainer>()
 				.Prop(TabContainer.StylePropertyPanelStyleBox, tabContainerPanel)
 				.Prop(TabContainer.StylePropertyTabStyleBox, tabContainerBoxActive)

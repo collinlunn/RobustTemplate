@@ -24,6 +24,7 @@ namespace Content.Client.StyleSheets.Default
 		private List<StyleRule> ButtonRules()
 		{
 			var buttonStyleBoxTexture = GetStyleBoxTexture(ButtonTexturePath);
+			buttonStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 2);
 
 			var buttonStyleBoxRule = Element<Button>()
 				.Prop(Button.StylePropertyStyleBox, buttonStyleBoxTexture);
