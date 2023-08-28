@@ -10,26 +10,34 @@ namespace Content.Client.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{
-		public const string StyleClasstitleFont = "TitleFont";
+		public static string StyleClassHeaderFont = "Header";
+		public static string StyleClassTitleFont = "Title";
 
 		private const int FontSizeRegular = 10;
-		private const int FontSizeLarge = 32;
+		private const int FontSizeHeader = 15;
+		private const int FontSizeTitle = 32;
 
 		private List<StyleRule> FontRules()
 		{
 			var defaultFont = new VectorFont(_fontResource, FontSizeRegular);
-			var bigFont = new VectorFont(_fontResource, FontSizeLarge);
+			var headerFont = new VectorFont(_fontResource, FontSizeHeader);
+			var titleFont = new VectorFont(_fontResource, FontSizeTitle);
 
 			var defaultFontRule = Element()
 				.Prop(Label.StylePropertyFont, defaultFont);
 
+			var headerFontRule = Element()
+				.Class(StyleClassHeaderFont)
+				.Prop(Label.StylePropertyFont, headerFont);
+
 			var titleFontRule = Element()
-				.Class(StyleClasstitleFont)
-				.Prop(Label.StylePropertyFont, bigFont);
+				.Class(StyleClassTitleFont)
+				.Prop(Label.StylePropertyFont, titleFont);
 
 			return new List<StyleRule>
 			{
 				defaultFontRule,
+				headerFontRule,
 				titleFontRule,
 			};
 		}

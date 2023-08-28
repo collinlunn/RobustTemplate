@@ -1,6 +1,6 @@
 <Control xmlns="https://spacestation14.io" HorizontalAlignment="Center">
     <BoxContainer Orientation="Vertical">
-        <Label Text="Placeholder Menu Title" StyleClasses="TitleFont"/>
+        <Label Text="Placeholder Menu Title" StyleClasses="Title"/>
         <PanelContainer HorizontalAlignment="Center" Margin="3" MouseFilter="Pass">
             <BoxContainer Orientation="Vertical">
                 <BoxContainer Orientation="Horizontal" Margin="3">
