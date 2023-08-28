@@ -10,6 +10,8 @@ using System.Text.RegularExpressions;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Utility;
 using Content.Client.OptionsMenu;
+using Robust.Client.UserInterface.CustomControls;
+using Robust.Shared.Physics;
 
 namespace Content.Client.MainMenu
 {

@@ -57,6 +57,8 @@ namespace Content.Client.StyleSheets.Default
 			styleRules.AddRange(ButtonRules());
 			styleRules.AddRange(CheckBoxRules());
 			styleRules.AddRange(WindowCloseButtonRules());
+			styleRules.AddRange(VScrollBarRules());
+			styleRules.AddRange(HScrollBarRules());
 			
 			return styleRules;
 		}

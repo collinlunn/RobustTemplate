@@ -1,8 +1,8 @@
-<Control xmlns="https://spacestation14.io"
-         HorizontalAlignment="Left"
-         VerticalAlignment="Top">
+<Control xmlns="https://spacestation14.io">
     <BoxContainer Orientation="Vertical">
-        <BoxContainer Name="KeybindsContainer" Orientation="Vertical" Margin="8 8 8 8"/>
+        <ScrollContainer VerticalExpand="True">
+            <BoxContainer Name="KeybindsContainer" Orientation="Vertical" Margin="8 8 8 8"/>
+        </ScrollContainer>
         <Button Name ="ResetAllButton" Text="Reset All" Margin="3"/>
     </BoxContainer>
 </Control>
