@@ -54,12 +54,10 @@ namespace Content.Client.Lobby
 		{
 			_lobbyHud?.Dispose();
 			_lobbyHud = null;
-			_uiStateMan.RemoveSubscriber(this);
+			_uiStateMan?.RemoveSubscriber(this); //null forgiveness as entity system are nulled on disconnect
 		}
 
 		public Enum UiKey => LobbyUiKey.Key;
-
-		public UiState DefaultState => new LobbyUiState(2);
 
 		public void SetState(UiState state, UiConnectionStatus status)
 		{
