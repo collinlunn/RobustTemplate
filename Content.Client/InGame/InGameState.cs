@@ -15,6 +15,7 @@ using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Numerics;
 
 namespace Content.Client.InGame;
 
@@ -88,7 +89,7 @@ public sealed class InGameState : State
 
 		// Find all the entities intersecting our click
 		var spriteTree = _entityManager.EntitySysManager.GetEntitySystem<SpriteTreeSystem>();
-		var spriteEntries = spriteTree.QueryAabb(coordinates.MapId, Box2.CenteredAround(coordinates.Position, (1, 1)), true);
+		var spriteEntries = spriteTree.QueryAabb(coordinates.MapId, Box2.CenteredAround(coordinates.Position, new Vector2(1, 1)), true);
 
 		//Order sprites top to bottom
 		spriteEntries.OrderByDescending(spriteEntry => spriteEntry.Component.DrawDepth);

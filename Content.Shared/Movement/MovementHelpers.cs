@@ -1,5 +1,6 @@
 ﻿using Robust.Shared.Maths;
 using System;
+using System.Numerics;
 
 namespace Content.Shared.Movement
 {
@@ -34,8 +35,8 @@ namespace Content.Shared.Movement
 			if (buttons.HasFlag(MoveButtons.Right))
 				velocity += new Vector2(1, 0);
 
-			if (velocity.Length != 0)
-				return velocity.Normalized; //convert to unit vector because this is just for direction
+			if (velocity.Length() != 0)
+				return velocity.Normalized(); //convert to unit vector because this is just for direction
 			else
 				return velocity; //length 0 vector cannot be normalized so just return the zero vector
 		}
