@@ -43,11 +43,15 @@ public sealed class EntryPoint : GameServer
         }
         factory.GenerateNetIds();
 
-		IoCManager.Resolve<ServerAdminManager>().SetAsActiveConsoleManager();
-        // DEVNOTE: This is generally where you'll be setting up the IoCManager further.
-    }
+		var adminManager = IoCManager.Resolve<ServerAdminManager>();
+		adminManager.SetAsActiveConsoleManager();
+#if DEBUG
+		adminManager.DevMode = true; //enable admin tools for development
+#endif
+		// DEVNOTE: This is generally where you'll be setting up the IoCManager further.
+	}
 
-    public override void PostInit()
+	public override void PostInit()
     {
         base.PostInit();
 

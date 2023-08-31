@@ -7,6 +7,11 @@ namespace Content.Server.Admin
 	{
 		[Dependency] private readonly IConGroupController _conGroup = default!;
 
+		/// <summary>
+		///		Are we currently in developer debug mode?
+		/// </summary>
+		public bool DevMode = false;
+
 		public void SetAsActiveConsoleManager()
 		{
 			_conGroup.Implementation = this;
@@ -44,7 +49,7 @@ namespace Content.Server.Admin
 
 		private bool IsAdmin(IPlayerSession session)
 		{
-			return true;
+			return DevMode;
 		}
 	}
 }

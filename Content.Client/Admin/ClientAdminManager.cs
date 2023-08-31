@@ -8,6 +8,11 @@ namespace Content.Client.Admin
 
 		public event Action? ConGroupUpdated;
 
+		/// <summary>
+		///		Are we currently in developer debug mode?
+		/// </summary>
+		public bool DevMode = false;
+
 		public void SetAsActiveConsoleManager()
 		{
 			_conGroup.Implementation = this;
@@ -40,7 +45,7 @@ namespace Content.Client.Admin
 
 		private bool IsAdmin()
 		{
-			return true;
+			return DevMode;
 		}
 	}
 }

@@ -51,7 +51,11 @@ public sealed class EntryPoint : GameClient
 
 		// DEVNOTE: This is generally where you'll be setting up the IoCManager further.
 
-		IoCManager.Resolve<ClientAdminManager>().SetAsActiveConsoleManager();
+		var adminManager = IoCManager.Resolve<ClientAdminManager>();
+		adminManager.SetAsActiveConsoleManager();
+#if DEBUG
+		adminManager.DevMode = true; //enable admin tools for development
+#endif
 		IoCManager.Resolve<CursorManager>().Initialize();
 	}
 
