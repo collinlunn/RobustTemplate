@@ -72,9 +72,9 @@ public sealed class EntryPoint : GameServer
         base.Update(level, frameEventArgs);
 		// DEVNOTE: Game update loop goes here. Usually you'll want some independent GameTicker.
 
-		switch (level)
-		{
+		//switch (level)
+		//{
 
-		}
+		//}
 	}
 }
