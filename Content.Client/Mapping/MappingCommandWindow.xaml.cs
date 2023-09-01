@@ -58,7 +58,7 @@ namespace Content.Client.Mapping
 
 		private void LoadMap(string path)
 		{
-			var mapId = _mapManager.NextMapId();
+			var mapId = _mapManager.CreateMap();
 			_console.ExecuteCommand($"loadmap {mapId} {path}");
 			_console.ExecuteCommand($"tp 0 0 {mapId}");
 		}
