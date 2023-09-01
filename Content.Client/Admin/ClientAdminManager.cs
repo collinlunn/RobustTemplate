@@ -6,7 +6,10 @@ namespace Content.Client.Admin
 	{
 		[Dependency] private readonly IClientConGroupController _conGroup = default!;
 
+		//I have to include this because it's in an interface, but since it's used it throws a warning
+#pragma warning disable 67
 		public event Action? ConGroupUpdated;
+#pragma warning restore 67
 
 		/// <summary>
 		///		Are we currently in developer debug mode?
