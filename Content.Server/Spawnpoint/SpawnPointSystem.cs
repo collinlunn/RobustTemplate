@@ -1,4 +1,5 @@
-﻿using Robust.Server.Player;
+﻿using Robust.Server.GameObjects;
+using Robust.Server.Player;
 using Robust.Shared.Map;
 using Robust.Shared.Random;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace Content.Server.Spawnpoint
 	public sealed class SpawnPointSystem : EntitySystem
 	{
 		[Dependency] private readonly IRobustRandom _random = default!;
+		[Dependency] private readonly ActorSystem _actor = default!;
 
 		public override void Initialize()
 		{
@@ -35,14 +37,22 @@ namespace Content.Server.Spawnpoint
 			}
 
 			var playerEntity = EntityManager.SpawnEntity(message.Prototype, spawnCoords.First());
-			message.PlayerSession.AttachToEntity(playerEntity);
+			
+			if (!_actor.Attach(playerEntity, message.PlayerSession))
+			{
+				Log.Error($"Player {playerEntity} could not attach when spawning");
+			}
 		}
 
 		private void OnSpawnMappingPlayer(SpawnMappingPlayerEvent message)
 		{
 			var spawnCoords = new MapCoordinates(new Vector2(0, 0), message.MapId);
 			var playerEntity = EntityManager.SpawnEntity(message.Prototype, spawnCoords);
-			message.PlayerSession.AttachToEntity(playerEntity);
+
+			if (!_actor.Attach(playerEntity, message.PlayerSession))
+			{
+				Log.Error($"Player {playerEntity} could not attach when spawning");
+			}
 		}
 	}
 
