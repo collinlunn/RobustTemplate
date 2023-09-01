@@ -52,7 +52,7 @@ namespace Content.Server.UI
 		{
 			if (state == null)
 			{
-				Logger.Debug($"Loaded UI {nameof(uiKey)} with dummy UI state.");
+				Log.Debug($"Loaded UI {nameof(uiKey)} with dummy UI state.");
 				state = new DummyUiState();
 			}
 			DebugTools.Assert(_playerUiConnectionSets.ContainsKey(player),

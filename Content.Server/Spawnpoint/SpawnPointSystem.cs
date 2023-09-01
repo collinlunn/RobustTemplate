@@ -1,4 +1,4 @@
-using Robust.Server.Player;
+﻿using Robust.Server.Player;
 using Robust.Shared.Map;
 using Robust.Shared.Random;
 using System.Linq;
@@ -30,7 +30,7 @@ namespace Content.Server.Spawnpoint
 
 			if (!spawnCoords.Any())
 			{
-				Logger.Error($"No spawn points found.");
+				Log.Error($"No spawn points found.");
 				return;
 			}
 
