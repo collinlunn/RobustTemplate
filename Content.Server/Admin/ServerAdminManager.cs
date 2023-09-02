@@ -1,5 +1,10 @@
-﻿using Robust.Server.Console;
+using Robust.Server.Console;
 using Robust.Server.Player;
+using Robust.Shared.Players;
+using Robust.Shared.Toolshed;
+using Robust.Shared.Toolshed.Errors;
+using Robust.Shared.Utility;
+using System.Diagnostics;
 
 namespace Content.Server.Admin
 {
@@ -50,6 +55,30 @@ namespace Content.Server.Admin
 		private bool IsAdmin(IPlayerSession session)
 		{
 			return DevMode;
+		}
+
+		public bool CheckInvokable(CommandSpec command, ICommonSession? user, out IConError? error)
+		{
+			if (user is null)
+			{
+				error = null;
+				return true; // Server console.
+			}
+
+			error = new NoPermissionError(command);
+			return false;
+		}
+
+		public record struct NoPermissionError(CommandSpec Command) : IConError
+		{
+			public FormattedMessage DescribeInner()
+			{
+				return FormattedMessage.FromMarkup($"You do not have permission to execute {Command.FullName()}");
+			}
+
+			public string? Expression { get; set; }
+			public Vector2i? IssueSpan { get; set; }
+			public StackTrace? Trace { get; set; }
 		}
 	}
 }
