@@ -11,7 +11,7 @@ namespace Content.Shared.Mapping
 	[Access(typeof(SharedMappingMovementController))]
 	[NetworkedComponent]
     [RegisterComponent]
-    public sealed class MappingMovementComponent : Component
+    public sealed partial class MappingMovementComponent : Component
     {
 		[DataField("speed")]
 		public ushort Speed = 1;

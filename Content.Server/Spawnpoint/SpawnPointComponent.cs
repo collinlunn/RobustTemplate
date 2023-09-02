@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Content.Server.Spawnpoint
 {
 	[RegisterComponent]
-	public sealed class SpawnPointComponent : Component
+	public sealed partial class SpawnPointComponent : Component
 	{
 	}
 }
