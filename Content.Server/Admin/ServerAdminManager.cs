@@ -54,7 +54,19 @@ namespace Content.Server.Admin
 
 		private bool IsAdmin(IPlayerSession session)
 		{
-			return DevMode;
+			return DevMode || IsLocalHost(session);
+		}
+
+		private static bool IsLocalHost(IPlayerSession player)
+		{
+			var ep = player.ConnectedClient.RemoteEndPoint;
+			var addr = ep.Address;
+			if (addr.IsIPv4MappedToIPv6)
+			{
+				addr = addr.MapToIPv4();
+			}
+
+			return Equals(addr, System.Net.IPAddress.Loopback) || Equals(addr, System.Net.IPAddress.IPv6Loopback);
 		}
 
 		public bool CheckInvokable(CommandSpec command, ICommonSession? user, out IConError? error)
