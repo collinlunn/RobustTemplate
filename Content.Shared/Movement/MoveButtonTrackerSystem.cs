@@ -32,7 +32,7 @@ namespace Content.Shared.Movement
 
 		private void HandleMovementInput(EntityUid entity, MoveButtons button, bool buttonPressed)
 		{
-			var tracker = entity.EnsureComponentWarn<MoveButtonTrackerComponent>();
+			var tracker = Comp<MoveButtonTrackerComponent>(entity);
 
 			if (buttonPressed)
 				tracker.HeldButtons |= button;

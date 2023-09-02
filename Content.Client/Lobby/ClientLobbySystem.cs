@@ -38,6 +38,7 @@ public sealed class ClientLobbySystem : SharedLobbySystem
         if (!entity.Valid)
             return;
 
-		entity.EnsureComponentWarn<EyeComponent>().Current = true;
-    }
+		var eye = Comp<EyeComponent>(entity);
+		eye.Current = true;
+	}
 }

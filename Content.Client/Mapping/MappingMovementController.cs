@@ -43,7 +43,7 @@ namespace Content.Client.Mapping
             if (!TryComp<MappingMovementComponent>(mappingPlayer, out var mappingMovement))
                 return;
 
-			var moveButtonTracker = mappingPlayer.EnsureComponentWarn<MoveButtonTrackerComponent>();
+			var moveButtonTracker = Comp<MoveButtonTrackerComponent>(mappingPlayer);
 
             SetPlayerVelocity(mappingPlayer, moveButtonTracker, mappingMovement);
         }
