@@ -1,4 +1,5 @@
 using Content.Shared.Admin;
+using JetBrains.Annotations;
 using Robust.Server.Console;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
@@ -11,6 +12,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Content.Server.Admin
 {
+	[UsedImplicitly]
 	public sealed class ServerAdminManager : EntitySystem, IConGroupControllerImplementation
 	{
 		[Dependency] private readonly IConGroupController _conGroup = default!;
@@ -22,23 +24,12 @@ namespace Content.Server.Admin
 		/// </summary>
 		private readonly Dictionary<IPlayerSession, PlayerPermissions> _playerPermissions = new();
 
-		/// <summary>
-		///		List of command names and the permission needed to run them.
-		/// </summary>
-		private readonly Dictionary<string, AdminFlags> _commandPermissions = new();
-
 		public override void Initialize()
 		{
 			base.Initialize();
 
 			_conGroup.Implementation = this;
 			_playerManager.PlayerStatusChanged += PlayerStatusChanged;
-
-			foreach (var (cmdName, cmd) in _consoleHost.AvailableCommands)
-			{
-				var perms = CommandPermissions.CheckPermissions(cmdName);
-				_commandPermissions.Add(cmdName, perms);
-			}
 		}
 
 		#region IConGroupControllerImplementation
@@ -106,22 +97,12 @@ namespace Content.Server.Admin
 
 		private bool CanUseCommand(IPlayerSession session, string cmdName)
 		{
-			var commandPerm = GetCachedCommandPerms(cmdName);
+			var commandPerm = CommandPermissions.CheckPermissions(cmdName);
 			if (TryGetCachedPlayerPermissions(session, out var playerPerms))
 			{
 				return playerPerms.Permissions.HasFlag(commandPerm); 
 			}
 			return false;
-
-			AdminFlags GetCachedCommandPerms(string cmdName)
-			{
-				if (!_commandPermissions.TryGetValue(cmdName, out var perms))
-				{
-					perms = AdminFlags.Host; //If command wasn't in the list, assume it requires host permissions
-					Logger.Error($"{cmdName} permissions not cached, defaulting to {nameof(AdminFlags.Host)}");
-				}
-				return perms;
-			}
 		}
 
 		private void PlayerStatusChanged(object? sender, SessionStatusEventArgs args)

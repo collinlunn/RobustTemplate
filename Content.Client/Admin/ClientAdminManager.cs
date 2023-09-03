@@ -1,8 +1,11 @@
-﻿using Robust.Client.Console;
+﻿using Content.Shared.Admin;
+using JetBrains.Annotations;
+using Robust.Client.Console;
 
 namespace Content.Client.Admin
 {
-	public sealed class ClientAdminManager : IClientConGroupImplementation
+	[UsedImplicitly]
+	public sealed class ClientAdminManager : EntitySystem, IClientConGroupImplementation
 	{
 		[Dependency] private readonly IClientConGroupController _conGroup = default!;
 
@@ -12,43 +15,43 @@ namespace Content.Client.Admin
 #pragma warning restore 67
 
 		/// <summary>
-		///		Are we currently in developer debug mode?
+		///		The admin permissions of this client.
 		/// </summary>
-		public bool DevMode = false;
+		private PlayerPermissions? PlayerPermissions;
 
-		public void SetAsActiveConsoleManager()
+		public override void Initialize()
 		{
+			base.Initialize();
 			_conGroup.Implementation = this;
+			SubscribeNetworkEvent<UpdatePlayerPermissionsEvent>(args =>
+			{ 
+				PlayerPermissions = args.PlayerPermissions;
+			});
 		}
 
 		public bool CanAdminMenu()
 		{
-			return IsAdmin();
+			return PlayerPermissions?.CanAdminMenu() ?? false;
 		}
 
 		public bool CanAdminPlace()
 		{
-			return IsAdmin();
-		}
-
-		public bool CanCommand(string cmdName)
-		{
-			return IsAdmin();
+			return PlayerPermissions?.CanSpawn() ?? false;
 		}
 
 		public bool CanScript()
 		{
-			return IsAdmin();
+			return PlayerPermissions?.IsHost() ?? false;
+		}
+
+		public bool CanCommand(string cmdName)
+		{
+			return PlayerPermissions?.Permissions.HasFlag(CommandPermissions.CheckPermissions(cmdName)) ?? false;
 		}
 
 		public bool CanViewVar()
 		{
-			return IsAdmin();
-		}
-
-		private bool IsAdmin()
-		{
-			return DevMode;
+			return CanCommand("vv");
 		}
 	}
 }
