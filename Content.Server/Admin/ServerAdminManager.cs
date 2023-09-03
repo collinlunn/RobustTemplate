@@ -35,14 +35,8 @@ namespace Content.Server.Admin
 
 			foreach (var (cmdName, cmd) in _consoleHost.AvailableCommands)
 			{
-				var perms = GetCommandPerms(cmd);
+				var perms = CommandPermissions.CheckPermissions(cmdName);
 				_commandPermissions.Add(cmdName, perms);
-			}
-
-			AdminFlags GetCommandPerms(IConsoleCommand cmd)
-			{
-				//TODO
-				return AdminFlags.Host;
 			}
 		}
 
