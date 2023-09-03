@@ -46,10 +46,7 @@ public sealed class EntryPoint : GameServer
         factory.GenerateNetIds();
 
 		var adminManager = IoCManager.Resolve<ServerAdminManager>();
-		adminManager.SetAsActiveConsoleManager();
-#if DEBUG
-		adminManager.DevMode = true; //enable admin tools for development
-#endif
+		adminManager.Initialize();
 		// DEVNOTE: This is generally where you'll be setting up the IoCManager further.
 	}
 

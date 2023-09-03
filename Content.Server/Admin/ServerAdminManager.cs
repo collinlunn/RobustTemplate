@@ -1,76 +1,102 @@
+using Content.Shared.Admin;
 using Robust.Server.Console;
 using Robust.Server.Player;
+using Robust.Shared.Console;
+using Robust.Shared.Enums;
 using Robust.Shared.Players;
 using Robust.Shared.Toolshed;
 using Robust.Shared.Toolshed.Errors;
 using Robust.Shared.Utility;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Content.Server.Admin
 {
 	public sealed class ServerAdminManager : IConGroupControllerImplementation
 	{
 		[Dependency] private readonly IConGroupController _conGroup = default!;
+		[Dependency] private readonly IPlayerManager _playerManager = default!;
+		[Dependency] private readonly IServerConsoleHost _consoleHost = default!;
 
 		/// <summary>
-		///		Are we currently in developer debug mode?
+		///		The set of admins along with their permissions.
 		/// </summary>
-		public bool DevMode = false;
+		private readonly Dictionary<IPlayerSession, PlayerPermissions> _playerPermissions = new();
 
-		public void SetAsActiveConsoleManager()
+		/// <summary>
+		///		List of command names and the permission needed to run them.
+		/// </summary>
+		private readonly Dictionary<string, AdminFlags> _commandPermissions = new();
+
+		public void Initialize()
 		{
 			_conGroup.Implementation = this;
+			_playerManager.PlayerStatusChanged += PlayerStatusChanged;
+
+			foreach (var (cmdName, cmd) in _consoleHost.AvailableCommands)
+			{
+				var perms = GetCommandPerms(cmd);
+				_commandPermissions.Add(cmdName, perms);
+			}
+
+			AdminFlags GetCommandPerms(IConsoleCommand cmd)
+			{
+				//TODO
+				return AdminFlags.Host;
+			}
 		}
+
+		#region IConGroupControllerImplementation
 
 		public bool CanAdminMenu(IPlayerSession session)
 		{
-			return IsAdmin(session);
+			if (TryGetCachedPlayerPermissions(session, out var player))
+			{
+				return player.CanAdminMenu();
+			}
+			return false;
 		}
 
 		public bool CanAdminPlace(IPlayerSession session)
 		{
-			return IsAdmin(session);
+			if (TryGetCachedPlayerPermissions(session, out var player))
+			{
+				return player.CanSpawn();
+			}
+			return false;
 		}
 
 		public bool CanAdminReloadPrototypes(IPlayerSession session)
 		{
-			return IsAdmin(session);
-		}
-
-		public bool CanCommand(IPlayerSession session, string cmdName)
-		{
-			return IsAdmin(session);
+			if (TryGetCachedPlayerPermissions(session, out var player))
+			{
+				return player.IsHost();
+			}
+			return false;
 		}
 
 		public bool CanScript(IPlayerSession session)
 		{
-			return IsAdmin(session);
+			if (TryGetCachedPlayerPermissions(session, out var player))
+			{
+				return player.IsHost();
+			}
+			return false;
+		}
+
+		public bool CanCommand(IPlayerSession session, string cmdName)
+		{
+			return CanUseCommand(session, cmdName);
 		}
 
 		public bool CanViewVar(IPlayerSession session)
 		{
-			return IsAdmin(session);
-		}
-
-		private bool IsAdmin(IPlayerSession session)
-		{
-			return DevMode || IsLocalHost(session);
-		}
-
-		private static bool IsLocalHost(IPlayerSession player)
-		{
-			var ep = player.ConnectedClient.RemoteEndPoint;
-			var addr = ep.Address;
-			if (addr.IsIPv4MappedToIPv6)
-			{
-				addr = addr.MapToIPv4();
-			}
-
-			return Equals(addr, System.Net.IPAddress.Loopback) || Equals(addr, System.Net.IPAddress.IPv6Loopback);
+			return CanUseCommand(session, "vv");
 		}
 
 		public bool CheckInvokable(CommandSpec command, ICommonSession? user, out IConError? error)
 		{
+			//TODO what is this for
 			if (user is null)
 			{
 				error = null;
@@ -79,6 +105,83 @@ namespace Content.Server.Admin
 
 			error = new NoPermissionError(command);
 			return false;
+		}
+
+		#endregion
+
+		private bool CanUseCommand(IPlayerSession session, string cmdName)
+		{
+			var commandPerm = GetCachedCommandPerms(cmdName);
+			if (TryGetCachedPlayerPermissions(session, out var playerPerms))
+			{
+				return playerPerms.Permissions.HasFlag(commandPerm); 
+			}
+			return false;
+
+			AdminFlags GetCachedCommandPerms(string cmdName)
+			{
+				if (!_commandPermissions.TryGetValue(cmdName, out var perms))
+				{
+					perms = AdminFlags.Host; //If command wasn't in the list, assume it requires host permissions
+					Logger.Error($"{cmdName} permissions not cached, defaulting to {nameof(AdminFlags.Host)}");
+				}
+				return perms;
+			}
+		}
+
+		private void PlayerStatusChanged(object? sender, SessionStatusEventArgs args)
+		{
+			var newStatus = args.NewStatus;
+			var session = args.Session;
+
+			if (newStatus == SessionStatus.Connected)
+			{
+				UpdatePlayerPermissions(session);
+			}
+			else if (newStatus == SessionStatus.Disconnected)
+			{
+				_playerPermissions.Remove(session);
+			}
+
+			void UpdatePlayerPermissions(IPlayerSession session)
+			{
+				var perms = GetPermissions(session);
+				_playerPermissions.Add(session, new PlayerPermissions { Permissions = perms });
+
+				//TODO: send notification of perms to client
+			}
+			AdminFlags GetPermissions(IPlayerSession session)
+			{
+				var perms = AdminFlags.None;
+
+				if (IsLocalHost(session))
+				{
+					perms = AdminFlags.Host;
+				}
+				//TODO: Check database for admin data here
+				return perms;
+			}
+			bool IsLocalHost(IPlayerSession player)
+			{
+				var ep = player.ConnectedClient.RemoteEndPoint;
+				var addr = ep.Address;
+				if (addr.IsIPv4MappedToIPv6)
+				{
+					addr = addr.MapToIPv4();
+				}
+				return Equals(addr, System.Net.IPAddress.Loopback) || Equals(addr, System.Net.IPAddress.IPv6Loopback);
+			}
+		}
+
+		private bool TryGetCachedPlayerPermissions(IPlayerSession session, [NotNullWhen(true)] out PlayerPermissions? player)
+		{
+			player = _playerPermissions.GetValueOrDefault(session);
+			if (player == null)
+			{
+				Logger.Error($"Could not find cached permissions of {session}.");
+				return false;
+			}
+			return true;
 		}
 
 		public record struct NoPermissionError(CommandSpec Command) : IConError
