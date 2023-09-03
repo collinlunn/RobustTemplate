@@ -1,7 +1,6 @@
 using Content.Shared.Admin;
 using Robust.Server.Console;
 using Robust.Server.Player;
-using Robust.Shared.Console;
 using Robust.Shared.Enums;
 using Robust.Shared.Players;
 using Robust.Shared.Toolshed;
@@ -12,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Content.Server.Admin
 {
-	public sealed class ServerAdminManager : IConGroupControllerImplementation
+	public sealed class ServerAdminManager : EntitySystem, IConGroupControllerImplementation
 	{
 		[Dependency] private readonly IConGroupController _conGroup = default!;
 		[Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -28,8 +27,10 @@ namespace Content.Server.Admin
 		/// </summary>
 		private readonly Dictionary<string, AdminFlags> _commandPermissions = new();
 
-		public void Initialize()
+		public override void Initialize()
 		{
+			base.Initialize();
+
 			_conGroup.Implementation = this;
 			_playerManager.PlayerStatusChanged += PlayerStatusChanged;
 
@@ -139,21 +140,20 @@ namespace Content.Server.Admin
 
 			void UpdatePlayerPermissions(IPlayerSession session)
 			{
-				var perms = GetPermissions(session);
-				_playerPermissions.Add(session, new PlayerPermissions { Permissions = perms });
-
-				//TODO: send notification of perms to client
+				var playerPerms = GetPermissions(session);
+				_playerPermissions.Add(session, playerPerms);
+				RaiseNetworkEvent(new UpdatePlayerPermissionsEvent(playerPerms));
 			}
-			AdminFlags GetPermissions(IPlayerSession session)
+			PlayerPermissions GetPermissions(IPlayerSession session)
 			{
-				var perms = AdminFlags.None;
+				var adminFlags = AdminFlags.None;
 
 				if (IsLocalHost(session))
 				{
-					perms = AdminFlags.Host;
+					adminFlags = AdminFlags.Host;
 				}
 				//TODO: Check database for admin data here
-				return perms;
+				return new PlayerPermissions { Permissions = adminFlags };
 			}
 			bool IsLocalHost(IPlayerSession player)
 			{

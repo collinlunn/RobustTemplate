@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Robust.Shared.Serialization;
 
 namespace Content.Shared.Admin
 {
+	[Serializable, NetSerializable]
 	public sealed class PlayerPermissions
 	{
 		public AdminFlags Permissions { get; set; } = AdminFlags.None;
@@ -34,5 +31,16 @@ namespace Content.Shared.Admin
 		AdminMenu = 1 << 1, //can use admin menus (bans, etc)
 		Host = 1 << 3, //can execute dangerous server-side scripts
 		All = ~0,
+	}
+
+	[Serializable, NetSerializable]
+	public sealed class UpdatePlayerPermissionsEvent : EntityEventArgs
+	{
+		public PlayerPermissions PlayerPermissions { get; }
+
+		public UpdatePlayerPermissionsEvent(PlayerPermissions perms)
+		{
+			PlayerPermissions = perms;
+		}
 	}
 }
