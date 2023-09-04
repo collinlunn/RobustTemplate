@@ -9,7 +9,7 @@ namespace Content.Shared.Admin
 
 		public bool CanSpawn()
 		{
-			return Permissions.HasFlag(AdminFlags.SpawnMenu);
+			return Permissions.HasFlag(AdminFlags.Debug);
 		}
 
 		public bool CanAdminMenu()
@@ -27,8 +27,9 @@ namespace Content.Shared.Admin
 	public enum AdminFlags
 	{
 		None = 0,
-		SpawnMenu = 1 << 0, //can spawn stuff in
-		AdminMenu = 1 << 1, //can use admin menus (bans, etc)
+		AdminMenu = 1 << 0, //can use admin menus (bans, etc)
+		Debug = 1 << 1, //can manipulate game (vv, etc)
+		Server = 1 << 2, //can manipulate server (shutdown, etc)
 		Host = 1 << 3, //can execute dangerous server-side scripts
 		All = ~0,
 	}

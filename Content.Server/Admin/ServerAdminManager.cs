@@ -145,7 +145,7 @@ namespace Content.Server.Admin
 
 				if (IsLocalHost(session))
 				{
-					adminFlags = AdminFlags.Host;
+					adminFlags = AdminFlags.All;
 				}
 				//TODO: Check database for admin data here
 				return new PlayerPermissions { Permissions = adminFlags };
@@ -167,7 +167,7 @@ namespace Content.Server.Admin
 			player = _playerPermissions.GetValueOrDefault(session);
 			if (player == null)
 			{
-				Logger.Error($"Could not find cached permissions of {session}.");
+				Log.Error($"Could not find cached permissions of {session}.");
 				return false;
 			}
 			return true;
