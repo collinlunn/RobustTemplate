@@ -17,8 +17,8 @@ namespace Content.Server.Admin
 	{
 		[Dependency] private readonly IConGroupController _conGroup = default!;
 		[Dependency] private readonly IPlayerManager _playerManager = default!;
-		[Dependency] private readonly IServerConsoleHost _consoleHost = default!;
-
+		[Dependency] private readonly ToolshedManager _toolshed = default!;
+	
 		/// <summary>
 		///		The set of admins along with their permissions.
 		/// </summary>
@@ -29,6 +29,7 @@ namespace Content.Server.Admin
 			base.Initialize();
 
 			_conGroup.Implementation = this;
+			_toolshed.ActivePermissionController = this;
 			_playerManager.PlayerStatusChanged += PlayerStatusChanged;
 		}
 
@@ -82,15 +83,28 @@ namespace Content.Server.Admin
 
 		public bool CheckInvokable(CommandSpec command, ICommonSession? user, out IConError? error)
 		{
-			//TODO what is this for
 			if (user is null)
 			{
 				error = null;
-				return true; // Server console.
+				return true; //Server console.
+			}
+			
+			if (!TryGetCachedPlayerPermissions((IPlayerSession) user, out var playerPerms))
+			{
+				error = new NoPermissionError(command);
+				return false; //player permissions not found
 			}
 
+			var commandPerm = ToolboxCommandPermissions.CheckPermissions(command.FullName());
+
+			if (playerPerms.Permissions.HasFlag(commandPerm))
+			{
+				error = null;
+				return true; //player has perms
+			}
+			
 			error = new NoPermissionError(command);
-			return false;
+			return false; //player has insufficient perms
 		}
 
 		#endregion

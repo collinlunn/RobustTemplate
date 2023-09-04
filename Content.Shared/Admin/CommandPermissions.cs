@@ -16,6 +16,7 @@ namespace Content.Shared.Admin
 					return perms;
 				}
 			}
+			Logger.Debug($"No permission for ConsoleCommand {cmdName}, defaulting to {nameof(AdminFlags.Host)}");
 			return AdminFlags.Host; //if not found, default to Host perms
 		}
 
