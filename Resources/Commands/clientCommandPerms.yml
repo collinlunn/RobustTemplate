@@ -1,7 +1,6 @@
 - Flags: None
   Commands:
   - disconnect
-  - help
   - quit
   - hardquit
   - svbind
@@ -72,6 +71,7 @@
   - net_entityreport
   - scene
   - gridtc
+  - fuck
 
 - Flags: Host
   Commands:

@@ -45,7 +45,6 @@ namespace Content.Tests
 				await ReallyBeIdle(server, client, 10);
 				await client.WaitRunTicks(1);
 			}
-
 			return (server, client);
 		}
 

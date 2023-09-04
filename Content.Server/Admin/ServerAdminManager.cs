@@ -30,6 +30,7 @@ namespace Content.Server.Admin
 			ServerCommandPermPath,
 		};
 
+		public IReadOnlyDictionary<string, AdminFlags> ToolboxPermissions => _toolboxPermissions;
 		private readonly Dictionary<string, AdminFlags> _toolboxPermissions = new();
 
 		public override void Initialize()

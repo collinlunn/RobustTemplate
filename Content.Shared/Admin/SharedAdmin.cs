@@ -18,7 +18,7 @@ namespace Content.Shared.Admin
 		public const string ServerCommandPermPath = "/Commands/serverCommandPerms.yml";
 		public const string ToolboxCommandPermPath = "/Commands/toolboxCommandPerms.yml";
 
-		protected IReadOnlyDictionary<string, AdminFlags> ConsolePermissions => _consolePermissions;
+		public IReadOnlyDictionary<string, AdminFlags> ConsolePermissions => _consolePermissions;
 		private readonly Dictionary<string, AdminFlags> _consolePermissions = new();
 
 		protected abstract IEnumerable<string> ConsolePermPaths { get; }

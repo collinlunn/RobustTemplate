@@ -137,7 +137,6 @@
   - map
   - physics
   - player
-  - splat
   - emplace
   - bin
   - extremes
@@ -166,7 +165,6 @@
   - where
   - prototyped
   - types
-  - ecscomp
   - actor
   - spawn
   - mappos
@@ -175,7 +173,6 @@
   - allcomps
   - replace
   - entitysystemupdateorder
-  - mind
 
 - Flags: Host
   Commands:

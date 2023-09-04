@@ -1,6 +1,5 @@
 - Flags: None
   Commands:
-  - "|"
   - oldhelp
 
 - Flags: Debug
@@ -20,7 +19,6 @@
   - mem
   - netaudit
   - querymappaused
-  - physics
   - showtime
   - testbed
   - szr_stats
@@ -64,7 +62,6 @@
   - lsasm
   - cvar
   - gcf
-  - fuck
   - replay_recording_start
   - replay_recording_stop
 
