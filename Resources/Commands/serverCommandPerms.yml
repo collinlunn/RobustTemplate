@@ -1,0 +1,82 @@
+- Flags: None
+  Commands:
+  - "|"
+  - oldhelp
+
+- Flags: Debug
+  Commands:
+  - addcomp
+  - rmcomp
+  - vvread
+  - vvwrite
+  - vvinvoke
+  - scale
+  - spin
+  - spawn
+  - delete
+  - lsgrid
+  - lsmap
+  - loc
+  - mem
+  - netaudit
+  - querymappaused
+  - physics
+  - showtime
+  - testbed
+  - szr_stats
+  - addview
+  - removeview
+  - hwid
+  - rldloc
+  - replay_recording_stats
+  - addmap
+  - loadgrid
+  - loadmap
+  - pausemap
+  - unpausemap
+  - rmgrid
+  - rmmap
+  - mapinit
+  - savegrid
+  - savemap
+  - setambientlight
+  - tpgrid
+
+- Flags: AdminMenu
+  Commands:
+  - kick
+  - listplayers
+  - tp
+  - tpto
+
+- Flags: Server
+  Commands:
+  - shutdown
+
+- Flags: Host
+  Commands:
+  - gc_mode
+  - gc
+  - loglevel
+  - saveconfig
+  - testlog
+  - sudo
+  - lsasm
+  - cvar
+  - gcf
+  - fuck
+  - replay_recording_start
+  - replay_recording_stop
+
+- Flags: Host
+  Commands:
+  - dump_dependency_injectors
+  - dump_event_tables
+  - dump_net_comps
+  - dump_netserializer_type_map
+  - echo
+  - exec
+  - list
+  - vfs_ls
+  - hub_advertise_now
+  - profileEntitySpawning

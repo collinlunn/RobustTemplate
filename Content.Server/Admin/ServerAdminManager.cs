@@ -9,20 +9,28 @@ using Robust.Shared.Toolshed.Errors;
 using Robust.Shared.Utility;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 namespace Content.Server.Admin
 {
 	[UsedImplicitly]
-	public sealed class ServerAdminManager : EntitySystem, IConGroupControllerImplementation
+	public sealed class ServerAdminManager : SharedAdminManager, IConGroupControllerImplementation
 	{
 		[Dependency] private readonly IConGroupController _conGroup = default!;
 		[Dependency] private readonly IPlayerManager _playerManager = default!;
 		[Dependency] private readonly ToolshedManager _toolshed = default!;
-	
+
 		/// <summary>
 		///		The set of admins along with their permissions.
 		/// </summary>
 		private readonly Dictionary<IPlayerSession, PlayerPermissions> _playerPermissions = new();
+
+		protected override IEnumerable<string> ConsolePermPaths => new string[]
+		{
+			ServerCommandPermPath,
+		};
+
+		private readonly Dictionary<string, AdminFlags> _toolboxPermissions = new();
 
 		public override void Initialize()
 		{
@@ -31,6 +39,15 @@ namespace Content.Server.Admin
 			_conGroup.Implementation = this;
 			_toolshed.ActivePermissionController = this;
 			_playerManager.PlayerStatusChanged += PlayerStatusChanged;
+
+			if (Res.TryContentFileRead(new ResPath(ToolboxCommandPermPath), out var consoleStream))
+			{
+				LoadPermissionsFromStream(consoleStream, _toolboxPermissions);
+			}
+			else
+			{
+				Log.Error($"Couldn't find console permission file {ToolboxCommandPermPath}");
+			}
 		}
 
 		#region IConGroupControllerImplementation
@@ -95,9 +112,16 @@ namespace Content.Server.Admin
 				return false; //player permissions not found
 			}
 
-			var commandPerm = ToolboxCommandPermissions.CheckPermissions(command.FullName());
+			var commandName = command.FullName();
 
-			if (playerPerms.Permissions.HasFlag(commandPerm))
+			if (!_toolboxPermissions.TryGetValue(commandName, out var cmdFlag))
+			{
+				error = new NoPermissionError(command);
+				Log.Error($"Could not find permissions for {commandName}");
+				return false;
+			}
+
+			if (playerPerms.Permissions.HasFlag(cmdFlag))
 			{
 				error = null;
 				return true; //player has perms
@@ -111,10 +135,14 @@ namespace Content.Server.Admin
 
 		private bool CanUseCommand(IPlayerSession session, string cmdName)
 		{
-			var commandPerm = CommandPermissions.CheckPermissions(cmdName);
+			if (!ConsolePermissions.TryGetValue(cmdName, out var cmdFlag))
+			{
+				Log.Error($"Could not find permissions for {cmdName}");
+				return false;
+			}
 			if (TryGetCachedPlayerPermissions(session, out var playerPerms))
 			{
-				return playerPerms.Permissions.HasFlag(commandPerm); 
+				return playerPerms.Permissions.HasFlag(cmdFlag); 
 			}
 			return false;
 		}
