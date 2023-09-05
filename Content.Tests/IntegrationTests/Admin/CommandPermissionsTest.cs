@@ -26,12 +26,18 @@ namespace Content.Tests.IntegrationTests.Admin
 
 			await client.WaitPost(() =>
 			{
-				foreach (var command in clientAdmin.ConsolePermissions.Keys)
+				var adminConsoleCommands = clientAdmin.ConsolePermissions.Keys;
+				var availableCommands = clientConsole.AvailableCommands.Keys;
+
+				foreach (var command in adminConsoleCommands)
 				{
-					if (!clientConsole.AvailableCommands.ContainsKey(command))
-					{
-						throw new Exception($"Client console doesn't have command {command}");
-					}
+					Assert.That(availableCommands.Contains(command),
+						$"Client console doesn't have command {command}");
+				}
+				foreach (var command in availableCommands)
+				{
+					Assert.That(adminConsoleCommands.Contains(command),
+						$"Client admin manager doesn't have command {command}");
 				}
 			});
 
@@ -41,21 +47,39 @@ namespace Content.Tests.IntegrationTests.Admin
 
 			await server.WaitPost(() =>
 			{
-				foreach (var command in serverAdmin.ConsolePermissions.Keys)
+				var adminConsoleCommands = serverAdmin.ConsolePermissions.Keys;
+				var availableCommands = serverConsole.AvailableCommands.Keys;
+
+				foreach (var command in adminConsoleCommands)
 				{
-					if (!serverConsole.AvailableCommands.ContainsKey(command))
-					{
-						throw new Exception($"Server console doesn't have command {command}");
-					}
+					Assert.That(availableCommands.Contains(command),
+						$"Server console doesn't have command {command}");
 				}
-				foreach (var command in serverAdmin.ToolboxPermissions.Keys)
+				foreach (var command in availableCommands)
 				{
-					if (!serverToolbox.DefaultEnvironment.TryGetCommand(command, out _))
-					{
-						throw new Exception($"Toolbox doesn't have command {command}");
-					}
+					Assert.That(adminConsoleCommands.Contains(command),
+						$"Server admin manager doesn't have command {command}");
 				}
 			});
+
+			await server.WaitPost(() =>
+			{
+				var adminToolboxCommands = serverAdmin.ToolboxPermissions.Keys;
+				var toolboxEnv = serverToolbox.DefaultEnvironment;
+				var availableToolboxCommands = toolboxEnv.AllCommands().Select(command => command.FullName());
+
+				foreach (var command in adminToolboxCommands)
+				{
+					Assert.That(availableToolboxCommands.Contains(command),
+						$"Toolbox doesn't have command {command}");
+				}
+				foreach (var command in availableToolboxCommands)
+				{
+					Assert.That(adminToolboxCommands.Contains(command),
+						$"Server admin manager doesn't have toolbox command {command}");
+				}
+			});
+
 			client.Dispose();
 			server.Dispose();
 		}

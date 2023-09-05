@@ -1,180 +1,206 @@
-﻿- Flags: None
+- Flags: None
   Commands:
-  - fuck
-  - ent
-  - as
-  - buildinfo
-  - help
-  - explain
-  - cmd
-  - stopwatch
-  - self
-  - search
-  - isnull
-  - isempty
-  - any
-  - unique
-  - cd
-  - ls
-  - loc
-  - vars
-  - '=>'
-  - first
-  - val
-  - '+'
-  - '-'
-  - '*'
-  - '/'
-  - 'min'
-  - 'max'
-  - '&'
-  - '|'
-  - '^'
-  - 'neg'
-  - '<'
-  - '>'
-  - '<='
-  - '>='
-  - '=='
   - '!='
-  - f
-  - i
-  - s
-  - b
-  - '+/'
-  - '-/'
-  - '*/'
-  - '//'
-  - join
-  - append
-  - '?'
-  - 'or?'
-  - '??'
-  - rng
-  - 'sum'
-  - take
-  - curtick
-  - curtime
-  - realtime
-  - servertime
-  - more
   - '%'
   - '%/'
+  - '&'
   - '&~'
-  - '|~'
+  - '*'
+  - '*/'
+  - '+'
+  - '+/'
+  - '-'
+  - '-/'
+  - '/'
+  - '//'
+  - '<'
+  - '<='
+  - '=='
+  - '=>'
+  - '>'
+  - '>='
+  - '?'
+  - '??'
+  - '^'
   - '^~'
-  - '~'
   - 'abs'
   - 'average'
   - 'bibytecount'
-  - 'shortestbitlength'
   - 'countleadzeros'
   - 'counttrailingzeros'
-  - 'fpi'
   - 'fe'
-  - 'ftau'
   - 'fepsilon'
-  - dpi
-  - de
-  - dtau
-  - depsilon
-  - hpi
-  - he
-  - htau
-  - hepsilon
-  - floor
+  - 'fpi'
+  - 'ftau'
+  - 'max'
+  - 'min'
+  - 'neg'
+  - 'or?'
+  - 'shortestbitlength'
+  - 'sum'
+  - '|'
+  - '|~'
+  - '~'
+  - acos
+  - acospi
+  - any
+  - append
+  - as
+  - asin
+  - asinpi
+  - atan
+  - atanpi
+  - b
+  - buildinfo
+  - cbrt
+  - cd
   - ceil
-  - round
-  - trunc
-  - round2frac
-  - exponentbytecount
-  - significandbytecount
-  - significandbitcount
-  - exponentshortestbitcount
-  - stepnext
-  - stepprev
   - checkedto
-  - saturateto
-  - truncto
+  - cmd:descloc
+  - cmd:getshim
+  - cmd:info
+  - cmd:list
+  - cmd:moo
+  - cos
+  - cospi
+  - curtick
+  - curtime
+  - de
+  - depsilon
+  - dpi
+  - dtau
+  - ent
+  - explain
+  - exponentbytecount
+  - exponentshortestbitcount
+  - f
+  - first
+  - floor
+  - fuck
+  - he
+  - help
+  - hepsilon
+  - hpi
+  - htau
+  - hypot
+  - i
   - iscanonical
   - iscomplex
+  - isempty
   - iseven
-  - isodd
   - isfinite
   - isimaginary
   - isinfinite
   - isinteger
   - isnan
   - isnegative
+  - isnull
+  - isodd
   - ispositive
   - isreal
   - issubnormal
   - iszero
+  - join
+  - loc:loc
+  - loc:tryloc
+  - ls:here
+  - ls:in
+  - more
+  - pick
   - pow
-  - sqrt
-  - cbrt
+  - realtime
+  - rng:from
+  - rng:prob
+  - rng:to
   - root
-  - hypot
+  - round
+  - round2frac
+  - s
+  - saturateto
+  - search
+  - self
+  - servertime
+  - significandbitcount
+  - significandbytecount
   - sin
   - sinpi
-  - asin
-  - asinpi
-  - cos
-  - cospi
-  - acos
-  - acospi
+  - sqrt
+  - stepnext
+  - stepprev
+  - stopwatch
+  - take
   - tan
   - tanpi
-  - atan
-  - atanpi
-  - pick
   - tee
+  - trunc
+  - truncto
+  - unique
+  - val
+  - vars
 
 - Flags: Debug
   Commands:
-  - entities
-  - nearby
-  - map
-  - physics
-  - player
-  - emplace
+  - actor:controlled
+  - actor:session
+  - allcomps
   - bin
-  - extremes
-  - reduce
-  - sortby
-  - sort
-  - sortdownby
-  - sortdown
-  - sortmapby
-  - sortmapdownby
-  - iota
-  - rep
-  - to
-  - iterate
-
-- Flags: Debug
-  Commands:
-  - comp
+  - comp:add
+  - comp:ensure
+  - comp:get
+  - comp:has
+  - comp:rm
+  - count
   - delete
   - do
-  - named
-  - paused
-  - with
-  - count
-  - select
-  - where
-  - prototyped
-  - types
-  - actor
-  - spawn
+  - emplace
+  - entities
+  - entitysystemupdateorder:frame
+  - entitysystemupdateorder:tick
+  - extremes
+  - iota
+  - iterate
+  - map
   - mappos
+  - named
+  - nearby
+  - paused
+  - physics:angular_velocity
+  - physics:parent
+  - physics:velocity
+  - player:entity
+  - player:imm
+  - player:list
+  - player:self
   - pos
-  - tp
-  - allcomps
+  - prototyped
+  - reduce
+  - rep
   - replace
-  - entitysystemupdateorder
+  - select
+  - sort
+  - sortby
+  - sortdown
+  - sortdownby
+  - sortmapby
+  - sortmapdownby
+  - spawn:at
+  - spawn:attached
+  - spawn:on
+  - to
+  - tp:coords
+  - tp:into
+  - tp:to
+  - types:consumers
+  - types:fullname
+  - types:gettype
+  - types:tree
+  - where
+  - with
 
 - Flags: Host
   Commands:
-  - methods
-  - ioc
+  - ioc:registered
+  - ioc:get
+  - methods:get
+  - methods:overrides
+  - methods:overridesfrom

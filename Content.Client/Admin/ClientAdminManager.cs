@@ -22,7 +22,6 @@ namespace Content.Client.Admin
 		protected override IEnumerable<string> ConsolePermPaths => new string[]
 		{
 			ClientCommandPermPath,
-			ServerCommandPermPath,
 		};
 
 		public override void Initialize()
