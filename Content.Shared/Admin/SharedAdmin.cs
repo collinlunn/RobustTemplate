@@ -11,35 +11,22 @@ namespace Content.Shared.Admin
 {
 	public abstract class SharedAdminManager : EntitySystem
 	{
-		[Dependency] protected readonly IResourceManager Res = default!;
+		[Dependency] private readonly IResourceManager _res = default!;
 
-		public const string SharedCommandPermPath = "/Commands/sharedCommandPerms.yml";
-		public const string ClientCommandPermPath = "/Commands/clientCommandPerms.yml";
-		public const string ServerCommandPermPath = "/Commands/serverCommandPerms.yml";
-		public const string ToolboxCommandPermPath = "/Commands/toolboxCommandPerms.yml";
-
-		public IReadOnlyDictionary<string, AdminFlags> ConsolePermissions => _consolePermissions;
-		private readonly Dictionary<string, AdminFlags> _consolePermissions = new();
-
-		protected abstract IEnumerable<string> ConsolePermPaths { get; }
-
-		public override void Initialize()
+		protected Dictionary<string, AdminFlags> TryLoadPermissions(string path)
 		{
-			base.Initialize();
-
-			foreach (var path in ConsolePermPaths)
+			if (!_res.TryContentFileRead(new ResPath(path), out var stream))
 			{
-				if (!Res.TryContentFileRead(new ResPath(path), out var consoleStream))
-				{
-					Log.Error($"Couldn't find console permission file {path}");
-					continue;
-				}
-				LoadPermissionsFromStream(consoleStream, _consolePermissions);
+				Log.Error($"Couldn't find permission file at {path}");
+				return new(); //return empty dict with no perms
 			}
+			return LoadPermissionsFromStream(stream);
 		}
 
-		protected void LoadPermissionsFromStream(Stream stream, Dictionary<string, AdminFlags> permissions)
+		private Dictionary<string, AdminFlags> LoadPermissionsFromStream(Stream stream)
 		{
+			var output = new Dictionary<string, AdminFlags>();
+
 			using var reader = new StreamReader(stream, EncodingHelpers.UTF8);
 			var yamlStream = new YamlStream();
 			yamlStream.Load(reader);
@@ -62,18 +49,19 @@ namespace Content.Shared.Admin
 
 				foreach (var cmd in commands)
 				{
-					if (permissions.ContainsKey(cmd))
+					if (output.ContainsKey(cmd))
 					{
 						Log.Error($"Duplicate command {cmd} in config file");
 						continue;
 					}
 
-					permissions.Add(cmd, (AdminFlags)flag);
+					output.Add(cmd, (AdminFlags)flag);
 				}
 			}
+			return output;
 		}
 
-		private static bool TryGetFlagFromName(string name, [NotNullWhen(true)] out AdminFlags? flag)
+		public static bool TryGetFlagFromName(string name, [NotNullWhen(true)] out AdminFlags? flag)
 		{
 			flag = name switch
 			{
@@ -92,6 +80,8 @@ namespace Content.Shared.Admin
 	public sealed class PlayerPermissions
 	{
 		public AdminFlags Permissions { get; set; } = AdminFlags.None;
+
+		public Dictionary<string, AdminFlags> CommandPermissions = new();
 
 		public bool CanSpawn()
 		{
@@ -124,10 +114,12 @@ namespace Content.Shared.Admin
 	public sealed class UpdatePlayerPermissionsEvent : EntityEventArgs
 	{
 		public PlayerPermissions PlayerPermissions { get; }
+		public Dictionary<string, AdminFlags> CommandPermissions { get; }
 
-		public UpdatePlayerPermissionsEvent(PlayerPermissions perms)
+		public UpdatePlayerPermissionsEvent(PlayerPermissions perms, Dictionary<string, AdminFlags> commandPermissions)
 		{
 			PlayerPermissions = perms;
+			CommandPermissions = commandPermissions;
 		}
 	}
 }

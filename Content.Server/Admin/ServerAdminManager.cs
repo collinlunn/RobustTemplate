@@ -1,7 +1,9 @@
 using Content.Shared.Admin;
+using FastAccessors;
 using JetBrains.Annotations;
 using Robust.Server.Console;
 using Robust.Server.Player;
+using Robust.Shared.ContentPack;
 using Robust.Shared.Enums;
 using Robust.Shared.Players;
 using Robust.Shared.Toolshed;
@@ -20,18 +22,18 @@ namespace Content.Server.Admin
 		[Dependency] private readonly IPlayerManager _playerManager = default!;
 		[Dependency] private readonly ToolshedManager _toolshed = default!;
 
-		/// <summary>
-		///		The set of admins along with their permissions.
-		/// </summary>
-		private readonly Dictionary<IPlayerSession, PlayerPermissions> _playerPermissions = new();
+		public const string ClientCommandPermPath = "/Commands/clientCommandPerms.yml";
+		public const string ServerCommandPermPath = "/Commands/serverCommandPerms.yml";
+		public const string ToolboxCommandPermPath = "/Commands/toolboxCommandPerms.yml";
 
-		protected override IEnumerable<string> ConsolePermPaths => new string[]
-		{
-			ServerCommandPermPath,
-		};
-
+		public IReadOnlyDictionary<string, AdminFlags> ServerConsolePermissions => _serverConsolePermissions;
+		private Dictionary<string, AdminFlags> _serverConsolePermissions = new();
+		public IReadOnlyDictionary<string, AdminFlags> ClientConsolePermissions => _clientConsolePermissions;
+		private Dictionary<string, AdminFlags> _clientConsolePermissions = new();
 		public IReadOnlyDictionary<string, AdminFlags> ToolboxPermissions => _toolboxPermissions;
-		private readonly Dictionary<string, AdminFlags> _toolboxPermissions = new();
+		private Dictionary<string, AdminFlags> _toolboxPermissions = new();
+
+		private readonly Dictionary<IPlayerSession, PlayerPermissions> _playerPermissions = new();
 
 		public override void Initialize()
 		{
@@ -41,14 +43,9 @@ namespace Content.Server.Admin
 			_toolshed.ActivePermissionController = this;
 			_playerManager.PlayerStatusChanged += PlayerStatusChanged;
 
-			if (Res.TryContentFileRead(new ResPath(ToolboxCommandPermPath), out var consoleStream))
-			{
-				LoadPermissionsFromStream(consoleStream, _toolboxPermissions);
-			}
-			else
-			{
-				Log.Error($"Couldn't find console permission file {ToolboxCommandPermPath}");
-			}
+			_clientConsolePermissions = TryLoadPermissions(ClientCommandPermPath);
+			_serverConsolePermissions = TryLoadPermissions(ServerCommandPermPath);
+			_toolboxPermissions = TryLoadPermissions(ToolboxCommandPermPath);	
 		}
 
 		#region IConGroupControllerImplementation
@@ -136,7 +133,7 @@ namespace Content.Server.Admin
 
 		private bool CanUseCommand(IPlayerSession session, string cmdName)
 		{
-			if (!ConsolePermissions.TryGetValue(cmdName, out var cmdFlag))
+			if (!_serverConsolePermissions.TryGetValue(cmdName, out var cmdFlag))
 			{
 				Log.Error($"Could not find permissions for {cmdName}");
 				return false;
@@ -166,7 +163,7 @@ namespace Content.Server.Admin
 			{
 				var playerPerms = GetPermissions(session);
 				_playerPermissions.Add(session, playerPerms);
-				RaiseNetworkEvent(new UpdatePlayerPermissionsEvent(playerPerms));
+				RaiseNetworkEvent(new UpdatePlayerPermissionsEvent(playerPerms, _clientConsolePermissions));
 			}
 			PlayerPermissions GetPermissions(IPlayerSession session)
 			{

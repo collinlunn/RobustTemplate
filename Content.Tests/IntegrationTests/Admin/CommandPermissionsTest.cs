@@ -26,7 +26,9 @@ namespace Content.Tests.IntegrationTests.Admin
 
 			await client.WaitPost(() =>
 			{
-				var adminConsoleCommands = clientAdmin.ConsolePermissions.Keys;
+				var consolePerms = clientAdmin.ConsolePermissions;
+				Assert.NotNull(consolePerms);
+				var adminConsoleCommands = consolePerms.Keys;
 				var availableCommands = clientConsole.AvailableCommands.Keys;
 
 				foreach (var command in adminConsoleCommands)
@@ -47,7 +49,7 @@ namespace Content.Tests.IntegrationTests.Admin
 
 			await server.WaitPost(() =>
 			{
-				var adminConsoleCommands = serverAdmin.ConsolePermissions.Keys;
+				var adminConsoleCommands = serverAdmin.ServerConsolePermissions.Keys;
 				var availableCommands = serverConsole.AvailableCommands.Keys;
 
 				foreach (var command in adminConsoleCommands)

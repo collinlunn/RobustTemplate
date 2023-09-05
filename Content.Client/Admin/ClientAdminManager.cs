@@ -19,10 +19,8 @@ namespace Content.Client.Admin
 		/// </summary>
 		private PlayerPermissions? PlayerPermissions;
 
-		protected override IEnumerable<string> ConsolePermPaths => new string[]
-		{
-			ClientCommandPermPath,
-		};
+		public IReadOnlyDictionary<string, AdminFlags>? ConsolePermissions => _consolePermissions;
+		private Dictionary<string, AdminFlags>? _consolePermissions;
 
 		public override void Initialize()
 		{
@@ -32,37 +30,51 @@ namespace Content.Client.Admin
 			SubscribeNetworkEvent<UpdatePlayerPermissionsEvent>(args =>
 			{ 
 				PlayerPermissions = args.PlayerPermissions;
+				_consolePermissions = args.CommandPermissions;
 			});
 		}
 
 		public bool CanAdminMenu()
 		{
-			return PlayerPermissions?.CanAdminMenu() ?? false;
+			return TryGetPlayerPermissions()?.CanAdminMenu() ?? false;
 		}
 
 		public bool CanAdminPlace()
 		{
-			return PlayerPermissions?.CanSpawn() ?? false;
+			return TryGetPlayerPermissions()?.CanSpawn() ?? false;
 		}
 
 		public bool CanScript()
 		{
-			return PlayerPermissions?.IsHost() ?? false;
+			return TryGetPlayerPermissions()?.IsHost() ?? false;
 		}
 
 		public bool CanCommand(string cmdName)
 		{
-			if (!ConsolePermissions.TryGetValue(cmdName, out var cmdFlag))
+			if (_consolePermissions == null)
+			{
+				Log.Debug($"Tried to run {cmdName}, but no permissions from server yet.");
+				return false;
+			}
+			if (!_consolePermissions.TryGetValue(cmdName, out var cmdFlag))
 			{
 				Log.Error($"Could not find permissions for {cmdName}");
 				return false;
 			}
-			return PlayerPermissions?.Permissions.HasFlag(cmdFlag) ?? false;
+			return TryGetPlayerPermissions()?.Permissions.HasFlag(cmdFlag) ?? false;
 		}
 
 		public bool CanViewVar()
 		{
 			return CanCommand("vv");
+		}
+
+		private PlayerPermissions? TryGetPlayerPermissions()
+		{
+			if (PlayerPermissions == null)
+				Log.Debug("Tried to get admin permissions but it has not been received yet");
+
+			return PlayerPermissions;
 		}
 	}
 }
