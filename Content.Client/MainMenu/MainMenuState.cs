@@ -18,9 +18,9 @@ public sealed class MainMenuState : State
 
 	protected override void Startup()
     {
-		_cfg.OnValueChanged(ContentCVars.TitleMusicVolume, UpdateTitleMusicVolume);
+		_cfg.OnValueChanged(ContentCVars.MusicVolume, UpdateTitleMusicVolume);
 
-		var volume = _cfg.GetCVar(ContentCVars.TitleMusicVolume);
+		var volume = _cfg.GetCVar(ContentCVars.MusicVolume);
 
 		if (_audio.TryPlaySound(MenuMusicPath, out _menuMusic))
 		{
@@ -31,7 +31,7 @@ public sealed class MainMenuState : State
 
     protected override void Shutdown()
     {
-		_cfg.UnsubValueChanged(ContentCVars.TitleMusicVolume, UpdateTitleMusicVolume);
+		_cfg.UnsubValueChanged(ContentCVars.MusicVolume, UpdateTitleMusicVolume);
 		_menuMusic?.StopPlaying();
 		_menuMusic = null;
 	}
