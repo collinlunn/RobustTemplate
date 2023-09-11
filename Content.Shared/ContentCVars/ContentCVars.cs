@@ -8,5 +8,8 @@ namespace Content.Shared.ContentCVars
 	{
 		public static readonly CVarDef<bool> HudFpsVisible =
 			CVarDef.Create("hud.fps_visible", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+		public static readonly CVarDef<float> TitleMusicVolume =
+			CVarDef.Create("audio.titlemusicvolume", 1.0f, CVar.ARCHIVE | CVar.CLIENTONLY);
 	}
 }

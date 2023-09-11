@@ -13,6 +13,16 @@
             <Label Name="CurrentMasterVolumeLabel"/>
         </BoxContainer>
         <BoxContainer Orientation="Horizontal" Margin="5">
+            <Label Text="Title Music" />
+            <Slider Name="TitleMusicVolumeSlider"
+                    MinValue="0"
+                    MaxValue="100"
+                    SetSize="250 30"
+                    Rounded="True"
+                    Margin="10 0 10 0"/>
+            <Label Name="CurrentTitleMusicVolumeLabel"/>
+        </BoxContainer>
+        <BoxContainer Orientation="Horizontal" Margin="5">
             <Button Name="ApplyButton" Text="Apply" SetWidth ="200"/>
         </BoxContainer>
     </BoxContainer>
