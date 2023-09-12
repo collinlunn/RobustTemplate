@@ -22,9 +22,8 @@ public sealed class MainMenuState : State
 
 		var volume = _cfg.GetCVar(ContentCVars.MusicVolume);
 
-		if (_audio.TryPlaySound(MenuMusicPath, out _menuMusic))
+		if (_audio.TryPlaySound(MenuMusicPath, volume, out _menuMusic))
 		{
-			_menuMusic.SetVolumeDirect(volume);
 			_menuMusic.IsLooping = true;
 		}
 	}

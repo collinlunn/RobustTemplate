@@ -1,4 +1,5 @@
 using Content.Client.Admin;
+using Content.Client.Audio;
 using Content.Client.Input;
 using Content.Client.MainMenu;
 using Content.Client.StyleSheets;
@@ -51,6 +52,7 @@ public sealed class EntryPoint : GameClient
 
 		// DEVNOTE: This is generally where you'll be setting up the IoCManager further.
 		IoCManager.Resolve<CursorManager>().Initialize();
+		IoCManager.Resolve<MainMenuAudio>().Initialize();
 	}
 
 	public override void PostInit()
