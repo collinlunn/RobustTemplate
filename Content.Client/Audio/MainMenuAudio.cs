@@ -53,7 +53,13 @@ namespace Content.Client.Audio
 			return true;
 		}
 
-		public void AddButtonSound(string filePath, params Button[] buttons)
+		public void PlayUiSound(string filePath)
+		{
+			var volume = _cfg.GetCVar(ContentCVars.GuiEffectsVolume);
+			TryPlaySound(filePath, volume, out _);
+		}
+
+		public void AddButtonSound(string filePath, params BaseButton[] buttons)
 		{
 			foreach (var button in buttons)
 			{
