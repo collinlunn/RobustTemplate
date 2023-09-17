@@ -8,6 +8,7 @@ using Content.Shared.Lobby;
 using Robust.Shared.Utility;
 using Content.Client.UI;
 using Content.Shared.UI;
+using Content.Client.OptionsMenu;
 
 namespace Content.Client.Lobby
 {
@@ -36,6 +37,10 @@ namespace Content.Client.Lobby
 			_lobbyHud.StartMappingButton.OnPressed += _ =>
 			{
 				_entityNetManager.SendSystemNetworkMessage(new StartMappingButtonPressed());
+			};
+			_lobbyHud.OptionsButton.OnPressed += _ =>
+			{
+				_userInterface.GetUIController<OptionsMenuController>().ToggleWindow();
 			};
 			_lobbyHud.DisconnectButton.OnPressed += _ =>
 			{

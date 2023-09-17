@@ -20,6 +20,7 @@ public sealed partial class LobbyHud : Control
 		_audio.AddButtonSound("pop.wav",
 			StartGameButton,
 			StartMappingButton,
+			OptionsButton,
 			DisconnectButton);
 
 		CustomCursor.SetCursor(this);
