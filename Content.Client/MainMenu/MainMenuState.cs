@@ -37,6 +37,6 @@ public sealed class MainMenuState : State
 
 	private void UpdateTitleMusicVolume(float newVolume)
 	{
-		_menuMusic?.SetVolumeDirect(newVolume);
+		_menuMusic?.SetVolume(newVolume);
 	}
 }

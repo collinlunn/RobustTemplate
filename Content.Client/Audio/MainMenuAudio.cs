@@ -48,7 +48,7 @@ namespace Content.Client.Audio
 				return false;
 			}
 
-			source.SetVolumeDirect(gain);
+			source.SetVolume(gain);
 			source.StartPlaying();
 			return true;
 		}

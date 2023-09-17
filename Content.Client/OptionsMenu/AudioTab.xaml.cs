@@ -27,10 +27,10 @@ namespace Content.Client.OptionsMenu
 			_audio.AddButtonSound("pop.wav", ApplyButton);
 
 			MasterVolumeSlider.Value = _cfg.GetCVar(CVars.AudioMasterVolume) * 100;
-			MusicVolumeSlider.Value = _cfg.GetCVar(ContentCVars.MusicVolume) * 100;
-			GuiEffectsVolumeSlider.Value = _cfg.GetCVar(ContentCVars.GuiEffectsVolume) * 100;
-			GameEffectsVolumeSlider.Value = _cfg.GetCVar(ContentCVars.GameEffectsVolume) * 100;
-			AmbienceVolumeSlider.Value = _cfg.GetCVar(ContentCVars.AmbienceVolume) * 100;
+			MusicVolumeSlider.Value = DBToLV100(_cfg.GetCVar(ContentCVars.MusicVolume));
+			GuiEffectsVolumeSlider.Value = DBToLV100(_cfg.GetCVar(ContentCVars.GuiEffectsVolume));
+			GameEffectsVolumeSlider.Value = DBToLV100(_cfg.GetCVar(ContentCVars.GameEffectsVolume));
+			AmbienceVolumeSlider.Value = DBToLV100(_cfg.GetCVar(ContentCVars.AmbienceVolume));
 
 			CurrentMasterVolumeLabel.Text = $"{MasterVolumeSlider.Value}%";
 			CurrentMusicVolumeLabel.Text = $"{MusicVolumeSlider.Value}%";
@@ -49,10 +49,23 @@ namespace Content.Client.OptionsMenu
 		private void ApplyPressed()
 		{
 			_cfg.SetCVar(CVars.AudioMasterVolume, MasterVolumeSlider.Value / 100);
-			_cfg.SetCVar(ContentCVars.MusicVolume, MusicVolumeSlider.Value / 100);
-			_cfg.SetCVar(ContentCVars.GuiEffectsVolume, GuiEffectsVolumeSlider.Value / 100);
-			_cfg.SetCVar(ContentCVars.GameEffectsVolume, GameEffectsVolumeSlider.Value / 100);
-			_cfg.SetCVar(ContentCVars.AmbienceVolume, AmbienceVolumeSlider.Value / 100);
+			_cfg.SetCVar(ContentCVars.MusicVolume, LV100ToDB(MusicVolumeSlider.Value));
+			_cfg.SetCVar(ContentCVars.GuiEffectsVolume, LV100ToDB(GuiEffectsVolumeSlider.Value));
+			_cfg.SetCVar(ContentCVars.GameEffectsVolume, LV100ToDB(GameEffectsVolumeSlider.Value));
+			_cfg.SetCVar(ContentCVars.AmbienceVolume, LV100ToDB(AmbienceVolumeSlider.Value));
+		}
+
+		private float DBToLV100(float db, float multiplier = 1f)
+		{
+			var lvl100 = (float)(Math.Pow(10, db / 10) * 100 / multiplier);
+			return lvl100;
+		}
+
+		private float LV100ToDB(float lv100, float multiplier = 1f)
+		{
+			// Saving negative infinity doesn't work, so use -10000000 instead (MidiManager does it)
+			var db = MathF.Max(-10000000, (float)(Math.Log(lv100 * multiplier / 100, 10) * 10));
+			return db;
 		}
 	}
 }
