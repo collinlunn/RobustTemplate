@@ -49,6 +49,7 @@ namespace Content.Client.Audio
 			}
 
 			source.SetVolume(gain);
+			source.SetGlobal();
 			source.StartPlaying();
 			return true;
 		}
@@ -65,8 +66,7 @@ namespace Content.Client.Audio
 			{
 				button.OnPressed += _ =>
 				{
-					var volume = _cfg.GetCVar(ContentCVars.GuiEffectsVolume);
-					TryPlaySound(filePath, volume, out var stream);
+					PlayUiSound(filePath);
 				};
 			}
 		}

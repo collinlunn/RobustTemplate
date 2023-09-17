@@ -1,16 +1,17 @@
 ﻿using Content.Client.InGame;
 using Content.Client.Lobby;
 using Content.Shared.ContentCVars;
+using JetBrains.Annotations;
 using Robust.Client.GameObjects;
 using Robust.Client.State;
 using Robust.Shared.Audio;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 
 namespace Content.Client.Audio
 {
+	[UsedImplicitly]
 	public sealed class MusicSystem : EntitySystem
 	{
 		[Dependency] private readonly IStateManager _stateManager = default!;
