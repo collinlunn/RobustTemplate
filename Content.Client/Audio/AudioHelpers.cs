@@ -10,11 +10,20 @@ namespace Content.Client.Audio
 	{
 		private static string GuiEffectRoot = "/Audio/";
 
+		private static float GuiEffectVolume
+		{
+			get => IoCManager.Resolve<IConfigurationManager>()
+				.GetCVar(ContentCVars.GuiEffectsVolume);
+		}
+
 		public static void TryPlayGuiEffect(string fileName, AudioParams? audioParams = null)
 		{
+			var audioParamsAdjusted = (audioParams ?? AudioParams.Default)
+				.AddVolume(GuiEffectVolume);
+
 			IoCManager.Resolve<IEntitySystemManager>()
 				.GetEntitySystem<SharedAudioSystem>()
-				.PlayGlobal(GuiEffectRoot + fileName, Filter.Local(), false, audioParams: audioParams ?? DefaultGuiEffectsAudioParams);
+				.PlayGlobal(GuiEffectRoot + fileName, Filter.Local(), false, audioParams: audioParamsAdjusted);
 		}
 
 		public static void AddButtonSound(string fileName, IEnumerable<BaseButton> buttons, AudioParams? audioParams = null)
@@ -22,30 +31,6 @@ namespace Content.Client.Audio
 			foreach (var button in buttons)
 			{
 				button.OnPressed += _ => TryPlayGuiEffect(fileName, audioParams);
-			}
-		}
-
-		public static AudioParams DefaultGuiEffectsAudioParams
-		{
-			get
-			{
-				return new AudioParams
-				{
-					Volume = IoCManager.Resolve<IConfigurationManager>()
-						.GetCVar(ContentCVars.GuiEffectsVolume)
-				};
-			}
-		}
-
-		public static AudioParams DefaultGameEffectsAudioParams
-		{
-			get
-			{
-				return new AudioParams
-				{
-					Volume = IoCManager.Resolve<IConfigurationManager>()
-						.GetCVar(ContentCVars.GameEffectsVolume)
-				};
 			}
 		}
 	}
