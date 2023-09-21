@@ -1,24 +1,14 @@
 ### Robust Template Project
 
-How to publish server exe:
-From root dir: 
-    python Tools/package_server_build.py --platform win-x64 --hybrid-acz
+How to publish server and client exe: Run Tools/packager.py
 
 How to fix build if it mysteriously breaks:
 From root dir: 
     dotnet clean
     dotnet restore      
     dotnet build
-    dotnet run --project
-    dotnet run --project Content.Client
 
 Breakpoint not setting? (source code is diff) - make a small change and rebuild
-
-TODO:
-    make own launcher for client?
-    how to make custom cursor?
-    Make options menu
-    Make actual design doc w/ feature list
 
 Shader notes:
     https://docs.godotengine.org/en/stable/tutorials/shaders/introduction_to_shaders.html

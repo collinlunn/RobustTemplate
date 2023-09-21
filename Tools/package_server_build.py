@@ -51,18 +51,16 @@ SHARED_IGNORED_RESOURCES = {
     ".DS_Store"
 }
 
-SERVER_IGNORED_RESOURCES = {
-    "Textures",
-    "Fonts",
-    "Audio",
-    "Shaders",
+SERVER_IGNORED_
 }
 
 # Assembly names to copy from content.
 # PDBs are included if available, .dll/.pdb appended automatically.
 SERVER_CONTENT_ASSEMBLIES = [
+    "Content.Server.Database",
     "Content.Server",
     "Content.Shared",
+    "Content.Shared.Database"
 ]
 
 # Extra assemblies to copy on the server, with a startswith
