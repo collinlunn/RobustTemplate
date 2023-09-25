@@ -16,7 +16,11 @@
                     <Button Name="OptionsButton" Access="Public" Text="Options" SetWidth="197" Margin="0 0 3 0"/>
                     <Button Name="QuitButton" Access="Public" Text="Quit" SetWidth="197" Margin="3 0 0 0"/>
                 </BoxContainer>
-            </BoxContainer>
+				<BoxContainer Name="IdleAnimationBox" Access="Public" Orientation="Horizontal" Margin="3" Visible="False" HorizontalAlignment="Center">
+					<Label Text="Connecting..." Margin="3"/>
+					<AnimatedTextureRect Name="IdleAnimation"/>
+				</BoxContainer>
+			</BoxContainer>
         </PanelContainer>
     </BoxContainer>
 </Control>

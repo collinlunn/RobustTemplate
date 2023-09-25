@@ -60,6 +60,7 @@ namespace Content.Client.MainMenu
 
 		private void OnConnectFailed(object? sender, NetConnectFailArgs e)
 		{
+			SetIdleAnimation(false);
 			_userInterface.Popup($"Disconnected: {e.Reason}", "Disconnected");
 		}
 
@@ -85,6 +86,8 @@ namespace Content.Client.MainMenu
 				return;
 			}
 
+			SetIdleAnimation(true);
+
 			try
 			{
 				_client.ConnectToServer(ip, port);
@@ -93,6 +96,16 @@ namespace Content.Client.MainMenu
 			{
 				_userInterface.Popup($"Unable to connect: {e.Message}", "Connection Error");
 			}
+		}
+
+		private void SetIdleAnimation(bool visible)
+		{
+			var animation = _mainMenu?.IdleAnimationBox;
+
+			if (animation is null)
+				return;
+
+			animation.Visible = visible;
 		}
 
 		private bool TryParseAddress(string address, out string ip, out ushort port, out string reason)
