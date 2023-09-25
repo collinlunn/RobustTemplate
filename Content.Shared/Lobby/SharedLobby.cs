@@ -6,11 +6,11 @@ namespace Content.Shared.Lobby
 	[Serializable, NetSerializable, Virtual]
 	public class LobbyUiState : UiState
 	{
-		public int DummyNumber = 0;
+		public string[] ConnectedPlayers;
 
-		public LobbyUiState(int num)
+		public LobbyUiState(string[] connectedPlayers)
 		{
-			DummyNumber = num;
+			ConnectedPlayers = connectedPlayers;
 		}
 	}
 

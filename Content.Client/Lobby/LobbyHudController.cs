@@ -66,10 +66,10 @@ namespace Content.Client.Lobby
 
 		public void SetState(UiState state, UiConnectionStatus status)
 		{
-			if (state is not LobbyUiState lobbyState)
-				return;
-
-			_lobbyHud?.SetState(lobbyState);
+			if (state is DefaultUiState)
+				_lobbyHud?.SetDefaultState();
+			if (state is LobbyUiState lobbyState)
+				_lobbyHud?.SetState(lobbyState);
 		}
 	}
 }

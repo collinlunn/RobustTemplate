@@ -7,6 +7,7 @@ using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.Map;
 using Robust.Shared.Timing;
+using System.Linq;
 
 namespace Content.Server.Lobby;
 
@@ -20,6 +21,8 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
 	private string _mapToLoad = "/Maps/default_map.yml";
 	private bool _gameStarted = false;
+
+	private HashSet<IPlayerSession> _playersInLobby = new();
 
 	public override void Initialize()
     {
@@ -42,13 +45,31 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 				break;
 
 			case SessionStatus.InGame:
+				NewPlayerJoinedLobby(session);
 				RaiseNetworkEvent(new LobbyJoinedEvent(), session);
-				_uiState.OpenUiConnection(LobbyUiKey.Key, session, new LobbyUiState(1));
 				break;
 		}
     }
 
-    public void OnStartGamePressed(StartGameButtonPressed message)
+	private void NewPlayerJoinedLobby(IPlayerSession newPlayer)
+	{
+		_playersInLobby.Add(newPlayer);
+		var connectedPlayers = _playerManager.ServerSessions
+			.Select(session => session.Name)
+			.ToArray();
+
+		var uiState = new LobbyUiState(connectedPlayers);
+
+		foreach (var player in _playersInLobby)
+		{
+			if (player == newPlayer)
+				_uiState.OpenUiConnection(LobbyUiKey.Key, player, uiState);
+			else
+				_uiState.DirtyUiState(LobbyUiKey.Key, player, uiState);
+		}
+	}
+
+	public void OnStartGamePressed(StartGameButtonPressed message)
     {
 		if (_gameStarted)
 			return;
@@ -71,6 +92,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 			RaiseNetworkEvent(gameStartedEvent, playerSession);
 			_uiState.CloseUiConnection(LobbyUiKey.Key, playerSession);
 		}
+		_playersInLobby.Clear();
 	}
 
 	public void OnStartMappingPressed(StartMappingButtonPressed message)

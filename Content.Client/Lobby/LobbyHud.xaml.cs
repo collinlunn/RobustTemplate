@@ -29,8 +29,25 @@ public sealed partial class LobbyHud : Control
 		CustomCursor.SetCursor(this);
 	}
 
+	public void SetDefaultState()
+	{
+		ConnectedPlayersBox.DisposeAllChildren();
+		ConnectedPlayersBox.AddChild(new Label
+		{
+			Text = "Loading..."
+		});
+	}
+
 	public void SetState(LobbyUiState state)
 	{
+		ConnectedPlayersBox.DisposeAllChildren();
 
+		foreach (var player in state.ConnectedPlayers)
+		{
+			ConnectedPlayersBox.AddChild(new Label
+			{
+				Text = player
+			});
+		}
 	}
 }
