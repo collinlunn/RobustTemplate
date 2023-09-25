@@ -108,7 +108,7 @@ def main() -> None:
         publish_project("../RobustToolbox/Robust.Client/Robust.Client.csproj", rid)
         publish_project("../Content.Client/Content.Client.csproj", rid)
         package_client(rid)
-    #wipe_bin()
+    wipe_bin()
 
 def parse_args() -> (str):
     parser = argparse.ArgumentParser(
@@ -181,7 +181,7 @@ def copy_dir_into_zip(directory: str, target: str, zipf: ZipFile, skip_folders: 
             dirnames.clear() #prevents sub-directories of skipped folder from getting copied
             continue
 
-        if relpath != ".": #and not zip_entry_exists(zipf, p(basepath, relpath))
+        if relpath != ".":
             zipf.write(root, p(target, relpath))
 
         for filename in files:
