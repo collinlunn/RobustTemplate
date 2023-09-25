@@ -36,7 +36,7 @@ namespace Content.Client.MainMenu
 				Username = _cfgManager.GetCVar(CVars.PlayerName)
 			};
 
-			_mainMenu.ConnectButton.OnPressed += _ => OnConnectPressed(_mainMenu.ConnectButton.Text ?? "");
+			_mainMenu.ConnectButton.OnPressed += _ => OnConnectPressed(_mainMenu.AddressLineEdit.Text ?? "");
 			_mainMenu.ConnectToLocalHostButton.OnPressed += _ => OnConnectPressed("127.0.0.1");
 			_mainMenu.OptionsButton.OnPressed += _ =>
 			{
