@@ -38,6 +38,10 @@ namespace Content.Client.Lobby
 			{
 				_entityNetManager.SendSystemNetworkMessage(new StartMappingButtonPressed());
 			};
+			_lobbyHud.JoinGameButton.OnPressed += _ =>
+			{
+				_entityNetManager.SendSystemNetworkMessage(new JoinGameButtonPressed());
+			};
 			_lobbyHud.OptionsButton.OnPressed += _ =>
 			{
 				_userInterface.GetUIController<OptionsMenuController>().ToggleWindow();

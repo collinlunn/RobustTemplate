@@ -5,7 +5,8 @@
             <Label Text="Woohoo you've connected to a server" Align="Center" Margin="3"/>
             <Button Name="StartGameButton" Access="Public" Text="Start Game" TextAlign="Center" SetWidth="200" Margin="3"/>
             <Button Name="StartMappingButton" Access="Public" Text="Start Mapping" TextAlign="Center" SetWidth="200" Margin="3"/>
-            <Button Name="OptionsButton" Access="Public" Text="Options" TextAlign="Center" SetWidth="200" Margin="3"/>
+			<Button Name="JoinGameButton" Access="Public" Text="Join Game" TextAlign="Center" SetWidth="200" Margin="3" Visible="False"/>
+			<Button Name="OptionsButton" Access="Public" Text="Options" TextAlign="Center" SetWidth="200" Margin="3"/>
             <Button Name="DisconnectButton" Access="Public" Text="Disconnect" TextAlign="Center" SetWidth="200" Margin="3"/>
             <Button Name="QuitButton" Access="Public" Text="Quit" TextAlign="Center" SetWidth="200" Margin="3"/>
             <Label Text ="Connected Players:" Margin="3"/>

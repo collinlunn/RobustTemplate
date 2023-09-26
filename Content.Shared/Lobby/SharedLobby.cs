@@ -1,4 +1,4 @@
-﻿using Content.Shared.UI;
+using Content.Shared.UI;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared.Lobby
@@ -6,11 +6,13 @@ namespace Content.Shared.Lobby
 	[Serializable, NetSerializable, Virtual]
 	public class LobbyUiState : UiState
 	{
-		public string[] ConnectedPlayers;
+		public readonly string[] ConnectedPlayers;
+		public readonly bool GameStarted;
 
-		public LobbyUiState(string[] connectedPlayers)
+		public LobbyUiState(string[] connectedPlayers, bool gameStarted)
 		{
 			ConnectedPlayers = connectedPlayers;
+			GameStarted = gameStarted;
 		}
 	}
 
@@ -40,6 +42,12 @@ namespace Content.Shared.Lobby
 
 	[Serializable, NetSerializable]
 	public sealed class StartMappingButtonPressed : EntityEventArgs
+	{
+
+	}
+
+	[Serializable, NetSerializable]
+	public sealed class JoinGameButtonPressed : EntityEventArgs
 	{
 
 	}

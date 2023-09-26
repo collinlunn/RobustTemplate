@@ -22,6 +22,7 @@ public sealed partial class LobbyHud : Control
 		{
 			StartGameButton,
 			StartMappingButton,
+			JoinGameButton,
 			OptionsButton,
 			DisconnectButton
 		});
@@ -49,5 +50,9 @@ public sealed partial class LobbyHud : Control
 				Text = player
 			});
 		}
+
+		StartGameButton.Visible = !state.GameStarted;
+		StartMappingButton.Visible = !state.GameStarted;
+		JoinGameButton.Visible = state.GameStarted;
 	}
 }
