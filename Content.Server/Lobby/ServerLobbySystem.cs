@@ -58,7 +58,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 			.Select(session => session.Name)
 			.ToArray();
 
-		var uiState = new LobbyUiState(connectedPlayers);
+		var uiState = new LobbyUiState(connectedPlayers, _gameStarted);
 
 		foreach (var player in _playersInLobby)
 		{
@@ -119,5 +119,6 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 			RaiseNetworkEvent(gameStartedEvent, playerSession);
 			_uiState.CloseUiConnection(LobbyUiKey.Key, playerSession);
 		}
+		_playersInLobby.Clear();
 	}
 }
