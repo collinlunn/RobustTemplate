@@ -78,21 +78,11 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		var mapId = _mapManager.CreateMap();
 		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
 
-		SpawnPlayers("TestPlayer");
-    }
-
-	private void SpawnPlayers(string playerProto)
-	{
-		var gameStartedEvent = new GameStartedEvent();
-
 		foreach (var playerSession in _playerManager.ServerSessions)
 		{
-			var spawnEvent = new SpawnPlayerEvent(playerProto, playerSession);
-			RaiseLocalEvent(spawnEvent);
-			RaiseNetworkEvent(gameStartedEvent, playerSession);
-			_uiState.CloseUiConnection(LobbyUiKey.Key, playerSession);
+			var spawnEvent = new SpawnPlayerEvent("TestPlayer", playerSession);
+			SpawnPlayer(playerSession, spawnEvent);
 		}
-		_playersInLobby.Clear();
 	}
 
 	public void OnStartMappingPressed(StartMappingButtonPressed message)
@@ -105,20 +95,21 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		_mapManager.AddUninitializedMap(mapId); //set as uninitialized so map can be saved to a file correctly
 		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
 
-		SpawnMappingPlayers("TestMappingPlayer", mapId);
-	}
-
-	private void SpawnMappingPlayers(string playerProto, MapId mapId)
-	{
-		var gameStartedEvent = new GameStartedEvent();
-
 		foreach (var playerSession in _playerManager.ServerSessions)
 		{
-			var spawnEvent = new SpawnMappingPlayerEvent(playerProto, mapId, playerSession);
-			RaiseLocalEvent(spawnEvent);
-			RaiseNetworkEvent(gameStartedEvent, playerSession);
-			_uiState.CloseUiConnection(LobbyUiKey.Key, playerSession);
+			var spawnEvent = new SpawnMappingPlayerEvent("TestMappingPlayer", mapId, playerSession);
+			SpawnPlayer(playerSession, spawnEvent);
 		}
-		_playersInLobby.Clear();
+	}
+
+	private void SpawnPlayer(IPlayerSession playerSession, EntityEventArgs spawnEvent)
+	{
+		var gameStartedEvent = new GameStartedEvent();
+		RaiseNetworkEvent(gameStartedEvent, playerSession);
+		
+		_playersInLobby.Remove(playerSession);
+		_uiState.CloseUiConnection(LobbyUiKey.Key, playerSession);
+
+		RaiseLocalEvent(spawnEvent);
 	}
 }
