@@ -22,6 +22,9 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 	private string _mapToLoad = "/Maps/default_map.yml";
 	private bool _gameStarted = false;
 
+	private const string PlayerProto = "TestPlayer";
+	private const string PlayerMappingProto = "TestMappingPlayer";
+
 	private HashSet<IPlayerSession> _playersInLobby = new();
 
 	public override void Initialize()
@@ -30,6 +33,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
         _playerManager.PlayerStatusChanged += PlayerStatusChanged;
 		SubscribeNetworkEvent<StartGameButtonPressed>(OnStartGamePressed);
 		SubscribeNetworkEvent<StartMappingButtonPressed>(OnStartMappingPressed);
+		SubscribeNetworkEvent<JoinGameButtonPressed>(OnJoinGamePressed);
 	}
 
 	private void PlayerStatusChanged(object? sender, SessionStatusEventArgs args)
@@ -45,34 +49,50 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 				break;
 
 			case SessionStatus.InGame:
-				NewPlayerJoinedLobby(session);
+				_playersInLobby.Add(session);
 				RaiseNetworkEvent(new LobbyJoinedEvent(), session);
+				_uiState.OpenUiConnection(LobbyUiKey.Key, session, UiState());
+				DirtyUi();
+				break;
+
+			case SessionStatus.Disconnected:
+				if (_playersInLobby.Contains(session))
+				{
+					_playersInLobby.Remove(session);
+				}
+				DirtyUi();
 				break;
 		}
     }
 
-	private void NewPlayerJoinedLobby(IPlayerSession newPlayer)
+	[Pure]
+	private LobbyUiState UiState()
 	{
-		_playersInLobby.Add(newPlayer);
 		var connectedPlayers = _playerManager.ServerSessions
+			.Where(session => session.Status == SessionStatus.InGame)
 			.Select(session => session.Name)
 			.ToArray();
 
 		var uiState = new LobbyUiState(connectedPlayers, _gameStarted);
+		return uiState;
+	}
 
+	private void DirtyUi()
+	{
+		var uiState = UiState();
 		foreach (var player in _playersInLobby)
 		{
-			if (player == newPlayer)
-				_uiState.OpenUiConnection(LobbyUiKey.Key, player, uiState);
-			else
-				_uiState.DirtyUiState(LobbyUiKey.Key, player, uiState);
+			_uiState.DirtyUiState(LobbyUiKey.Key, player, uiState);
 		}
 	}
 
-	public void OnStartGamePressed(StartGameButtonPressed message)
+	private void OnStartGamePressed(StartGameButtonPressed message)
     {
 		if (_gameStarted)
+		{
+			Log.Debug("Client tried to start game, but it has already started.");
 			return;
+		}
 		_gameStarted = true;
 
 		var mapId = _mapManager.CreateMap();
@@ -80,15 +100,17 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
 		foreach (var playerSession in _playerManager.ServerSessions)
 		{
-			var spawnEvent = new SpawnPlayerEvent("TestPlayer", playerSession);
-			SpawnPlayer(playerSession, spawnEvent);
+			SpawnPlayer(playerSession);
 		}
 	}
 
-	public void OnStartMappingPressed(StartMappingButtonPressed message)
+	private void OnStartMappingPressed(StartMappingButtonPressed message)
 	{
 		if (_gameStarted)
+		{
+			Log.Debug("Client tried to start mapping, but it has already started.");
 			return;
+		}
 		_gameStarted = true;
 
 		var mapId = _mapManager.CreateMap();
@@ -97,19 +119,49 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 
 		foreach (var playerSession in _playerManager.ServerSessions)
 		{
-			var spawnEvent = new SpawnMappingPlayerEvent("TestMappingPlayer", mapId, playerSession);
-			SpawnPlayer(playerSession, spawnEvent);
+			SpawnPlayerMapping(playerSession, mapId);
 		}
 	}
 
-	private void SpawnPlayer(IPlayerSession playerSession, EntityEventArgs spawnEvent)
+	private void OnJoinGamePressed(JoinGameButtonPressed message, EntitySessionEventArgs args)
 	{
+		if (!_gameStarted)
+		{
+			Log.Debug("Client tried to join game, but it has not started yet.");
+			return;
+		}
+
+		if (args.SenderSession is not IPlayerSession session) //TODO: this cast is hacky, how to do properly? Can I replace w/ CommonSession?
+		{
+			Log.Error("Received wrong type of session in OnJoinGamePressed");
+			return;
+		}
+
+		SpawnPlayer(session);
+	}
+
+	private void SpawnPlayer(IPlayerSession playerSession)
+	{
+		var spawnEvent = new SpawnPlayerEvent(PlayerProto, playerSession);
+		RaiseLocalEvent(spawnEvent);
+		PlayerSpawned(playerSession);
+	}
+
+	private void SpawnPlayerMapping(IPlayerSession playerSession, MapId mapId)
+	{
+		var spawnEvent = new SpawnMappingPlayerEvent(PlayerMappingProto, mapId, playerSession);
+		RaiseLocalEvent(spawnEvent);
+		PlayerSpawned(playerSession);
+	}
+
+	private void PlayerSpawned(IPlayerSession playerSession)
+	{
+		_playersInLobby.Remove(playerSession);
+
 		var gameStartedEvent = new GameStartedEvent();
 		RaiseNetworkEvent(gameStartedEvent, playerSession);
-		
-		_playersInLobby.Remove(playerSession);
-		_uiState.CloseUiConnection(LobbyUiKey.Key, playerSession);
 
-		RaiseLocalEvent(spawnEvent);
+		_uiState.CloseUiConnection(LobbyUiKey.Key, playerSession);
+		DirtyUi();
 	}
 }
