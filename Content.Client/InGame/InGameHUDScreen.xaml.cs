@@ -6,6 +6,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Configuration;
+using Robust.Shared.Network;
 using Robust.Shared.Timing;
 
 namespace Content.Client.InGame;
@@ -16,6 +17,7 @@ public sealed partial class InGameHUDScreen : UIScreen
 	[Dependency] private readonly IGameTiming _gameTiming = default!;
 	[Dependency] private readonly IEyeManager _eyeManager = default!;
 	[Dependency] private readonly IConfigurationManager _configurationManager = default!;
+	[Dependency] private readonly IClientNetManager _netManager = default!;
 
 	public InGameHUDScreen()
 	{
@@ -35,5 +37,16 @@ public sealed partial class InGameHUDScreen : UIScreen
 		{ 
 			FpsBox.Visible = visible;
 		});
+		PingLabel.Visible = _configurationManager.GetCVar(ContentCVars.HudPingVisible);
+		_configurationManager.OnValueChanged(ContentCVars.HudPingVisible, (visible) =>
+		{
+			PingLabel.Visible = visible;
+		});
+	}
+
+	protected override void FrameUpdate(FrameEventArgs args)
+	{
+		base.FrameUpdate(args);
+		PingLabel.Text = $"Ping: {_netManager.ServerChannel?.Ping ?? -1}";
 	}
 }

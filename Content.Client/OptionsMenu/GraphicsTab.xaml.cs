@@ -25,7 +25,8 @@ namespace Content.Client.OptionsMenu
 				ApplyButton,
 				VSyncCheckBox,
 				FullscreenCheckBox,
-				FpsCounterCheckBox);
+				FpsCounterCheckBox,
+				PingCounterCheckBox);
 
 			UpdateButtons();
 		}
@@ -35,6 +36,7 @@ namespace Content.Client.OptionsMenu
 			VSyncCheckBox.Pressed = _cfg.GetCVar(CVars.DisplayVSync);
 			FullscreenCheckBox.Pressed = _cfg.GetCVar(CVars.DisplayWindowMode) == (int)WindowMode.Fullscreen;
 			FpsCounterCheckBox.Pressed = _cfg.GetCVar(ContentCVars.HudFpsVisible);
+			PingCounterCheckBox.Pressed = _cfg.GetCVar(ContentCVars.HudPingVisible);
 		}
 
 		private void ApplyPressed()
@@ -43,6 +45,7 @@ namespace Content.Client.OptionsMenu
 			_cfg.SetCVar(CVars.DisplayWindowMode,
 						 (int)(FullscreenCheckBox.Pressed ? WindowMode.Fullscreen : WindowMode.Windowed));
 			_cfg.SetCVar(ContentCVars.HudFpsVisible, FpsCounterCheckBox.Pressed);
+			_cfg.SetCVar(ContentCVars.HudPingVisible, PingCounterCheckBox.Pressed);
 		}
 	}
 }

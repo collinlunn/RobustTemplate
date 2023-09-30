@@ -7,7 +7,7 @@
     HorizontalAlignment="Center">
     <LayoutContainer Name="ViewportBox" HorizontalExpand="True" VerticalExpand="True"/>
     <BoxContainer Orientation="Vertical">
-        <Label Text="Test HUD Label"/>
         <BoxContainer Name="FpsBox"  Orientation="Vertical"/>
+		<Label Name="PingLabel"/>
     </BoxContainer>
 </ingame:InGameHUDScreen>

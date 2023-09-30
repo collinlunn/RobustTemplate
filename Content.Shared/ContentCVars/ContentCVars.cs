@@ -9,6 +9,9 @@ namespace Content.Shared.ContentCVars
 		public static readonly CVarDef<bool> HudFpsVisible =
 			CVarDef.Create("hud.fps_visible", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 
+		public static readonly CVarDef<bool> HudPingVisible =
+			CVarDef.Create("hud.ping_visible", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
 		/// <summary>
 		///		dB level of game music.
 		/// </summary>
