@@ -1,6 +1,7 @@
 using Content.Shared.UI;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
+using Robust.Shared.Players;
 using Robust.Shared.Utility;
 
 namespace Content.Server.UI
@@ -12,7 +13,7 @@ namespace Content.Server.UI
 		/// <summary>
 		///		Set of connected players with their set of active ui connections.
 		/// </summary>
-		private readonly Dictionary<IPlayerSession, PlayerUiConnectionSet> _playerUiConnectionSets = new();
+		private readonly Dictionary<ICommonSession, PlayerUiConnectionSet> _playerUiConnectionSets = new();
 
 		private sealed class PlayerUiConnectionSet
 		{
@@ -22,7 +23,7 @@ namespace Content.Server.UI
 		/// <summary>
 		///		Set of players with a dirty ui state to update, with the key of the ui to update.
 		/// </summary>
-		private readonly Queue<(IPlayerSession player, Enum uiKey)> _stateUpdateQueue = new();
+		private readonly Queue<(ICommonSession player, Enum uiKey)> _stateUpdateQueue = new();
 
 		public override void Initialize()
 		{
@@ -48,7 +49,7 @@ namespace Content.Server.UI
 		/// <param name="uiKey">Determine which UI gets the state.</param>
 		/// <param name="player">Player to send the state to.</param>
 		/// <param name="state">State to send to the player. If null sends empty dummy state.</param>
-		public void OpenUiConnection(Enum uiKey, IPlayerSession player, UiState? state = null)
+		public void OpenUiConnection(Enum uiKey, ICommonSession player, UiState? state = null)
 		{
 			if (state == null)
 			{
@@ -74,7 +75,7 @@ namespace Content.Server.UI
 		/// </summary>
 		/// <param name="uiKey">Determine which UI discards its state.</param>
 		/// <param name="player">Player to make discard.</param>
-		public void CloseUiConnection(Enum uiKey, IPlayerSession player)
+		public void CloseUiConnection(Enum uiKey, ICommonSession player)
 		{
 			DebugTools.Assert(_playerUiConnectionSets.ContainsKey(player),
 				$"Tried to close UI connection for {player} but they were not in list of players.");
@@ -88,7 +89,7 @@ namespace Content.Server.UI
 			RaiseNetworkEvent(new CloseUiConnectionMessage(uiKey), player);
 		}
 
-		public void DirtyUiState(Enum uiKey, IPlayerSession player, UiState newState)
+		public void DirtyUiState(Enum uiKey, ICommonSession player, UiState newState)
 		{
 			DebugTools.Assert(_playerUiConnectionSets.ContainsKey(player),
 				$"Tried to dirty UI state  for {player} but they were not in list of players.");
