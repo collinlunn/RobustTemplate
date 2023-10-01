@@ -131,7 +131,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 			return;
 		}
 
-		if (args.SenderSession is not IPlayerSession session) //TODO: this cast is hacky, how to do properly? Can I replace w/ CommonSession?
+		if (args.SenderSession is not IPlayerSession session)
 		{
 			Log.Error("Received wrong type of session in OnJoinGamePressed");
 			return;
