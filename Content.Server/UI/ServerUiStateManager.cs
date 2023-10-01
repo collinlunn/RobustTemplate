@@ -63,7 +63,7 @@ namespace Content.Server.UI
 			DebugTools.Assert(!connectionSet.ContainsKey(uiKey),
 				$"Tried to open UI connection for {player} but {nameof(uiKey)} was already in use.");
 
-			var ui = new ServerUiConnection(uiKey, player, state);
+			var ui = new ServerUiConnection(uiKey, state);
 			connectionSet.Add(uiKey, ui);
 
 			RaiseNetworkEvent(new OpenUiConnectionMessage(uiKey, state), player);
@@ -103,7 +103,7 @@ namespace Content.Server.UI
 			if (!ui.Dirty)
 			{
 				ui.Dirty = true;
-				_stateUpdateQueue.Enqueue((ui.Player, ui.UiKey));
+				_stateUpdateQueue.Enqueue((player, ui.UiKey));
 			}
 		}
 

@@ -1,5 +1,4 @@
 using Content.Shared.UI;
-using Robust.Server.Player;
 
 namespace Content.Server.UI
 {
@@ -8,16 +7,13 @@ namespace Content.Server.UI
 	{
 		public Enum UiKey { get; }
 
-		public IPlayerSession Player { get; }
-
 		public UiState State = default!;
 
 		public bool Dirty;
 
-		public ServerUiConnection(Enum uiKey, IPlayerSession player, UiState state)
+		public ServerUiConnection(Enum uiKey, UiState state)
 		{
 			UiKey = uiKey;
-			Player = player;
 			State = state;
 		}
 	}
