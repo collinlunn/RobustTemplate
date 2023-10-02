@@ -110,9 +110,8 @@ def main() -> None:
 
         if standalone:
             package_client_standalone(rid)
-        if hybrid_acz:
-            package_client_acz(rid)
-        package_server(rid)
+
+        package_server(rid, hybrid_acz)
 
     wipe_bin()
 
@@ -168,14 +167,28 @@ def make_zip(name: str) -> ZipFile:
         "w",
         compression=zipfile.ZIP_DEFLATED)
 
-def package_server(runtime: str) -> None:
+def package_server(runtime: str, package_acz: bool) -> None:
     print(f"Packaging {runtime} server...")
     server_zip = make_zip(f"RobustTemplate.Server_{runtime}")
     copy_dir_into_zip(f"../RobustToolbox/bin/Server/{runtime}/publish", ".", server_zip, SERVER_BIN_SKIP_FOLDERS)
     copy_content_assemblies(f"../bin/Content.Server/{runtime}/publish", "Resources/Assemblies", SERVER_CONTENT_ASSEMBLIES, server_zip)
     copy_dir_into_zip("../Resources", "Resources", server_zip, SERVER_RES_SKIP_FOLDERS, SERVER_RES_SKIP_FILES)
     copy_dir_into_zip("../RobustToolbox/Resources", "Resources", server_zip, SERVER_RES_SKIP_FOLDERS, SERVER_RES_SKIP_FILES)
+    
+    if package_acz:
+        acz = package_client_acz(runtime)
+        server_zip.write(acz.filename, "Content.Client.zip")
+    
     server_zip.close()
+
+def package_client_acz(runtime: str) -> ZipFile:
+    print(f"Packaging {runtime} acz client...")
+    acz_zip = make_zip(f"RobustTemplate.Client_ACZ_{runtime}")
+    copy_content_assemblies(f"../bin/Content.Client/{runtime}/publish", "Assemblies", CLIENT_CONTENT_ASSEMBLIES, acz_zip)
+    copy_dir_into_zip("../Resources", ".", acz_zip, CLIENT_RES_SKIP_FOLDERS, CLIENT_RES_SKIP_FILES)
+    copy_dir_into_zip("../RobustToolbox/Resources", ".", acz_zip, CLIENT_RES_SKIP_FOLDERS, CLIENT_RES_SKIP_FILES)
+    acz_zip.close()
+    return acz_zip
 
 def package_client_standalone(runtime: str) -> None:
     print(f"Packaging {runtime} standalone client...")
@@ -185,14 +198,6 @@ def package_client_standalone(runtime: str) -> None:
     copy_dir_into_zip("../Resources", "Resources", client_zip, CLIENT_RES_SKIP_FOLDERS, CLIENT_RES_SKIP_FILES)
     copy_dir_into_zip("../RobustToolbox/Resources", "Resources", client_zip, CLIENT_RES_SKIP_FOLDERS, CLIENT_RES_SKIP_FILES)    
     client_zip.close()
-
-def package_client_acz(runtime: str) -> None:
-    print(f"Packaging {runtime} acz client...")
-    acz_zip = make_zip(f"RobustTemplate.Client_ACZ_{runtime}")
-    copy_content_assemblies(f"../bin/Content.Client/{runtime}/publish", "Assemblies", CLIENT_CONTENT_ASSEMBLIES, acz_zip)
-    copy_dir_into_zip("../Resources", ".", acz_zip, CLIENT_RES_SKIP_FOLDERS, CLIENT_RES_SKIP_FILES)
-    copy_dir_into_zip("../RobustToolbox/Resources", ".", acz_zip, CLIENT_RES_SKIP_FOLDERS, CLIENT_RES_SKIP_FILES)
-    acz_zip.close() 
 
 def copy_dir_into_zip(directory: str, target: str, zipf: ZipFile, skip_folders: List[str]={}, skip_files: List[str]={}):
     for root, dirnames, files in os.walk(directory):
