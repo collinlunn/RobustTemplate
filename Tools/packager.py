@@ -20,9 +20,9 @@ class PlatformReg:
 
 PLATFORMS = [
     PlatformReg("win-x64", "Windows", True),
-    PlatformReg("linux-x64", "Linux", True),
-    PlatformReg("linux-arm64", "Linux", True),
-    PlatformReg("osx-x64", "MacOS", True),
+    PlatformReg("linux-x64", "Linux", False),
+    PlatformReg("linux-arm64", "Linux", False),
+    PlatformReg("osx-x64", "MacOS", False),
     # Non-default platforms (i.e. for Watchdog Git)
     PlatformReg("win-x86", "Windows", False),
     PlatformReg("linux-x86", "Linux", False),
@@ -66,6 +66,7 @@ SERVER_RES_SKIP_FOLDERS = [
 ]
 
 CLIENT_RES_SKIP_FOLDERS = [
+    "Commands",
 ]
 
 SERVER_RES_SKIP_FILES = [
@@ -87,7 +88,7 @@ CLIENT_CONTENT_ASSEMBLIES = [
 ]
 
 def main() -> None:
-    (platforms) = parse_args()
+    (platforms, standalone, hybrid_acz) = parse_args()
 
     if not platforms:
         platforms = PLATFORM_RIDS_DEFAULT
@@ -101,27 +102,38 @@ def main() -> None:
         if rid not in platforms:
             continue
 
-        publish_project("../RobustToolbox/Robust.Server/Robust.Server.csproj", rid)
-        publish_project("../Content.Server/Content.Server.csproj", rid)
-        package_server(rid)
-
         publish_project("../RobustToolbox/Robust.Client/Robust.Client.csproj", rid)
         publish_project("../Content.Client/Content.Client.csproj", rid)
-        package_client(rid)
+        
+        publish_project("../RobustToolbox/Robust.Server/Robust.Server.csproj", rid)
+        publish_project("../Content.Server/Content.Server.csproj", rid)
+
+        if standalone:
+            package_client_standalone(rid)
+        if hybrid_acz:
+            package_client_acz(rid)
+        package_server(rid)
+
     wipe_bin()
 
-def parse_args() -> (str):
+def parse_args() -> (str, bool, bool):
     parser = argparse.ArgumentParser(
         description="Packages the content repo for release on all platforms.")
     parser.add_argument("--platform",
-                        "-p",
-                        action="store",
-                        choices=PLATFORM_RIDS,
-                        nargs="*",
-                        help="Which platform to build for. If not provided, all platforms will be built")
-
+        "-p",
+        action="store",
+        choices=PLATFORM_RIDS,
+        nargs="*",
+        help="Which platform to build for. If not provided, all platforms will be built.")
+    parser.add_argument("--standalone",
+        action="store_false",
+        help="Packages a fully executable client zip.")
+    parser.add_argument("--hybrid-acz",
+        action="store_false",
+        help="Packages a partial client zip with only non-engine resources and assemblies.")
+    
     args = parser.parse_args()
-    return (args.platform)  
+    return (args.platform, args.standalone, args.hybrid_acz)  
 
 def clean_release_folder() -> None:
     if os.path.exists("release"):
@@ -165,14 +177,22 @@ def package_server(runtime: str) -> None:
     copy_dir_into_zip("../RobustToolbox/Resources", "Resources", server_zip, SERVER_RES_SKIP_FOLDERS, SERVER_RES_SKIP_FILES)
     server_zip.close()
 
-def package_client(runtime: str) -> None:
-    print(f"Packaging {runtime} client...")
-    client_zip = make_zip(f"RobustTemplate.Client_{runtime}")
+def package_client_standalone(runtime: str) -> None:
+    print(f"Packaging {runtime} standalone client...")
+    client_zip = make_zip(f"RobustTemplate.Client_Standalone_{runtime}")
     copy_dir_into_zip(f"../RobustToolbox/bin/Client/{runtime}/publish", ".", client_zip, CLIENT_BIN_SKIP_FOLDERS)
     copy_content_assemblies(f"../bin/Content.Client/{runtime}/publish", "Resources/Assemblies", CLIENT_CONTENT_ASSEMBLIES, client_zip)
     copy_dir_into_zip("../Resources", "Resources", client_zip, CLIENT_RES_SKIP_FOLDERS, CLIENT_RES_SKIP_FILES)
-    copy_dir_into_zip("../RobustToolbox/Resources", "Resources", client_zip, CLIENT_RES_SKIP_FOLDERS, CLIENT_RES_SKIP_FILES)
+    copy_dir_into_zip("../RobustToolbox/Resources", "Resources", client_zip, CLIENT_RES_SKIP_FOLDERS, CLIENT_RES_SKIP_FILES)    
     client_zip.close()
+
+def package_client_acz(runtime: str) -> None:
+    print(f"Packaging {runtime} acz client...")
+    acz_zip = make_zip(f"RobustTemplate.Client_ACZ_{runtime}")
+    copy_content_assemblies(f"../bin/Content.Client/{runtime}/publish", "Assemblies", CLIENT_CONTENT_ASSEMBLIES, acz_zip)
+    copy_dir_into_zip("../Resources", ".", acz_zip, CLIENT_RES_SKIP_FOLDERS, CLIENT_RES_SKIP_FILES)
+    copy_dir_into_zip("../RobustToolbox/Resources", ".", acz_zip, CLIENT_RES_SKIP_FOLDERS, CLIENT_RES_SKIP_FILES)
+    acz_zip.close() 
 
 def copy_dir_into_zip(directory: str, target: str, zipf: ZipFile, skip_folders: List[str]={}, skip_files: List[str]={}):
     for root, dirnames, files in os.walk(directory):
