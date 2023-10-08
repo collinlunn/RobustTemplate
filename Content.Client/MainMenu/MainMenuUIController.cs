@@ -26,18 +26,17 @@ namespace Content.Client.MainMenu
 
 		// ReSharper disable once InconsistentNaming
 		private static readonly Regex IPv6Regex = new(@"\[(.*:.*:.*)](?::(\d+))?");
+		private const string LocalHost = "127.0.0.1";
 
 		private MainMenuHud? _mainMenu;
 
 		public void OnStateEntered(MainMenuState state)
 		{
-			_mainMenu = new MainMenuHud
-			{
-				Username = _cfgManager.GetCVar(CVars.PlayerName)
-			};
+			_mainMenu = new MainMenuHud();
+			_mainMenu.UsernameLineEdit.Text = _cfgManager.GetCVar(CVars.PlayerName);
 
-			_mainMenu.ConnectButton.OnPressed += _ => OnConnectPressed(_mainMenu.AddressLineEdit.Text ?? "");
-			_mainMenu.ConnectToLocalHostButton.OnPressed += _ => OnConnectPressed("127.0.0.1");
+			_mainMenu.ConnectButton.OnPressed += _ => OnConnectPressed(_mainMenu.AddressLineEdit.Text ?? string.Empty);
+			_mainMenu.ConnectToLocalHostButton.OnPressed += _ => OnConnectPressed(LocalHost);
 			_mainMenu.OptionsButton.OnPressed += _ =>
 			{
 				_userInterface.GetUIController<OptionsMenuController>().ToggleWindow();
@@ -68,7 +67,7 @@ namespace Content.Client.MainMenu
 		{
 			if (!_gameController.LaunchState.FromLauncher)
 			{
-				var userName = _mainMenu?.Username ?? "";
+				var userName = _mainMenu?.UsernameLineEdit.Text ?? string.Empty;
 
 				if (!UsernameHelpers.IsNameValid(userName, out var usernameReason))
 				{
@@ -98,14 +97,18 @@ namespace Content.Client.MainMenu
 			}
 		}
 
-		private void SetIdleAnimation(bool visible)
+		private void SetIdleAnimation(bool connecting)
 		{
-			var animation = _mainMenu?.IdleAnimationBox;
-
-			if (animation is null)
+			if (_mainMenu is null)
 				return;
 
-			animation.Visible = visible;
+			_mainMenu.IdleAnimationBox.Visible = connecting;
+
+			_mainMenu.UsernameLineEdit.Editable = !connecting; 
+			_mainMenu.AddressLineEdit.Editable = !connecting;
+
+			_mainMenu.ConnectToLocalHostButton.Disabled = connecting;
+			_mainMenu.ConnectButton.Disabled = connecting;
 		}
 
 		private bool TryParseAddress(string address, out string ip, out ushort port, out string reason)

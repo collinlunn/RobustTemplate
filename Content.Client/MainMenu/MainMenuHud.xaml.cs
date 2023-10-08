@@ -30,18 +30,4 @@ public sealed partial class MainMenuHud : Control
 		var sprite = new SpriteSpecifier.Rsi(new("/Textures/Interface/idle.rsi"), "idle");
 		IdleAnimation.SetFromSpriteSpecifier(sprite);
 	}
-
-
-
-	public string Username
-    {
-        get => UsernameLineEdit.Text;
-        set => UsernameLineEdit.Text = value;
-    }
-
-    public string Address
-    {
-        get => AddressLineEdit.Text;
-        set => AddressLineEdit.Text = value;
-    }
 }
