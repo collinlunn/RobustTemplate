@@ -27,17 +27,16 @@ public sealed class InGameState : State
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
 	[Dependency] private readonly IEntityManager _entityManager = default!;
-	[Dependency] private readonly IUserInterfaceManager _uiManager = default!;
+
+	protected override Type? LinkedScreenType => typeof(InGameHUDScreen);
 
 	protected override void Startup()
     {
-		_uiManager.LoadScreen<InGameHUDScreen>();
         _inputManager.KeyBindStateChanged += OnKeyBindStateChanged;
     }
 
     protected override void Shutdown()
     {
-		_uiManager.UnloadScreen();
         _inputManager.KeyBindStateChanged -= OnKeyBindStateChanged;
     }
 
