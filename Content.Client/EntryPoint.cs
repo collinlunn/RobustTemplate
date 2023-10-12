@@ -24,6 +24,7 @@ public sealed class EntryPoint : GameClient
 	[Dependency] private readonly IBaseClient _baseClient = default!;
 	[Dependency] private readonly IInputManager _inputManager = default!;
 	[Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
+	[Dependency] private readonly IGameController _gameController = default!;
 
 	public override void PreInit()
 	{
@@ -70,9 +71,14 @@ public sealed class EntryPoint : GameClient
 		//If run level drops to initialize after disconnecting reopen the main menu
 		_baseClient.RunLevelChanged += (_, args) =>
 		{
-			if (args.NewLevel == ClientRunLevel.Initialize)
+			if (args.NewLevel == ClientRunLevel.Initialize && 
+			(args.OldLevel == ClientRunLevel.Connected || args.OldLevel == ClientRunLevel.InGame))
 			{
-				if (args.OldLevel == ClientRunLevel.Connected || args.OldLevel == ClientRunLevel.InGame)
+				if (_gameController.LaunchState.FromLauncher)
+				{
+					throw new NotImplementedException();
+				}
+				else
 				{
 					_stateManager.RequestStateChange<MainMenuState>();
 				}
