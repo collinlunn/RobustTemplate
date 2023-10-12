@@ -10,6 +10,7 @@ using Robust.Shared.Input;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using System.Linq;
+using System.Text.RegularExpressions;
 using static Robust.Client.Input.Keyboard;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
 
@@ -191,7 +192,7 @@ namespace Content.Client.OptionsMenu
 
 				var functionLabel = new Label
 				{
-					Text = CaseConversion.PascalToKebab(Function.FunctionName),
+					Text = FunctionNameToString(Function.FunctionName),
 					MinWidth = 300f,
 				};
 				RebindButton = new Button { MinWidth = 150f };
@@ -206,6 +207,13 @@ namespace Content.Client.OptionsMenu
 						ResetButton,
 					}
 				});
+
+				string FunctionNameToString(string str)
+				{
+					var regex = new Regex("(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])", RegexOptions.Compiled);
+					return regex.Replace(str, " $1");
+
+				} 
 			}
 		}
 
