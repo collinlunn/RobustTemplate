@@ -37,6 +37,10 @@ namespace Content.Client.OptionsMenu
 			FullscreenCheckBox.Pressed = _cfg.GetCVar(CVars.DisplayWindowMode) == (int)WindowMode.Fullscreen;
 			FpsCounterCheckBox.Pressed = _cfg.GetCVar(ContentCVars.HudFpsVisible);
 			PingCounterCheckBox.Pressed = _cfg.GetCVar(ContentCVars.HudPingVisible);
+
+			UIScaleSlider.Value = (_cfg.GetCVar(CVars.DisplayUIScale) - 1) * 4;
+			CurrentUIScaleLabel.Text = $"{100 + UIScaleSlider.Value * 25}%";
+			UIScaleSlider.OnValueChanged += range => { CurrentUIScaleLabel.Text = $"{100 + range.Value * 25}%"; };
 		}
 
 		private void ApplyPressed()
@@ -46,6 +50,7 @@ namespace Content.Client.OptionsMenu
 						 (int)(FullscreenCheckBox.Pressed ? WindowMode.Fullscreen : WindowMode.Windowed));
 			_cfg.SetCVar(ContentCVars.HudFpsVisible, FpsCounterCheckBox.Pressed);
 			_cfg.SetCVar(ContentCVars.HudPingVisible, PingCounterCheckBox.Pressed);
+			_cfg.SetCVar(CVars.DisplayUIScale, 1f + UIScaleSlider.Value * 0.25f);
 		}
 	}
 }
