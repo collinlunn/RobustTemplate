@@ -1,4 +1,4 @@
-﻿using JetBrains.Annotations;
+using JetBrains.Annotations;
 using Robust.Client;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.AuthLib;
@@ -102,7 +102,7 @@ namespace Content.Client.MainMenu
 			if (_mainMenu is null)
 				return;
 
-			_mainMenu.IdleAnimationBox.Visible = connecting;
+			_mainMenu.IdleAnimation.Visible = connecting;
 
 			_mainMenu.UsernameLineEdit.Editable = !connecting; 
 			_mainMenu.AddressLineEdit.Editable = !connecting;

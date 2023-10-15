@@ -1,4 +1,6 @@
-<Control xmlns="https://spacestation14.io" HorizontalAlignment="Center">
+<Control xmlns="https://spacestation14.io" 
+		 xmlns:idle="clr-namespace:Content.Client.UI.Controls"
+		 HorizontalAlignment="Center">
     <BoxContainer Orientation="Vertical">
         <Label Text="Placeholder Menu Title" StyleClasses="Title"/>
         <PanelContainer HorizontalAlignment="Center" Margin="3" MouseFilter="Pass">
@@ -16,10 +18,7 @@
                     <Button Name="OptionsButton" Access="Public" Text="Options" SetWidth="197" Margin="0 0 3 0"/>
                     <Button Name="QuitButton" Access="Public" Text="Quit" SetWidth="197" Margin="3 0 0 0"/>
                 </BoxContainer>
-				<BoxContainer Name="IdleAnimationBox" Access="Public" Orientation="Horizontal" Margin="3" Visible="False" HorizontalAlignment="Center">
-					<Label Text="Connecting..." Margin="3"/>
-					<AnimatedTextureRect Name="IdleAnimation"/>
-				</BoxContainer>
+				<idle:IdleAnimation Name="IdleAnimation" Access="Public" Visible="False"/>
 			</BoxContainer>
         </PanelContainer>
     </BoxContainer>
