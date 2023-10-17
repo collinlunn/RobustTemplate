@@ -33,14 +33,17 @@ namespace Content.Client.Lobby
 			_lobbyHud.StartGameButton.OnPressed += _ =>
 			{
 				_entityNetManager.SendSystemNetworkMessage(new StartGameButtonPressed());
+				_lobbyHud.IdleAnimation.Visible = true;
 			};
 			_lobbyHud.StartMappingButton.OnPressed += _ =>
 			{
 				_entityNetManager.SendSystemNetworkMessage(new StartMappingButtonPressed());
+				_lobbyHud.IdleAnimation.Visible = true;
 			};
 			_lobbyHud.JoinGameButton.OnPressed += _ =>
 			{
 				_entityNetManager.SendSystemNetworkMessage(new JoinGameButtonPressed());
+				_lobbyHud.IdleAnimation.Visible = true;
 			};
 			_lobbyHud.OptionsButton.OnPressed += _ =>
 			{

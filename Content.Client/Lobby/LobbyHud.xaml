@@ -1,4 +1,5 @@
-<Control xmlns="https://spacestation14.io" HorizontalAlignment="Center" MouseFilter="Pass">
+<Control xmlns="https://spacestation14.io" HorizontalAlignment="Center" MouseFilter="Pass"
+		 xmlns:idle="clr-namespace:Content.Client.UI.Controls">
     <PanelContainer>
         <BoxContainer Orientation="Vertical">
             <Label Text="Placeholder Lobby" Align="Center" Margin="3"/>
@@ -9,8 +10,9 @@
 			<Button Name="OptionsButton" Access="Public" Text="Options" TextAlign="Center" SetWidth="200" Margin="3"/>
             <Button Name="DisconnectButton" Access="Public" Text="Disconnect" TextAlign="Center" SetWidth="200" Margin="3"/>
             <Button Name="QuitButton" Access="Public" Text="Quit" TextAlign="Center" SetWidth="200" Margin="3"/>
-            <Label Text ="Connected Players:" Margin="3"/>
-            <ScrollContainer VerticalExpand="True">
+			<idle:IdleAnimation Name="IdleAnimation" Access="Public" Visible="False"/>
+			<Label Text ="Connected Players:" Margin="3"/>
+			<ScrollContainer VerticalExpand="True">
                 <BoxContainer Name="ConnectedPlayersBox"  Orientation="Vertical" Margin="3"/>
             </ScrollContainer>
         </BoxContainer>
