@@ -1,6 +1,6 @@
 using Content.Client.Admin;
 using Content.Client.Audio;
-using Content.Client.StyleSheets;
+using Content.Client.UI.StyleSheets;
 using Content.Client.UI;
 
 namespace Content.Client;

@@ -5,7 +5,7 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 using static Robust.Client.UserInterface.StylesheetHelpers;
 
-namespace Content.Client.StyleSheets.Default
+namespace Content.Client.UI.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{

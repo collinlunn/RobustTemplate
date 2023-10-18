@@ -2,7 +2,7 @@ using Content.Client.Admin;
 using Content.Client.Audio;
 using Content.Client.Input;
 using Content.Client.MainMenu;
-using Content.Client.StyleSheets;
+using Content.Client.UI.StyleSheets;
 using Content.Client.UI;
 using Robust.Client;
 using Robust.Client.Graphics;

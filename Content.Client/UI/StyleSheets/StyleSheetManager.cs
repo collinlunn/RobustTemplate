@@ -2,9 +2,9 @@ using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Shared.IoC;
 using Robust.Client.UserInterface.Stylesheets;
-using Content.Client.StyleSheets.Default;
+using Content.Client.UI.StyleSheets.Default;
 
-namespace Content.Client.StyleSheets;
+namespace Content.Client.UI.StyleSheets;
 
 /// <summary>
 ///		Loads up a set of StyleSheets to be used by UI controls.
