@@ -10,8 +10,6 @@ namespace Content.Client.EscapeMenu
 	[GenerateTypedNameReferences]
 	public sealed partial class EscapeMenu : DefaultWindow
 	{
-		[Dependency] private readonly MainMenuAudio _audio = default!;
-
 		public EscapeMenu()
 		{
 			RobustXamlLoader.Load(this);

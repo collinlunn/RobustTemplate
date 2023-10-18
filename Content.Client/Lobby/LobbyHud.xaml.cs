@@ -11,8 +11,6 @@ namespace Content.Client.Lobby;
 [GenerateTypedNameReferences]
 public sealed partial class LobbyHud : Control
 {
-	[Dependency] private readonly MainMenuAudio _audio = default!;
-
 	public LobbyHud()
 	{
 		RobustXamlLoader.Load(this);
