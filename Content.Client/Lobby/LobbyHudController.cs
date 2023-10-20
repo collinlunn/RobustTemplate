@@ -34,11 +34,15 @@ namespace Content.Client.Lobby
 			{
 				_entityNetManager.SendSystemNetworkMessage(new StartGameButtonPressed());
 				_lobbyHud.IdleAnimation.Visible = true;
+				_lobbyHud.StartGameButton.Disabled = true;
+				_lobbyHud.StartMappingButton.Disabled = true;
 			};
 			_lobbyHud.StartMappingButton.OnPressed += _ =>
 			{
 				_entityNetManager.SendSystemNetworkMessage(new StartMappingButtonPressed());
 				_lobbyHud.IdleAnimation.Visible = true;
+				_lobbyHud.StartGameButton.Disabled = true;
+				_lobbyHud.StartMappingButton.Disabled = true;
 			};
 			_lobbyHud.JoinGameButton.OnPressed += _ =>
 			{
