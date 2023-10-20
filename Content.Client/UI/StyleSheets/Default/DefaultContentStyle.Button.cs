@@ -1,4 +1,4 @@
-﻿using Robust.Client.Graphics;
+using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -11,10 +11,10 @@ namespace Content.Client.UI.StyleSheets.Default
 	public sealed partial class DefaultContentStyle
 	{
 		private const string ButtonTexturePath = "panelWhite.png";
-		private readonly Color ButtonColorDefault = Color.FromHex("#1a1a1a");
-		private readonly Color ButtonColorPressed = Color.FromHex("#575b7f");
-		private readonly Color ButtonColorHover = Color.FromHex("#242424");
-		private readonly Color ButtonColorDisabled = Color.FromHex("#6a2e2e");
+		private readonly Color ButtonColorDefault = Color.FromHex("#464966");
+		private readonly Color ButtonColorHover = Color.FromHex("#575b7f");
+		private readonly Color ButtonColorPressed = Color.FromHex("#3e6c45");
+		private readonly Color ButtonColorDisabled = Color.FromHex("#30313c");
 
 		private const string WindowCloseButtonTexturePath = "cross.png";
 		private readonly Color WindowCloseButtonColorDefault = Color.FromHex("#BB88BB");
