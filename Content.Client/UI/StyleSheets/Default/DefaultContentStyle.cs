@@ -47,7 +47,6 @@ namespace Content.Client.UI.StyleSheets.Default
 		{
 			var styleRules = new List<StyleRule>
 			{
-				PanelContainerRule(),
 				TabContainerRule(),
 				WindowRootRule(),
 				SliderRule(),
@@ -59,6 +58,7 @@ namespace Content.Client.UI.StyleSheets.Default
 			styleRules.AddRange(VScrollBarRules());
 			styleRules.AddRange(HScrollBarRules());
 			styleRules.AddRange(LineEditRule());
+			styleRules.AddRange(PanelContainerRules());
 
 			return styleRules;
 		}

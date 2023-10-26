@@ -10,17 +10,25 @@ namespace Content.Client.UI.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{
-		private const string PanelContainerTexturePath = "panelGrey.png";
+		private const string PanelContainerTexturePath = "panelWhiteOutlined.png";
+		private readonly Color PanelContainerColor = Color.FromHex("#25252a");
 
-		private StyleRule PanelContainerRule()
+		private List<StyleRule> PanelContainerRules()
 		{
 			var panelContainerStyleBoxTexture = GetStyleBoxTexture(PanelContainerTexturePath);
 			panelContainerStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 2);
 
-			var panelContainerRule = Element<PanelContainer>()
+			var panelContainersStyleBoxRule = Element<PanelContainer>()
 				.Prop(PanelContainer.StylePropertyPanel, panelContainerStyleBoxTexture);
 
-			return panelContainerRule;
+			var panelContainerColorRule = Element<PanelContainer>()
+				.Prop(Control.StylePropertyModulateSelf, PanelContainerColor);
+
+			return new()
+			{
+				panelContainersStyleBoxRule,
+				panelContainerColorRule,
+			};
 		}
 	}
 }
