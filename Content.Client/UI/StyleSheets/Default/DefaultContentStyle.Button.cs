@@ -27,23 +27,23 @@ namespace Content.Client.UI.StyleSheets.Default
 			buttonStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 10);
 
 			var buttonStyleBoxRule = Element<Button>()
-				.Prop(Button.StylePropertyStyleBox, buttonStyleBoxTexture);
+				.Prop(ContainerButton.StylePropertyStyleBox, buttonStyleBoxTexture);
 
 			var buttonDefaultColor = Element<Button>()
-				.Pseudo(Button.StylePseudoClassNormal)
-				.Prop(Button.StylePropertyModulateSelf, ButtonColorDefault);
+				.Pseudo(ContainerButton.StylePseudoClassNormal)
+				.Prop(Control.StylePropertyModulateSelf, ButtonColorDefault);
 
 			var buttonPressedColor = Element<Button>()
-				.Pseudo(Button.StylePseudoClassPressed)
-				.Prop(Button.StylePropertyModulateSelf, ButtonColorPressed);
+				.Pseudo(ContainerButton.StylePseudoClassPressed)
+				.Prop(Control.StylePropertyModulateSelf, ButtonColorPressed);
 
 			var buttonHoverColor = Element<Button>()
-				.Pseudo(Button.StylePseudoClassHover)
-				.Prop(Button.StylePropertyModulateSelf, ButtonColorHover);
+				.Pseudo(ContainerButton.StylePseudoClassHover)
+				.Prop(Control.StylePropertyModulateSelf, ButtonColorHover);
 
 			var buttonDisabledColor = Element<Button>()
-				.Pseudo(Button.StylePseudoClassDisabled)
-				.Prop(Button.StylePropertyModulateSelf, ButtonColorDisabled);
+				.Pseudo(ContainerButton.StylePseudoClassDisabled)
+				.Prop(Control.StylePropertyModulateSelf, ButtonColorDisabled);
 
 			return new List<StyleRule>
 			{
