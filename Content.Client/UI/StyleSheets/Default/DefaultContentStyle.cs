@@ -49,7 +49,6 @@ namespace Content.Client.UI.StyleSheets.Default
 			{
 				PanelContainerRule(),
 				TabContainerRule(),
-				LineEditRule(),
 				WindowRootRule(),
 				SliderRule(),
 			};
@@ -59,7 +58,8 @@ namespace Content.Client.UI.StyleSheets.Default
 			styleRules.AddRange(WindowCloseButtonRules());
 			styleRules.AddRange(VScrollBarRules());
 			styleRules.AddRange(HScrollBarRules());
-			
+			styleRules.AddRange(LineEditRule());
+
 			return styleRules;
 		}
 

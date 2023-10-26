@@ -1,4 +1,4 @@
-using Robust.Client.Graphics;
+﻿using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -9,17 +9,40 @@ namespace Content.Client.UI.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{
-		private const string LineEditTexturePath = "circleWhite.png";
-		private StyleRule LineEditRule()
+		private const string LineEditTexturePath = "outlinedCircleWhite.png";
+		private Color LineEditColor = Color.FromHex("#24242b");
+		private Color LineEditPlaceholderColor = Color.FromHex("#c4c4c4");
+		private Color LineEditNotEditableColor = Color.Gray;
+		
+
+		private List<StyleRule> LineEditRule()
 		{
 			var lineEditStyleBoxTexture = GetStyleBoxTexture(LineEditTexturePath);
-			lineEditStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 2);
-			lineEditStyleBoxTexture.SetContentMarginOverride(StyleBox.Margin.Left, 5);
+			lineEditStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 10);
+			lineEditStyleBoxTexture.SetContentMarginOverride(StyleBox.Margin.Left, 8);
 
-			var lineEditRule = Element<LineEdit>()
+
+			var lineEditStyleBoxRule = Element<LineEdit>()
 				.Prop(LineEdit.StylePropertyStyleBox, lineEditStyleBoxTexture);
 
-			return lineEditRule;
+			var lineEditColorRule = Element<LineEdit>()
+				.Prop(Control.StylePropertyModulateSelf, LineEditColor);
+
+			var lineEditNotEditableFont = Element<LineEdit>()
+				.Pseudo(LineEdit.StylePseudoClassPlaceholder)
+				.Prop(Label.StylePropertyFontColor, LineEditPlaceholderColor);
+
+			var lineEditPlaceholderFont = Element<LineEdit>()
+				.Class(LineEdit.StyleClassLineEditNotEditable)
+				.Prop(Label.StylePropertyFontColor, LineEditNotEditableColor);
+
+			return new()
+			{
+				lineEditStyleBoxRule,
+				lineEditColorRule,
+				lineEditNotEditableFont,
+				lineEditPlaceholderFont
+			};
 		}
 	}
 }
