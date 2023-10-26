@@ -10,7 +10,7 @@ namespace Content.Client.UI.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{
-		private const string ButtonTexturePath = "panelWhite.png";
+		private const string ButtonTexturePath = "circleWhite.png";
 		private readonly Color ButtonColorDefault = Color.FromHex("#464966");
 		private readonly Color ButtonColorHover = Color.FromHex("#575b7f");
 		private readonly Color ButtonColorPressed = Color.FromHex("#3e6c45");
@@ -24,7 +24,7 @@ namespace Content.Client.UI.StyleSheets.Default
 		private List<StyleRule> ButtonRules()
 		{
 			var buttonStyleBoxTexture = GetStyleBoxTexture(ButtonTexturePath);
-			buttonStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 2);
+			buttonStyleBoxTexture.SetPatchMargin(StyleBox.Margin.All, 10);
 
 			var buttonStyleBoxRule = Element<Button>()
 				.Prop(Button.StylePropertyStyleBox, buttonStyleBoxTexture);

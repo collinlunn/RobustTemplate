@@ -1,4 +1,4 @@
-﻿using Robust.Client.Graphics;
+using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -9,7 +9,7 @@ namespace Content.Client.UI.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{
-		private const string LineEditTexturePath = "panelDark.png";
+		private const string LineEditTexturePath = "circleWhite.png";
 		private StyleRule LineEditRule()
 		{
 			var lineEditStyleBoxTexture = GetStyleBoxTexture(LineEditTexturePath);
