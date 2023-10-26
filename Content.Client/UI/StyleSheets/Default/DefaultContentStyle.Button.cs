@@ -17,9 +17,9 @@ namespace Content.Client.UI.StyleSheets.Default
 		private readonly Color ButtonColorDisabled = Color.FromHex("#30313c");
 
 		private const string WindowCloseButtonTexturePath = "cross.png";
-		private readonly Color WindowCloseButtonColorDefault = Color.FromHex("#BB88BB");
-		private readonly Color WindowCloseButtonColorHover = Color.FromHex("#DD88DD");
-		private readonly Color WindowCloseButtonColorPressed = Color.FromHex("#FFCCFF");
+		private readonly Color WindowCloseButtonColorDefault = Color.FromHex("#4B596A");
+		private readonly Color WindowCloseButtonColorHover = Color.FromHex("#7F3636");
+		private readonly Color WindowCloseButtonColorPressed = Color.FromHex("#753131");
 
 		private List<StyleRule> ButtonRules()
 		{
@@ -61,24 +61,28 @@ namespace Content.Client.UI.StyleSheets.Default
 
 			var windowCloseButtonTextureRule = Element<TextureButton>()
 				.Class(DefaultWindow.StyleClassWindowCloseButton)
-				.Prop(TextureButton.StylePropertyTexture, textureCloseButton)
+				.Prop(TextureButton.StylePropertyTexture, textureCloseButton);
+
+			var windowCloseButtonDefaultColorRule = Element<TextureButton>()
+				.Class(DefaultWindow.StyleClassWindowCloseButton)
 				.Prop(Control.StylePropertyModulateSelf, WindowCloseButtonColorDefault);
 
-			var windowCloseButtonHoverRule = Element<TextureButton>()
+			var windowCloseButtonHoverColorRule = Element<TextureButton>()
 				.Class(DefaultWindow.StyleClassWindowCloseButton)
 				.Pseudo(TextureButton.StylePseudoClassHover)
 				.Prop(Control.StylePropertyModulateSelf, WindowCloseButtonColorHover);
 
-			var windowCloseButtonPressedRule = Element<TextureButton>()
+			var windowCloseButtonPressedColorRule = Element<TextureButton>()
 				.Class(DefaultWindow.StyleClassWindowCloseButton)
 				.Pseudo(TextureButton.StylePseudoClassPressed)
 				.Prop(Control.StylePropertyModulateSelf, WindowCloseButtonColorPressed);
 
-			return new List<StyleRule>()
+			return new()
 			{
 				windowCloseButtonTextureRule,
-				windowCloseButtonHoverRule,
-				windowCloseButtonPressedRule
+				windowCloseButtonDefaultColorRule,
+				windowCloseButtonHoverColorRule,
+				windowCloseButtonPressedColorRule,
 			};
 		}
 	}
