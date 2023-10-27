@@ -1,3 +1,4 @@
+using Content.Client.UI.Controls;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
@@ -100,6 +101,7 @@ namespace Content.Client.UI.StyleSheets.Default
 		private readonly Color SliderFillColor = Color.FromHex("#2b8f2f");
 		private readonly Color SliderBackColor = Color.FromHex("#8f2b2b");
 		private readonly Color SliderForeColor = Color.FromHex("#010000");
+		private readonly Color SliderGrabberColor = Color.FromHex("#4B596A");
 
 		private StyleRule SliderRule()
 		{
@@ -108,10 +110,12 @@ namespace Content.Client.UI.StyleSheets.Default
 
 			var sliderBackBox = GetStyleBoxTexture(SliderFillTexturePath);
 			sliderBackBox.Modulate = SliderBackColor;
+
 			var sliderForeBox = GetStyleBoxTexture(SliderOutlineTexturePath);
 			sliderForeBox.Modulate = SliderForeColor;
 
 			var sliderGrabBox = GetStyleBoxTexture(SliderGrabberTexturePath);
+			sliderGrabBox.Modulate = SliderGrabberColor;
 
 			sliderFillBox.SetPatchMargin(StyleBox.Margin.All, 12);
 			sliderBackBox.SetPatchMargin(StyleBox.Margin.All, 12);
