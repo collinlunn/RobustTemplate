@@ -3,7 +3,7 @@
 		 HorizontalAlignment="Center">
     <BoxContainer Orientation="Vertical">
         <Label Text="Placeholder Menu Title" StyleClasses="Title"/>
-        <PanelContainer HorizontalAlignment="Center" Margin="3" MouseFilter="Pass">
+        <PanelContainer HorizontalAlignment="Center" Margin="3" MouseFilter="Pass" StyleClasses="ContentPanel">
             <BoxContainer Orientation="Vertical">
                 <BoxContainer Orientation="Horizontal" Margin="3">
                     <Label Text="Set Username" SetWidth="197" Margin="0 0 3 0"/>
