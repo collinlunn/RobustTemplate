@@ -12,7 +12,7 @@ namespace Content.Client.UI.StyleSheets.Default
 	{
 		private const string CheckBoxUncheckedTexturePath = "checkBoxUnchecked.png";
 		private const string CheckBoxCheckedTexturePath = "checkBoxChecked.png";
-
+		private readonly Color CheckBoxColor = Color.FromHex("#464966");
 		private const int CheckBoxSeparation = 10;
 
 		private List<StyleRule> CheckBoxRules()
@@ -22,11 +22,13 @@ namespace Content.Client.UI.StyleSheets.Default
 
 			var uncheckedTextureRule = Element<TextureRect>()
 				.Class(CheckBox.StyleClassCheckBox)
-				.Prop(TextureRect.StylePropertyTexture, checkBoxUncheckedTexture);
+				.Prop(TextureRect.StylePropertyTexture, checkBoxUncheckedTexture)
+				.Prop(Control.StylePropertyModulateSelf, CheckBoxColor);
 
 			var checkedTextureRule = Element<TextureRect>()
 				.Class(CheckBox.StyleClassCheckBoxChecked)
-				.Prop(TextureRect.StylePropertyTexture, checkBoxCheckedTexture);
+				.Prop(TextureRect.StylePropertyTexture, checkBoxCheckedTexture)
+				.Prop(Control.StylePropertyModulateSelf, CheckBoxColor);
 
 			var separationRule = Element<BoxContainer>()
 				.Class(CheckBox.StyleClassCheckBox)
