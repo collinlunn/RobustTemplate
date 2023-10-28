@@ -1,6 +1,7 @@
-<DefaultWindow 
+<content:ContentWindow
     xmlns="https://spacestation14.io"
     xmlns:tabs="clr-namespace:Content.Client.OptionsMenu"
+	xmlns:content="clr-namespace:Content.Client.UI.Controls"
     SetSize="600 400"
     Title="Options">
     <TabContainer Name="Tabs">
@@ -8,4 +9,4 @@
         <tabs:AudioTab/>
         <tabs:HotkeyTab/>
     </TabContainer>
-</DefaultWindow>
+</content:ContentWindow>

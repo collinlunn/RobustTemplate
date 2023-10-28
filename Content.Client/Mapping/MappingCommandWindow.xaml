@@ -1,7 +1,8 @@
-﻿<DefaultWindow xmlns="https://spacestation14.io"
+﻿<content:ContentWindow xmlns="https://spacestation14.io"
                Title="Mapping Commands" 
-               MinSize="400 200">
-    <BoxContainer Orientation="Vertical">
+               MinSize="400 200"
+			   xmlns:content="clr-namespace:Content.Client.UI.Controls">
+	<BoxContainer Orientation="Vertical">
         <Label Text="Load Map (Root=/this-project/Resources/Maps)"/>
         <BoxContainer Orientation="Horizontal" SeparationOverride="5">
             <Button Name="LoadMapFromMapsButton" Text="Load"/>
@@ -24,4 +25,4 @@
             <Button Name="ToggleShadowsButton" Text="Toggle Shadows" ToggleMode="True"/>
         </BoxContainer>
     </BoxContainer>
-</DefaultWindow>
+</content:ContentWindow>
