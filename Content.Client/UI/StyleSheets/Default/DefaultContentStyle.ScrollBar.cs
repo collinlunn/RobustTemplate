@@ -8,31 +8,29 @@ namespace Content.Client.UI.StyleSheets.Default
 {
 	public sealed partial class DefaultContentStyle
 	{
+		private const string ScrollBarTexturePath = "panelWhiteOutlined.png";
+
 		private const int ScrollBarGrabberSize = 10;
-		private readonly Color ScrollBarGrabberDefaultColor = Color.Gray.WithAlpha(0.35f);
-		private readonly Color ScrollBarGrabberHoverColor = new Color(140, 140, 140).WithAlpha(0.35f);
-		private readonly Color ScrollBarGrabberGrabbedColor = new Color(160, 160, 160).WithAlpha(0.35f);
+		private readonly Color ScrollBarGrabberDefaultColor = Color.FromHex("#464966").WithAlpha(0.35f);
+		private readonly Color ScrollBarGrabberHoverColor = Color.FromHex("#575b7f").WithAlpha(0.35f);
+		private readonly Color ScrollBarGrabberGrabbedColor = Color.FromHex("#3e6c45").WithAlpha(0.35f);
 
 		private List<StyleRule> VScrollBarRules()
 		{
-			var vScrollBarGrabberNormal = new StyleBoxFlat
-			{
-				BackgroundColor = ScrollBarGrabberDefaultColor,
-				ContentMarginLeftOverride = ScrollBarGrabberSize,
-				ContentMarginTopOverride = ScrollBarGrabberSize
-			};
-			var vScrollBarGrabberHover = new StyleBoxFlat
-			{
-				BackgroundColor = ScrollBarGrabberHoverColor,
-				ContentMarginLeftOverride = ScrollBarGrabberSize,
-				ContentMarginTopOverride = ScrollBarGrabberSize
-			};
-			var vScrollBarGrabberGrabbed = new StyleBoxFlat
-			{
-				BackgroundColor = ScrollBarGrabberGrabbedColor,
-				ContentMarginLeftOverride = ScrollBarGrabberSize,
-				ContentMarginTopOverride = ScrollBarGrabberSize
-			};
+			var vScrollBarGrabberNormal = GetStyleBoxTexture(ScrollBarTexturePath);
+			vScrollBarGrabberNormal.Modulate = ScrollBarGrabberDefaultColor;
+			vScrollBarGrabberNormal.SetContentMarginOverride(StyleBox.Margin.Top | StyleBox.Margin.Left, ScrollBarGrabberSize);
+			vScrollBarGrabberNormal.SetPatchMargin(StyleBox.Margin.All, 2);
+
+			var vScrollBarGrabberHover = GetStyleBoxTexture(ScrollBarTexturePath);
+			vScrollBarGrabberHover.Modulate = ScrollBarGrabberHoverColor;
+			vScrollBarGrabberHover.SetContentMarginOverride(StyleBox.Margin.Top | StyleBox.Margin.Left, ScrollBarGrabberSize);
+			vScrollBarGrabberHover.SetPatchMargin(StyleBox.Margin.All, 2);
+
+			var vScrollBarGrabberGrabbed = GetStyleBoxTexture(ScrollBarTexturePath);
+			vScrollBarGrabberGrabbed.Modulate = ScrollBarGrabberGrabbedColor;
+			vScrollBarGrabberGrabbed.SetContentMarginOverride(StyleBox.Margin.Top | StyleBox.Margin.Left, ScrollBarGrabberSize);
+			vScrollBarGrabberGrabbed.SetPatchMargin(StyleBox.Margin.All, 2);
 
 			var grabberRule = Element<VScrollBar>()
 				.Prop(ScrollBar.StylePropertyGrabber, vScrollBarGrabberNormal);
@@ -48,30 +46,29 @@ namespace Content.Client.UI.StyleSheets.Default
 
 		private List<StyleRule> HScrollBarRules()
 		{
-			var hScrollBarGrabberNormal = new StyleBoxFlat
-			{
-				BackgroundColor = ScrollBarGrabberDefaultColor,
-				ContentMarginTopOverride = ScrollBarGrabberSize
-			};
-			var hScrollBarGrabberHover = new StyleBoxFlat
-			{
-				BackgroundColor = ScrollBarGrabberHoverColor,
-				ContentMarginTopOverride = ScrollBarGrabberSize
-			};
-			var hScrollBarGrabberGrabbed = new StyleBoxFlat
-			{
-				BackgroundColor = ScrollBarGrabberGrabbedColor,
-				ContentMarginTopOverride = ScrollBarGrabberSize
-			};
+			var hScrollBarGrabberNormal = GetStyleBoxTexture(ScrollBarTexturePath);
+			hScrollBarGrabberNormal.Modulate = ScrollBarGrabberDefaultColor;
+			hScrollBarGrabberNormal.SetContentMarginOverride(StyleBox.Margin.Top, ScrollBarGrabberSize);
+			hScrollBarGrabberNormal.SetPatchMargin(StyleBox.Margin.All, 2);
+
+			var hScrollBarGrabberHover = GetStyleBoxTexture(ScrollBarTexturePath);
+			hScrollBarGrabberHover.Modulate = ScrollBarGrabberHoverColor;
+			hScrollBarGrabberHover.SetContentMarginOverride(StyleBox.Margin.Top, ScrollBarGrabberSize);
+			hScrollBarGrabberHover.SetPatchMargin(StyleBox.Margin.All, 2);
+
+			var hScrollBarGrabberGrabbed = GetStyleBoxTexture(ScrollBarTexturePath);
+			hScrollBarGrabberGrabbed.Modulate = ScrollBarGrabberGrabbedColor;
+			hScrollBarGrabberGrabbed.SetContentMarginOverride(StyleBox.Margin.Top, ScrollBarGrabberSize);
+			hScrollBarGrabberGrabbed.SetPatchMargin(StyleBox.Margin.All, 2);
 
 			var grabberRule = Element<HScrollBar>()
 				.Prop(ScrollBar.StylePropertyGrabber, hScrollBarGrabberNormal);
 			var grabberHoverRule = Element<HScrollBar>()
 				.Class(ScrollBar.StylePseudoClassHover)
-				.Prop(ScrollBar.StylePropertyGrabber, hScrollBarGrabberNormal); 
+				.Prop(ScrollBar.StylePropertyGrabber, hScrollBarGrabberHover); 
 			var grabberGrabbedRule = Element<HScrollBar>()
 				.Class(ScrollBar.StylePseudoClassGrabbed)
-				.Prop(ScrollBar.StylePropertyGrabber, hScrollBarGrabberNormal);
+				.Prop(ScrollBar.StylePropertyGrabber, hScrollBarGrabberGrabbed);
 
 			return new List<StyleRule> { grabberRule, grabberHoverRule, grabberGrabbedRule };
 		}
