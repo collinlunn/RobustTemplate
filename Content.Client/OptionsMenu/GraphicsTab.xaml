@@ -1,23 +1,16 @@
 <Control xmlns="https://spacestation14.io"
          HorizontalAlignment="Left"
          VerticalAlignment="Top">
-    <BoxContainer Orientation="Vertical">
-        <CheckBox Name="VSyncCheckBox" Text="VSync" Margin="3"/>
-        <CheckBox Name="FullscreenCheckBox" Text="Fullscreen" Margin="3"/>
-        <CheckBox Name="FpsCounterCheckBox" Text="Show FPS Counter" Margin="3"/>
+	<BoxContainer Orientation="Vertical">
+		<CheckBox Name="VSyncCheckBox" Text="VSync" Margin="3"/>
+		<CheckBox Name="FullscreenCheckBox" Text="Fullscreen" Margin="3"/>
+		<CheckBox Name="FpsCounterCheckBox" Text="Show FPS Counter" Margin="3"/>
 		<CheckBox Name="PingCounterCheckBox" Text="Show Ping Counter" Margin="3"/>
-		<BoxContainer Orientation="Horizontal" Margin="5">
+		<BoxContainer Name="UiSizeBox" Orientation="Horizontal" Margin="5">
 			<Label Text="UI Scale" MinWidth ="100"/>
-			<Slider Name="UIScaleSlider"
-                    MinValue="0"
-                    MaxValue="4"
-                    SetSize="250 30"
-                    Rounded="True"
-                    Margin="10 0 10 0"/>
-			<Label Name="CurrentUIScaleLabel"/>
 		</BoxContainer>
 		<BoxContainer Orientation="Vertical">
 			<Button Name="ApplyButton" Text="Apply" Margin="3"/>
 		</BoxContainer>
-    </BoxContainer>
+	</BoxContainer>
 </Control>
