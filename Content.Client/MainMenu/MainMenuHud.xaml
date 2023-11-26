@@ -1,7 +1,7 @@
 <Control xmlns="https://spacestation14.io" 
-		 xmlns:idle="clr-namespace:Content.Client.UI.Controls"
-		 HorizontalAlignment="Center">
-    <BoxContainer Orientation="Vertical">
+		 xmlns:idle="clr-namespace:Content.Client.UI.Controls">
+	<AnimatedTextureRect Name="TitleArt"/>
+    <BoxContainer Orientation="Vertical" HorizontalAlignment="Center">
         <Label Text="Placeholder Menu Title" StyleClasses="Title"/>
         <PanelContainer HorizontalAlignment="Center" Margin="3" MouseFilter="Pass" StyleClasses="ContentPanel">
             <BoxContainer Orientation="Vertical">
