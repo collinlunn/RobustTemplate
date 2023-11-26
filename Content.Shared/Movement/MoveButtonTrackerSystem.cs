@@ -1,7 +1,6 @@
-using Robust.Shared.GameObjects;
 using Robust.Shared.Input.Binding;
 using Robust.Shared.Input;
-using Robust.Shared.Players;
+using Robust.Shared.Player;
 
 namespace Content.Shared.Movement
 {
@@ -53,11 +52,11 @@ namespace Content.Shared.Movement
 				_tracker = tracker;
 			}
 
-			public override bool HandleCmdMessage(ICommonSession? session, InputCmdMessage message)
+			public override bool HandleCmdMessage(IEntityManager entityManager, ICommonSession? session, IFullInputCmdMessage message)
 			{
-				if (message is not FullInputCmdMessage full || session?.AttachedEntity == null) return false;
+				if (session?.AttachedEntity == null) return false;
 
-				var buttonPressed = full.State == BoundKeyState.Down;
+				var buttonPressed = message.State == BoundKeyState.Down;
 				_tracker.HandleMovementInput(session.AttachedEntity.Value, _button, buttonPressed);
 				return false; //return false to avoid blocking other keybinds
 			}
