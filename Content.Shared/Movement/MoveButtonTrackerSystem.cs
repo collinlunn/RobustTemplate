@@ -38,7 +38,7 @@ namespace Content.Shared.Movement
 			else
 				tracker.HeldButtons &= ~button;
 
-			Dirty(tracker);
+			Dirty(entity, tracker);
 		}
 
 		private sealed class MovementInputCmdHandler : InputCmdHandler

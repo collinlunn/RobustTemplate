@@ -1,6 +1,6 @@
-﻿using Robust.Server.GameObjects;
-using Robust.Server.Player;
+﻿using Robust.Server.Player;
 using Robust.Shared.Map;
+using Robust.Shared.Player;
 using Robust.Shared.Random;
 using System.Linq;
 using System.Numerics;
@@ -10,7 +10,7 @@ namespace Content.Server.Spawnpoint
 	public sealed class SpawnPointSystem : EntitySystem
 	{
 		[Dependency] private readonly IRobustRandom _random = default!;
-		[Dependency] private readonly ActorSystem _actor = default!;
+		[Dependency] private readonly IPlayerManager _playerManager = default!;
 
 		public override void Initialize()
 		{
@@ -38,7 +38,7 @@ namespace Content.Server.Spawnpoint
 
 			var playerEntity = EntityManager.SpawnEntity(message.Prototype, spawnCoords.First());
 			
-			if (!_actor.Attach(playerEntity, message.PlayerSession))
+			if (!_playerManager.SetAttachedEntity(message.Session, playerEntity))
 			{
 				Log.Error($"Player {playerEntity} could not attach when spawning");
 			}
@@ -49,7 +49,7 @@ namespace Content.Server.Spawnpoint
 			var spawnCoords = new MapCoordinates(new Vector2(0, 0), message.MapId);
 			var playerEntity = EntityManager.SpawnEntity(message.Prototype, spawnCoords);
 
-			if (!_actor.Attach(playerEntity, message.PlayerSession))
+			if (!_playerManager.SetAttachedEntity(message.Session, playerEntity))
 			{
 				Log.Error($"Player {playerEntity} could not attach when spawning");
 			}
@@ -59,12 +59,12 @@ namespace Content.Server.Spawnpoint
 	public sealed class SpawnPlayerEvent : EntityEventArgs
 	{
 		public string Prototype { get; }
-		public IPlayerSession PlayerSession { get; }
+		public ICommonSession Session { get; }
 
-		public SpawnPlayerEvent(string prototype, IPlayerSession playerSession)
+		public SpawnPlayerEvent(string prototype, ICommonSession session)
 		{
 			Prototype = prototype;
-			PlayerSession = playerSession;
+			Session = session;
 		}
 	}
 
@@ -72,13 +72,13 @@ namespace Content.Server.Spawnpoint
 	{
 		public string Prototype { get; }
 		public MapId MapId { get; }
-		public IPlayerSession PlayerSession { get; }
+		public ICommonSession Session { get; }
 
-		public SpawnMappingPlayerEvent(string prototype, MapId mapId, IPlayerSession playerSession)
+		public SpawnMappingPlayerEvent(string prototype, MapId mapId, ICommonSession session)
 		{
 			Prototype = prototype;
 			MapId = mapId;
-			PlayerSession = playerSession;
+			Session = session;
 		}
 	}
 }

@@ -1,17 +1,14 @@
 using Content.Shared.Admin;
-using FastAccessors;
 using JetBrains.Annotations;
 using Robust.Server.Console;
 using Robust.Server.Player;
-using Robust.Shared.ContentPack;
 using Robust.Shared.Enums;
-using Robust.Shared.Players;
+using Robust.Shared.Player;
 using Robust.Shared.Toolshed;
 using Robust.Shared.Toolshed.Errors;
 using Robust.Shared.Utility;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 
 namespace Content.Server.Admin
 {
@@ -33,7 +30,7 @@ namespace Content.Server.Admin
 		public IReadOnlyDictionary<string, AdminFlags> ToolboxPermissions => _toolboxPermissions;
 		private Dictionary<string, AdminFlags> _toolboxPermissions = new();
 
-		private readonly Dictionary<IPlayerSession, PlayerPermissions> _playerPermissions = new();
+		private readonly Dictionary<ICommonSession, PlayerPermissions> _playerPermissions = new();
 
 		public override void Initialize()
 		{
@@ -50,7 +47,7 @@ namespace Content.Server.Admin
 
 		#region IConGroupControllerImplementation
 
-		public bool CanAdminMenu(IPlayerSession session)
+		public bool CanAdminMenu(ICommonSession session)
 		{
 			if (TryGetCachedPlayerPermissions(session, out var player))
 			{
@@ -59,7 +56,7 @@ namespace Content.Server.Admin
 			return false;
 		}
 
-		public bool CanAdminPlace(IPlayerSession session)
+		public bool CanAdminPlace(ICommonSession session)
 		{
 			if (TryGetCachedPlayerPermissions(session, out var player))
 			{
@@ -68,7 +65,7 @@ namespace Content.Server.Admin
 			return false;
 		}
 
-		public bool CanAdminReloadPrototypes(IPlayerSession session)
+		public bool CanAdminReloadPrototypes(ICommonSession session)
 		{
 			if (TryGetCachedPlayerPermissions(session, out var player))
 			{
@@ -77,7 +74,7 @@ namespace Content.Server.Admin
 			return false;
 		}
 
-		public bool CanScript(IPlayerSession session)
+		public bool CanScript(ICommonSession session)
 		{
 			if (TryGetCachedPlayerPermissions(session, out var player))
 			{
@@ -86,12 +83,12 @@ namespace Content.Server.Admin
 			return false;
 		}
 
-		public bool CanCommand(IPlayerSession session, string cmdName)
+		public bool CanCommand(ICommonSession session, string cmdName)
 		{
 			return CanUseCommand(session, cmdName);
 		}
 
-		public bool CanViewVar(IPlayerSession session)
+		public bool CanViewVar(ICommonSession session)
 		{
 			return CanUseCommand(session, "vv");
 		}
@@ -104,7 +101,7 @@ namespace Content.Server.Admin
 				return true; //Server console.
 			}
 			
-			if (!TryGetCachedPlayerPermissions((IPlayerSession) user, out var playerPerms))
+			if (!TryGetCachedPlayerPermissions((ICommonSession) user, out var playerPerms))
 			{
 				error = new NoPermissionError(command);
 				return false; //player permissions not found
@@ -131,7 +128,7 @@ namespace Content.Server.Admin
 
 		#endregion
 
-		private bool CanUseCommand(IPlayerSession session, string cmdName)
+		private bool CanUseCommand(ICommonSession session, string cmdName)
 		{
 			if (!_serverConsolePermissions.TryGetValue(cmdName, out var cmdFlag))
 			{
@@ -159,13 +156,13 @@ namespace Content.Server.Admin
 				_playerPermissions.Remove(session);
 			}
 
-			void UpdatePlayerPermissions(IPlayerSession session)
+			void UpdatePlayerPermissions(ICommonSession session)
 			{
 				var playerPerms = GetPermissions(session);
 				_playerPermissions.Add(session, playerPerms);
 				RaiseNetworkEvent(new UpdatePlayerPermissionsEvent(playerPerms, _clientConsolePermissions));
 			}
-			PlayerPermissions GetPermissions(IPlayerSession session)
+			PlayerPermissions GetPermissions(ICommonSession session)
 			{
 				var adminFlags = AdminFlags.None;
 
@@ -176,9 +173,9 @@ namespace Content.Server.Admin
 				//TODO: Check database for admin data here
 				return new PlayerPermissions { Permissions = adminFlags };
 			}
-			bool IsLocalHost(IPlayerSession player)
+			bool IsLocalHost(ICommonSession player)
 			{
-				var ep = player.ConnectedClient.RemoteEndPoint;
+				var ep = player.Channel.RemoteEndPoint;
 				var addr = ep.Address;
 				if (addr.IsIPv4MappedToIPv6)
 				{
@@ -188,7 +185,7 @@ namespace Content.Server.Admin
 			}
 		}
 
-		private bool TryGetCachedPlayerPermissions(IPlayerSession session, [NotNullWhen(true)] out PlayerPermissions? player)
+		private bool TryGetCachedPlayerPermissions(ICommonSession session, [NotNullWhen(true)] out PlayerPermissions? player)
 		{
 			player = _playerPermissions.GetValueOrDefault(session);
 			if (player == null)

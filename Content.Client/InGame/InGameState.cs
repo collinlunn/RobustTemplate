@@ -68,17 +68,21 @@ public sealed class InGameState : State
 				entityToClick = (EntityUid)foundEntity;
 
 			//Get coordinates of mouse when keybind state changed
-			coordinates = _mapManager.TryFindGridAt(mousePosWorld, out _, out var grid) ?
-				grid.MapToGrid(mousePosWorld) :
+			coordinates = _mapManager.TryFindGridAt(mousePosWorld, out var gridEnt, out _) ?
+				_entityManager.System<SharedMapSystem>().MapToGrid(gridEnt, mousePosWorld) :
 				EntityCoordinates.FromMap(_mapManager, mousePosWorld);
 		}
 
-		var message = new FullInputCmdMessage(_timing.CurTick, _timing.TickFraction, functionID, keyEvent.State,
-			coordinates, keyEvent.PointerLocation, entityToClick);
+		var message = new ClientFullInputCmdMessage(_timing.CurTick, _timing.TickFraction, functionID)
+		{
+			State = keyEvent.State,
+			Coordinates = coordinates,
+			ScreenCoordinates = keyEvent.PointerLocation,
+			Uid = entityToClick,
+		}; // TODO make entityUid nullable
 
 		// client side command handlers will always be sent the local player session.
-		var session = _playerManager.LocalPlayer?.Session;
-		if (inputSys.HandleInputCommand(session, function, message))
+		if (inputSys.HandleInputCommand(_playerManager.LocalSession, function, message))
 			keyEvent.Handle();
 	}
 

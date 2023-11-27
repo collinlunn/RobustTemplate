@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Robust.Client.GameObjects;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
+using Robust.Shared.Player;
 
 namespace Content.Client.Lobby;
 
@@ -16,7 +17,6 @@ public sealed class ClientLobbySystem : SharedLobbySystem
 	public override void Initialize()
     {
         base.Initialize();
-		SubscribeLocalEvent<PlayerAttachSysMessage>(OnPlayerAttached);
 		SubscribeNetworkEvent<LobbyJoinedEvent>(OnLobbyJoined);
 		SubscribeNetworkEvent<GameStartedEvent>(OnGameStarted);
 	}
@@ -29,16 +29,5 @@ public sealed class ClientLobbySystem : SharedLobbySystem
 	private void OnGameStarted(GameStartedEvent message)
 	{
 		_stateManager.RequestStateChange<InGameState>();
-	}
-
-	private void OnPlayerAttached(PlayerAttachSysMessage ev)
-    {
-        var entity = ev.AttachedEntity;
-
-        if (!entity.Valid)
-            return;
-
-		var eye = Comp<EyeComponent>(entity);
-		eye.Current = true;
 	}
 }

@@ -6,6 +6,7 @@ using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.Map;
+using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using System.Linq;
 
@@ -25,7 +26,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 	private const string PlayerProto = "TestPlayer";
 	private const string PlayerMappingProto = "TestMappingPlayer";
 
-	private HashSet<IPlayerSession> _playersInLobby = new();
+	private HashSet<ICommonSession> _playersInLobby = new();
 
 	public override void Initialize()
     {
@@ -45,7 +46,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
             case SessionStatus.Connected:
 				// Make the player actually join the game.
 				// timer time must be > tick length
-				Timer.Spawn(0, args.Session.JoinGame);
+				Timer.Spawn(0, () => _playerManager.JoinGame(args.Session));
 				break;
 
 			case SessionStatus.InGame:
@@ -68,7 +69,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 	[Pure]
 	private LobbyUiState UiState()
 	{
-		var connectedPlayers = _playerManager.ServerSessions
+		var connectedPlayers = _playerManager.Sessions
 			.Where(session => session.Status == SessionStatus.InGame)
 			.Select(session => session.Name)
 			.ToArray();
@@ -98,7 +99,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		var mapId = _mapManager.CreateMap();
 		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
 
-		foreach (var playerSession in _playerManager.ServerSessions)
+		foreach (var playerSession in _playerManager.Sessions)
 		{
 			SpawnPlayer(playerSession);
 		}
@@ -117,7 +118,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		_mapManager.AddUninitializedMap(mapId); //set as uninitialized so map can be saved to a file correctly
 		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
 
-		foreach (var playerSession in _playerManager.ServerSessions)
+		foreach (var playerSession in _playerManager.Sessions)
 		{
 			SpawnPlayerMapping(playerSession, mapId);
 		}
@@ -131,7 +132,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 			return;
 		}
 
-		if (args.SenderSession is not IPlayerSession session)
+		if (args.SenderSession is not ICommonSession session)
 		{
 			Log.Error("Received wrong type of session in OnJoinGamePressed");
 			return;
@@ -140,21 +141,21 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		SpawnPlayer(session);
 	}
 
-	private void SpawnPlayer(IPlayerSession playerSession)
+	private void SpawnPlayer(ICommonSession playerSession)
 	{
 		var spawnEvent = new SpawnPlayerEvent(PlayerProto, playerSession);
 		RaiseLocalEvent(spawnEvent);
 		PlayerSpawned(playerSession);
 	}
 
-	private void SpawnPlayerMapping(IPlayerSession playerSession, MapId mapId)
+	private void SpawnPlayerMapping(ICommonSession playerSession, MapId mapId)
 	{
 		var spawnEvent = new SpawnMappingPlayerEvent(PlayerMappingProto, mapId, playerSession);
 		RaiseLocalEvent(spawnEvent);
 		PlayerSpawned(playerSession);
 	}
 
-	private void PlayerSpawned(IPlayerSession playerSession)
+	private void PlayerSpawned(ICommonSession playerSession)
 	{
 		_playersInLobby.Remove(playerSession);
 

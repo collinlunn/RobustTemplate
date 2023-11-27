@@ -75,7 +75,7 @@ namespace Content.Client.Mapping
 		private bool GetCurrentMapId([NotNullWhen(true)] out MapId? mapId)
 		{
 			mapId = null;
-			if (_playerManager?.LocalPlayer?.ControlledEntity is not EntityUid player)
+			if (_playerManager?.LocalSession?.AttachedEntity is not EntityUid player)
 			{
 				return false;
 			}

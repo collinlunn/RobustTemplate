@@ -1,9 +1,6 @@
 using Robust.Shared.Input.Binding;
-using Robust.Shared.Input;
-using Robust.Shared.Players;
 using Content.Shared.Input;
 using Robust.Client.ViewVariables;
-using Robust.Client.Input;
 
 namespace Content.Client.AccessVV
 {

@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using Robust.Client.Player;
 using Robust.Client.GameObjects;
 using Robust.Client.Physics;
+using Robust.Shared.Player;
 
 namespace Content.Client.Mapping
 {
@@ -15,11 +16,11 @@ namespace Content.Client.Mapping
 		public override void Initialize()
 		{
 			base.Initialize();
-			SubscribeLocalEvent<MappingMovementComponent, PlayerAttachSysMessage>(OnPlayerAttached);
+			SubscribeLocalEvent<MappingMovementComponent, PlayerAttachedEvent>(OnPlayerAttached);
 			SubscribeLocalEvent<MappingMovementComponent, UpdateIsPredictedEvent>(OnUpdatePredicted);
 		}
 
-		private void OnPlayerAttached(EntityUid uid, MappingMovementComponent component, PlayerAttachSysMessage args)
+		private void OnPlayerAttached(EntityUid uid, MappingMovementComponent component, PlayerAttachedEvent args)
 		{
 			_physics.UpdateIsPredicted(uid);
 		}
@@ -27,7 +28,7 @@ namespace Content.Client.Mapping
 		private void OnUpdatePredicted(EntityUid uid, MappingMovementComponent component, ref UpdateIsPredictedEvent args)
 		{
 			// Enable prediction if an entity is controlled by the player
-			if (uid == _playerManager.LocalPlayer?.ControlledEntity)
+			if (uid == _playerManager?.LocalSession?.AttachedEntity)
 			{
 				args.IsPredicted = true;
 			}
@@ -37,7 +38,7 @@ namespace Content.Client.Mapping
         {
             base.UpdateBeforeSolve(prediction, frameTime);
 
-            if (_playerManager.LocalPlayer?.ControlledEntity is not { Valid: true } mappingPlayer)
+            if (_playerManager?.LocalSession?.AttachedEntity is not { Valid: true } mappingPlayer)
                 return;
 
             if (!TryComp<MappingMovementComponent>(mappingPlayer, out var mappingMovement))
