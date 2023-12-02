@@ -1,5 +1,8 @@
 using Content.Packaging;
 using Robust.Packaging;
+using System;
+using System.IO;
+using System.Linq;
 
 IPackageLogger logger = new PackageLoggerConsole();
 
@@ -18,7 +21,7 @@ if (!selectedPlatforms.Any())
 //{
 //	Directory.Delete("../../../../bin", recursive: true);
 //	Directory.Delete("../../../../RobustToolbox/bin", recursive: true);
-}
+//}
 
 logger.Info("Clearing old release.");
 if (Directory.Exists(Packager.ReleaseDirectory))
@@ -30,7 +33,7 @@ foreach (var platform in selectedPlatforms)
 {
 	foreach (var project in Packager.AllReleasedProjects)
 	{
-		//await Packager.BuildPlatform(platform, project);
+		await Packager.BuildPlatform(platform, project);
 		await Packager.PublishPlatform(platform, project);
 	}
 	//await Packager.PackageServer(platform);

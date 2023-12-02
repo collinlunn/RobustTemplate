@@ -3,7 +3,11 @@ using Robust.Packaging.AssetProcessing;
 using Robust.Packaging.AssetProcessing.Passes;
 using Robust.Packaging.Utility;
 using System.Diagnostics;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Content.Packaging
 {
