@@ -34,7 +34,7 @@ namespace Content.Shared.Tiles
 		public byte Variants { get; set; } = 1;
 
 		[DataField("edgeSprites")]
-		public Dictionary<Direction, ResPath> EdgeSprites { get; } = [];
+		public Dictionary<Direction, ResPath> EdgeSprites { get; } = new();
 
 		[DataField("edgeSpritePriority")]
 		public int EdgeSpritePriority { get; private set; } = 0;

@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
   <PropertyGroup>
     <!-- Work around https://github.com/dotnet/project-system/issues/4314 -->
     <TargetFramework>$(TargetFramework)</TargetFramework>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>11</LangVersion>
     <IsPackable>false</IsPackable>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\bin\Content.Server\</OutputPath>
@@ -11,9 +10,12 @@
     <OutputType Condition="'$(FullRelease)' != 'True'">Exe</OutputType>
 	<Nullable>enable</Nullable>
 	<WarningsAsErrors>nullable</WarningsAsErrors>
+	<ServerGarbageCollection>true</ServerGarbageCollection>
+	<Configurations>Release;Debug;</Configurations>
+	<Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" PrivateAssets="All" />
+    <PackageReference Include="JetBrains.Annotations" Version="2022.1.0" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RobustToolbox\Lidgren.Network\Lidgren.Network.csproj" />
@@ -22,4 +24,5 @@
     <ProjectReference Include="..\RobustToolbox\Robust.Server\Robust.Server.csproj" />
     <ProjectReference Include="..\Content.Shared\Content.Shared.csproj" />
   </ItemGroup>
+	<Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
 </Project>
