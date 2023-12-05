@@ -3,144 +3,85 @@ using System.Linq;
 
 namespace Content.Packaging
 {
-    public static partial class Packager
-    {
+	public static partial class Packager
+	{
 		public readonly record struct PlatformReg(string Rid, string TargetOs, bool BuildByDefault);
 
-		public static readonly List<PlatformReg> AllPlatforms = new()
+		public static readonly IReadOnlyList<PlatformReg> AllPlatforms = new List<PlatformReg>()
 		{
-			new PlatformReg("win-x64", "Windows", true),
-			new PlatformReg("linux-x64", "Linux", false),
-			new PlatformReg("linux-arm64", "Linux", false),
-			new PlatformReg("osx-x64", "MacOS", false),
+			new ("win-x64", "Windows", true),
+			new ("linux-x64", "Linux", false),
+			new ("linux-arm64", "Linux", false),
+			new ("osx-x64", "MacOS", false),
 			// Non-default platforms (i.e. for Watchdog Git)
-			new PlatformReg("win-x86", "Windows", false),
-			new PlatformReg("linux-x86", "Linux", false),
-			new PlatformReg("linux-arm", "Linux", false),
+			new ("win-x86", "Windows", false),
+			new ("linux-x86", "Linux", false),
+			new ("linux-arm", "Linux", false),
 		};
 
-		//temporary
-		public static List<string> PlatformRidsDefault => AllPlatforms
-			.Where(o => o.BuildByDefault)
-			.Select(o => o.Rid)
-			.ToList();
-
-		public static List<PlatformReg> DefaultPlatforms => AllPlatforms
+		public static IReadOnlyList<PlatformReg> DefaultPlatforms => AllPlatforms
 			.Where(o => o.BuildByDefault)
 			.ToList();
 
-		public static readonly List<string> AllReleasedProjects = new()
+		public static readonly IReadOnlyList<string> AllReleasedProjects = new List<string>()
 		{
-			//"../../../../RobustToolbox/Robust.Client/Robust.Client.csproj",
-			//"../../../../Content.Client/Content.Client.csproj",
-			"../../../../RobustToolbox/Robust.Server/Robust.Server.csproj",
-			//"../../../../Content.Server/Content.Server.csproj",
+			"RobustToolbox/Robust.Client/Robust.Client.csproj",
+			"Content.Client/Content.Client.csproj",
+
+			"RobustToolbox/Robust.Server/Robust.Server.csproj",
+			"Content.Server/Content.Server.csproj",
 		};
 
-		public static readonly string ReleaseDirectory = "../../../../release";
-
-		private static List<string> SERVER_BIN_SKIP_FOLDERS = new()
-        {
-			// Roslyn localization files, screw em.
-			"cs",
-            "de",
-            "es",
-            "fr",
-            "it",
-            "ja",
-            "ko",
-            "pl",
-            "pt-BR",
-            "ru",
-            "tr",
-            "zh-Hans",
-            "zh-Hant"
-        };
-
-        private static List<string> CLIENT_BIN_SKIP_FOLDERS = new()
-        {
-
-        };
-
-        private static List<string> SERVER_RES_SKIP_FOLDERS = new()
-        {
-			//Content
-			"Textures",
-            "Fonts",
-            "Audio",
-            "Shaders",
-            "Fonts",
-            "keybinds.yml",
-
-			//Engine
-			"EngineFonts",
-        };
-
-        private static List<string> CLIENT_RES_SKIP_FOLDERS = new()
-        {
-            "Commands",
-        };
-
-        private static List<string> SERVER_RES_SKIP_FILES = new()
-        {
-            ".gitignore",
-        };
-
-        private static List<string> CLIENT_RES_SKIP_FILES = new()
-        {
-            ".gitignore",
-        };
-
-        private static List<string> SERVER_CONTENT_ASSEMBLIES = new()
-        {
-            "Content.Server",
-            "Content.Shared",
-        };
-
-        private static List<string> CLIENT_CONTENT_ASSEMBLIES = new()
-        {
-            "Content.Client",
-            "Content.Shared",
-        };
-
-		//###stuff
-
-		private static readonly List<string> ServerContentAssemblies = new()
+		private static readonly IReadOnlyList<string> ServerContentAssemblies = new List<string>()
 		{
+			"Content.Server",
+			"Content.Shared",
 			//"Content.Server.Database",
-			"../../../../Content.Server",
-			"../../../../Content.Shared",
 			//"Content.Shared.Database",
 		};
 
-		private static readonly List<string> ServerExtraAssemblies = new()
+		private static readonly IReadOnlyList<string> ClientContentAssemblies = new List<string>()
 		{
-			// Python script had Npgsql. though we want Npgsql.dll as well soooo
-			"Npgsql",
-			"Microsoft",
+			"Content.Client",
+			"Content.Shared",
+			//"Content.Shared.Database"
 		};
 
-		private static readonly List<string> ServerNotExtraAssemblies = new()
-		{
-			"Microsoft.CodeAnalysis",
-		};
-
-		private static readonly HashSet<string> BinSkipFolders = new()
+		private static readonly IReadOnlySet<string> BinSkipFolders = new HashSet<string>()
 		{
 			// Roslyn localization files, screw em.
-			"../../../../cs",
-			"../../../../de",
-			"../../../../es",
-			"../../../../fr",
-			"../../../../it",
-			"../../../../ja",
-			"../../../../ko",
-			"../../../../pl",
-			"../../../../pt-BR",
-			"../../../../ru",
-			"../../../../tr",
-			"../../../../zh-Hans",
-			"../../../../zh-Hant"
+			"cs",
+			"de",
+			"es",
+			"fr",
+			"it",
+			"ja",
+			"ko",
+			"pl",
+			"pt-BR",
+			"ru",
+			"tr",
+			"zh-Hans",
+			"zh-Hant"
 		};
+
+		public const string ReleaseDir = "release";
+		private const string ContentDir = "";
+		private const string EngineDir = "RobustToolbox";
+
+		public const string ContentBin = "bin";
+		public const string EngineBin = $"{EngineDir}/bin";
+
+		private static string ClientAczName(PlatformReg platform) => $"{ReleaseDir}/RobustTemplate.Client_Acz_{platform.Rid}.zip";
+		private static string ClientZipName(PlatformReg platform) => $"{ReleaseDir}/RobustTemplate.Client_Standalone_{platform.Rid}.zip";
+		private static string ServerZipName(PlatformReg platform) => $"{ReleaseDir}/RobustTemplate.Server_{platform.Rid}.zip";
+		private const string ServerAczName = "Content.Client.zip";
+
+		private static string ContentServerBin(PlatformReg platform) => $"Content.Server/{platform.Rid}/publish";
+		private static string ContentClientBin(PlatformReg platform) => $"Content.Client/{platform.Rid}/publish";
+		private static string EngineServerBin(PlatformReg platform) => $"RobustToolbox/bin/Server/{platform.Rid}/publish";
+		private static string EngineClientBin(PlatformReg platform) => $"RobustToolbox/bin/Client/{platform.Rid}/publish";
+
+
 	}
 }

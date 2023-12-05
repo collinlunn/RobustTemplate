@@ -4,38 +4,38 @@ using System;
 using System.IO;
 using System.Linq;
 
+//placeholder for CLI args
+var selectedPlatforms = Packager.DefaultPlatforms;
+var republish = true;
+Directory.SetCurrentDirectory("../../../..");
+
 IPackageLogger logger = new PackageLoggerConsole();
 
-var selectedPlatformRids = Packager.PlatformRidsDefault; //get value from CL args with default as fallback
-
-var selectedPlatforms = Packager.AllPlatforms
-	.Where(p => selectedPlatformRids.Contains(p.Rid));
-
-if (!selectedPlatforms.Any())
+if (republish && Directory.Exists("bin"))
 {
-	selectedPlatforms = Packager.DefaultPlatforms;
+	logger.Info("Clearing old build.");
+	Directory.Delete(Packager.ContentBin, recursive: true);
+	Directory.Delete(Packager.EngineBin, recursive: true);
 }
-
-//logger.Info("Clearing old build.");
-//if (Directory.Exists("../../../../bin"))
-//{
-//	Directory.Delete("../../../../bin", recursive: true);
-//	Directory.Delete("../../../../RobustToolbox/bin", recursive: true);
-//}
-
-logger.Info("Clearing old release.");
-if (Directory.Exists(Packager.ReleaseDirectory))
-	Directory.Delete(Packager.ReleaseDirectory, recursive: true);
-
-Directory.CreateDirectory(Packager.ReleaseDirectory); //will crash if this folder does not exist, when trying to make zip file
+if (Directory.Exists(Packager.ReleaseDir))
+{
+	logger.Info("Clearing old release.");
+	Directory.Delete(Packager.ReleaseDir, recursive: true);
+}
+Directory.CreateDirectory(Packager.ReleaseDir); //crashes when making zip if this folder is not found
 
 foreach (var platform in selectedPlatforms)
 {
-	foreach (var project in Packager.AllReleasedProjects)
+	if (republish)
 	{
-		await Packager.BuildPlatform(platform, project);
-		await Packager.PublishPlatform(platform, project);
+		foreach (var project in Packager.AllReleasedProjects)
+		{
+			await Packager.BuildPlatform(platform, project, logger);
+			await Packager.PublishPlatform(platform, project, logger);
+		}
 	}
-	//await Packager.PackageServer(platform);
+	await Packager.PackageClientAcz(platform, logger);
+	await Packager.PackageClientStandalone(platform, logger);
+	await Packager.PackageServer(platform, logger);
 }
-Console.ReadLine();
+logger.Info("Packaging script completed.");
