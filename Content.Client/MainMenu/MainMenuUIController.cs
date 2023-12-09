@@ -10,8 +10,6 @@ using System.Text.RegularExpressions;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Utility;
 using Content.Client.OptionsMenu;
-using Robust.Client.UserInterface.CustomControls;
-using Robust.Shared.Physics;
 
 namespace Content.Client.MainMenu
 {
@@ -33,6 +31,7 @@ namespace Content.Client.MainMenu
 		public void OnStateEntered(MainMenuState state)
 		{
 			_mainMenu = new MainMenuHud();
+
 			_mainMenu.UsernameLineEdit.Text = _cfgManager.GetCVar(CVars.PlayerName);
 
 			_mainMenu.ConnectButton.OnPressed += _ => OnConnectPressed(_mainMenu.AddressLineEdit.Text ?? string.Empty);
@@ -47,7 +46,6 @@ namespace Content.Client.MainMenu
 			};
 			_netManager.ConnectFailed += OnConnectFailed;
 
-			LayoutContainer.SetAnchorPreset(_mainMenu, LayoutContainer.LayoutPreset.HorizontalCenterWide);
 			_userInterface.StateRoot.AddChild(_mainMenu);
 		}
 
