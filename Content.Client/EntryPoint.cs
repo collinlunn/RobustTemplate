@@ -25,6 +25,7 @@ public sealed class EntryPoint : GameClient
 	[Dependency] private readonly IInputManager _inputManager = default!;
 	[Dependency] private readonly IUserInterfaceManager _userInterfaceManager = default!;
 	[Dependency] private readonly IGameController _gameController = default!;
+	[Dependency] private readonly IConfigurationManager _configMan = default!;
 
 	public override void PreInit()
 	{
@@ -67,6 +68,10 @@ public sealed class EntryPoint : GameClient
 #endif
 		IoCManager.Resolve<StyleSheetManager>().Initialize(); //Load a stylesheet into the IUserInterfaceManager so UI works
 		_userInterfaceManager.MainViewport.Visible = false; //Viewport will be re-added via a UiSheet
+		//hack to fix ui autoscale not propagating correctly on startup
+		var autoScaleMin = _configMan.GetCVar(CVars.ResAutoScaleMin);
+		_configMan.SetCVar(CVars.ResAutoScaleMin, autoScaleMin);
+
 		_stateManager.RequestStateChange<MainMenuState>(); //bring up the main menu
 		//If run level drops to initialize after disconnecting reopen the main menu
 		_baseClient.RunLevelChanged += (_, args) =>
