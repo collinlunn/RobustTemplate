@@ -12,15 +12,15 @@ namespace Content.Client.UI.Controls;
 [Virtual]
 public class ContentWindow : DefaultWindow
 {
-	[Dependency] private readonly MainMenuAudio _audio = default!;
-
 	public ContentWindow()
 	{
 		IoCManager.InjectDependencies(this);
 
 		CustomCursor.SetCursor(this);
-
-		_audio.AddButtonSound("pop.wav", CloseButton);
+		AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+		{
+			CloseButton
+		});
 	}
 
 	protected override void FrameUpdate(FrameEventArgs args)

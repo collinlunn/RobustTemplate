@@ -11,19 +11,19 @@ namespace Content.Client.MainMenu;
 [GenerateTypedNameReferences]
 public sealed partial class MainMenuHud : Control
 {
-	[Dependency] private readonly MainMenuAudio _audio = default!;
-
 	public MainMenuHud()
 	{
 		RobustXamlLoader.Load(this);
 		IoCManager.InjectDependencies(this);
 
 		CustomCursor.SetCursor(this);
-		_audio.AddButtonSound("pop.wav", 
+		AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+		{
 			ConnectToLocalHostButton,
 			ConnectButton,
 			OptionsButton,
-			QuitButton);
+			QuitButton
+		});
 
 		LayoutContainer.SetAnchorPreset(this, LayoutContainer.LayoutPreset.Wide);
 	}

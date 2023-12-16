@@ -25,12 +25,6 @@ namespace Content.Shared.ContentCVars
 			CVarDef.Create("audio.guieffectsvolume", 0.0f, CVar.ARCHIVE | CVar.CLIENTONLY);
 
 		/// <summary>
-		///		dB level of game world sfx.
-		/// </summary>
-		public static readonly CVarDef<float> GameEffectsVolume =
-			CVarDef.Create("audio.gameeffectsvolume", 0.0f, CVar.ARCHIVE | CVar.CLIENTONLY);
-
-		/// <summary>
 		///		dB level of ambience tracks.
 		/// </summary>
 		public static readonly CVarDef<float> AmbienceVolume =

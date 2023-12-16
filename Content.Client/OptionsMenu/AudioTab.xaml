@@ -33,16 +33,6 @@
             <Label Name="CurrentGuiEffectsVolumeLabel"/>
         </BoxContainer>
         <BoxContainer Orientation="Horizontal" Margin="5">
-            <Label Text="Game Effects" MinWidth ="100"/>
-            <Slider Name="GameEffectsVolumeSlider"
-                    MinValue="0"
-                    MaxValue="100"
-                    SetSize="250 30"
-                    Rounded="True"
-                    Margin="10 0 10 0"/>
-            <Label Name="CurrentGameEffectsVolumeLabel"/>
-        </BoxContainer>
-        <BoxContainer Orientation="Horizontal" Margin="5">
             <Label Text="Ambience" MinWidth ="100"/>
             <Slider Name="AmbienceVolumeSlider"
                     MinValue="0"

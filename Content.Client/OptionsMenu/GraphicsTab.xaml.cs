@@ -14,7 +14,6 @@ namespace Content.Client.OptionsMenu
 	public sealed partial class GraphicsTab : Control
 	{
 		[Dependency] private readonly IConfigurationManager _cfg = default!;
-		[Dependency] private readonly MainMenuAudio _audio = default!;
 
 		private readonly List<float> _uiSizes = new() { 0.5f, 1, 2 };
 
@@ -26,12 +25,14 @@ namespace Content.Client.OptionsMenu
 			IoCManager.InjectDependencies(this);
 
 			ApplyButton.OnPressed += _ => ApplyPressed();
-			_audio.AddButtonSound("pop.wav",
+			AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+			{
 				ApplyButton,
 				VSyncCheckBox,
 				FullscreenCheckBox,
 				FpsCounterCheckBox,
-				PingCounterCheckBox);
+				PingCounterCheckBox
+			});
 
 			_uiSizeRadio = new RadioOptions<float>(RadioOptionsLayout.Horizontal);
 			_uiSizeRadio.OnItemSelected += args => _uiSizeRadio.Select(args.Id);

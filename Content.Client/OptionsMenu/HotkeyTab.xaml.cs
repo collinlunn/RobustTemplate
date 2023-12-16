@@ -20,7 +20,6 @@ namespace Content.Client.OptionsMenu
 	public sealed partial class HotkeyTab : Control
 	{
 		[Dependency] private readonly IInputManager _inputManager = default!;
-		[Dependency] private readonly MainMenuAudio _audio = default!;
 
 		private readonly List<Action> _keybindResets = new();
 
@@ -52,7 +51,10 @@ namespace Content.Client.OptionsMenu
 			}
 			UpdateAllHotkeyBoxes();
 			ResetAllButton.OnButtonUp += _ => ResetAllKeybinds();
-			_audio.AddButtonSound(ButtonSoundPath, ResetAllButton);
+			AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+			{
+				ResetAllButton
+			});
 
 			void AddHotkeyBox(BoundKeyFunction function)
 			{
@@ -63,7 +65,11 @@ namespace Content.Client.OptionsMenu
 				hotkeyBox.ResetButton.OnButtonUp += _ => ResetKeybind(hotkeyBox);
 				hotkeyBox.RebindButton.OnButtonUp += _ => StartRebinding(hotkeyBox);
 
-				_audio.AddButtonSound(ButtonSoundPath, hotkeyBox.ResetButton, hotkeyBox.RebindButton);
+				AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+				{
+					hotkeyBox.ResetButton,
+					hotkeyBox.RebindButton
+				});
 			}
 		}
 
@@ -139,7 +145,8 @@ namespace Content.Client.OptionsMenu
 			_currentlyRebinding = false;
 			_rebindingFunction = default;
 			UpdateAllHotkeyBoxes();
-			_audio.PlayUiSound(ButtonSoundPath);
+
+			AudioHelpers.TryPlayGuiEffect(ButtonSoundPath);
 		}
 
 		private void RebindHotkey(BoundKeyFunction function, List<Key> newKeys)

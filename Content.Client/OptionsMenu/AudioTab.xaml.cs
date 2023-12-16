@@ -16,7 +16,6 @@ namespace Content.Client.OptionsMenu
 	public sealed partial class AudioTab : Control
 	{
 		[Dependency] private readonly IConfigurationManager _cfg = default!;
-		[Dependency] private readonly MainMenuAudio _audio = default!;
 
 		public AudioTab()
 		{
@@ -24,24 +23,25 @@ namespace Content.Client.OptionsMenu
 			IoCManager.InjectDependencies(this);
 
 			ApplyButton.OnPressed += _ => ApplyPressed();
-			_audio.AddButtonSound("pop.wav", ApplyButton);
+
+			AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+			{
+				ApplyButton
+			});
 
 			MasterVolumeSlider.Value = _cfg.GetCVar(CVars.AudioMasterVolume) * 100;
 			MusicVolumeSlider.Value = DBToLV100(_cfg.GetCVar(ContentCVars.MusicVolume));
 			GuiEffectsVolumeSlider.Value = DBToLV100(_cfg.GetCVar(ContentCVars.GuiEffectsVolume));
-			GameEffectsVolumeSlider.Value = DBToLV100(_cfg.GetCVar(ContentCVars.GameEffectsVolume));
 			AmbienceVolumeSlider.Value = DBToLV100(_cfg.GetCVar(ContentCVars.AmbienceVolume));
 
 			CurrentMasterVolumeLabel.Text = $"{MasterVolumeSlider.Value}%";
 			CurrentMusicVolumeLabel.Text = $"{MusicVolumeSlider.Value}%";
 			CurrentGuiEffectsVolumeLabel.Text = $"{GuiEffectsVolumeSlider.Value}%";
-			CurrentGameEffectsVolumeLabel.Text = $"{GameEffectsVolumeSlider.Value}%";
 			CurrentAmbienceVolumeLabel.Text = $"{AmbienceVolumeSlider.Value}%";
 
 			MasterVolumeSlider.OnValueChanged += range => { CurrentMasterVolumeLabel.Text = $"{range.Value}%"; };
 			MusicVolumeSlider.OnValueChanged += range => { CurrentMusicVolumeLabel.Text = $"{range.Value}%"; };
 			GuiEffectsVolumeSlider.OnValueChanged += range => { CurrentGuiEffectsVolumeLabel.Text = $"{range.Value}%"; };
-			GameEffectsVolumeSlider.OnValueChanged += range => { CurrentGameEffectsVolumeLabel.Text = $"{range.Value}%"; };
 			AmbienceVolumeSlider.OnValueChanged += range => { CurrentAmbienceVolumeLabel.Text = $"{range.Value}%"; };
 
 		}
@@ -51,7 +51,6 @@ namespace Content.Client.OptionsMenu
 			_cfg.SetCVar(CVars.AudioMasterVolume, MasterVolumeSlider.Value / 100);
 			_cfg.SetCVar(ContentCVars.MusicVolume, LV100ToDB(MusicVolumeSlider.Value));
 			_cfg.SetCVar(ContentCVars.GuiEffectsVolume, LV100ToDB(GuiEffectsVolumeSlider.Value));
-			_cfg.SetCVar(ContentCVars.GameEffectsVolume, LV100ToDB(GameEffectsVolumeSlider.Value));
 			_cfg.SetCVar(ContentCVars.AmbienceVolume, LV100ToDB(AmbienceVolumeSlider.Value));
 		}
 

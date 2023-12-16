@@ -1,6 +1,8 @@
 ﻿using Content.Shared.ContentCVars;
+using Robust.Client;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Audio;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 
@@ -20,6 +22,11 @@ namespace Content.Client.Audio
 		{
 			var audioParamsAdjusted = (audioParams ?? AudioParams.Default)
 				.AddVolume(GuiEffectVolume);
+
+			var runLevel = IoCManager.Resolve<IBaseClient>().RunLevel;
+
+			if (runLevel < ClientRunLevel.Connected)
+				return;
 
 			IoCManager.Resolve<IEntitySystemManager>()
 				.GetEntitySystem<SharedAudioSystem>()

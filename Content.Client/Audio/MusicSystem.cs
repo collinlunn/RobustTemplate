@@ -1,10 +1,12 @@
-﻿using Content.Client.InGame;
+using Content.Client.InGame;
 using Content.Client.Lobby;
 using Content.Shared.ContentCVars;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
 using Robust.Client.State;
 using Robust.Shared.Audio;
+using Robust.Shared.Audio.Components;
+using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 using System.Diagnostics.CodeAnalysis;
@@ -21,7 +23,7 @@ namespace Content.Client.Audio
 		private const string LobbyMusicPath = "/Audio/test_music.wav";
 		private const string InGameMusicPath = "/Audio/test_music.wav";
 
-		private IPlayingAudioStream? _currentMusic = null;
+		private (EntityUid Stream, AudioComponent Component)? _currentMusic = default;
 
 		public override void Initialize()
 		{
@@ -43,33 +45,23 @@ namespace Content.Client.Audio
 			ClearSong();
 			if (TryGetCurrentSong(args.NewState, out var file))
 			{
-				var audioParams = new AudioParams
+				var musicParams = new AudioParams
 				{
 					Volume = _cfg.GetCVar(ContentCVars.MusicVolume),
 					Loop = true,
 				};
-
-				_currentMusic = _audio.PlayGlobal(file, Filter.Local(), false, audioParams: audioParams);
+				_currentMusic = _audio.PlayGlobal(file, Filter.Local(), false, audioParams: musicParams);
 			}
 		}
 
 		private void UpdateVolume(float newVolume)
 		{
-			if (_currentMusic == null)
-				return;
-
-			if (_currentMusic is not AudioSystem.PlayingStream playingStream) //this seems hacky
-			{
-				Log.Error($"Music stream could not be converted to a {nameof(AudioSystem.PlayingStream)}");
-				return;
-			}
-
-			playingStream.Volume = newVolume;
+			_audio.SetVolume(_currentMusic?.Stream, newVolume, component: _currentMusic?.Component);
 		}
 
 		private void ClearSong()
 		{
-			_currentMusic?.Stop();
+			_audio.Stop(_currentMusic?.Stream, _currentMusic?.Component);
 			_currentMusic = null;
 		}
 
