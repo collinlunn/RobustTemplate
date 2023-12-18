@@ -24,7 +24,7 @@ namespace Content.Client.OptionsMenu
 
 			ApplyButton.OnPressed += _ => ApplyPressed();
 
-			AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+			AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, new List<BaseButton>
 			{
 				ApplyButton
 			});

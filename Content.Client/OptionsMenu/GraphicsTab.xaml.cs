@@ -25,7 +25,7 @@ namespace Content.Client.OptionsMenu
 			IoCManager.InjectDependencies(this);
 
 			ApplyButton.OnPressed += _ => ApplyPressed();
-			AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+			AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, new List<BaseButton>
 			{
 				ApplyButton,
 				VSyncCheckBox,

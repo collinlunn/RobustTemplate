@@ -40,5 +40,10 @@ namespace Content.Client.Audio
 				button.OnPressed += _ => TryPlayGuiEffect(fileName, audioParams);
 			}
 		}
+
+		public static class PresetSoundFiles
+		{
+			public const string Pop = "pop.wav";
+		}
 	}
 }

@@ -16,7 +16,7 @@ public sealed partial class LobbyHud : Control
 		RobustXamlLoader.Load(this);
 		IoCManager.InjectDependencies(this);
 
-		AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+		AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, new List<BaseButton>
 		{
 			StartGameButton,
 			StartMappingButton,

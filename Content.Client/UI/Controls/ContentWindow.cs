@@ -17,7 +17,7 @@ public class ContentWindow : DefaultWindow
 		IoCManager.InjectDependencies(this);
 
 		CustomCursor.SetCursor(this);
-		AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+		AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, new List<BaseButton>
 		{
 			CloseButton
 		});

@@ -30,8 +30,6 @@ namespace Content.Client.OptionsMenu
 		private bool _currentlyRebinding = false;
 		private BoundKeyFunction _rebindingFunction;
 
-		private const string ButtonSoundPath = "pop.wav";
-
 		public HotkeyTab()
 		{
 			RobustXamlLoader.Load(this);
@@ -51,7 +49,7 @@ namespace Content.Client.OptionsMenu
 			}
 			UpdateAllHotkeyBoxes();
 			ResetAllButton.OnButtonUp += _ => ResetAllKeybinds();
-			AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+			AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, new List<BaseButton>
 			{
 				ResetAllButton
 			});
@@ -65,7 +63,7 @@ namespace Content.Client.OptionsMenu
 				hotkeyBox.ResetButton.OnButtonUp += _ => ResetKeybind(hotkeyBox);
 				hotkeyBox.RebindButton.OnButtonUp += _ => StartRebinding(hotkeyBox);
 
-				AudioHelpers.AddButtonSound("pop.wav", new List<BaseButton>
+				AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, new List<BaseButton>
 				{
 					hotkeyBox.ResetButton,
 					hotkeyBox.RebindButton
@@ -146,7 +144,7 @@ namespace Content.Client.OptionsMenu
 			_rebindingFunction = default;
 			UpdateAllHotkeyBoxes();
 
-			AudioHelpers.TryPlayGuiEffect(ButtonSoundPath);
+			AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
 		}
 
 		private void RebindHotkey(BoundKeyFunction function, List<Key> newKeys)
