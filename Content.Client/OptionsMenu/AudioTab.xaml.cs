@@ -52,6 +52,7 @@ namespace Content.Client.OptionsMenu
 			_cfg.SetCVar(ContentCVars.MusicVolume, LV100ToDB(MusicVolumeSlider.Value));
 			_cfg.SetCVar(ContentCVars.GuiEffectsVolume, LV100ToDB(GuiEffectsVolumeSlider.Value));
 			_cfg.SetCVar(ContentCVars.AmbienceVolume, LV100ToDB(AmbienceVolumeSlider.Value));
+			_cfg.SaveToFile();
 		}
 
 		private float DBToLV100(float db, float multiplier = 1f)
