@@ -3,7 +3,7 @@
 		 xmlns:mm="clr-namespace:Content.Client.MainMenu">
 	<mm:TitleArtControl Name="TitleArt"/>
     <BoxContainer Name="MenuBox" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Label Text="Placeholder Menu Title" StyleClasses="Title"/>
+        <Label Text="Placeholder Game Launcher" StyleClasses="Title"/>
         <PanelContainer HorizontalAlignment="Center" Margin="3" MouseFilter="Pass" StyleClasses="ContentPanel">
             <BoxContainer Orientation="Vertical">
                 <BoxContainer Orientation="Horizontal" Margin="3">

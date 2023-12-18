@@ -17,13 +17,6 @@ public sealed partial class MainMenuHud : Control
 		IoCManager.InjectDependencies(this);
 
 		CustomCursor.SetCursor(this);
-		AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, new List<BaseButton>
-		{
-			ConnectToLocalHostButton,
-			ConnectButton,
-			OptionsButton,
-			QuitButton
-		});
 
 		LayoutContainer.SetAnchorPreset(this, LayoutContainer.LayoutPreset.Wide);
 	}
