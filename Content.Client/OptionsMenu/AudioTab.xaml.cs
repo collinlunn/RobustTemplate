@@ -28,6 +28,16 @@ namespace Content.Client.OptionsMenu
 			{
 				ApplyButton
 			});
+			MasterVolumeSlider.OnGrabbed += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
+			MusicVolumeSlider.OnGrabbed += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
+			GuiEffectsVolumeSlider.OnGrabbed += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
+			AmbienceVolumeSlider.OnGrabbed += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
+
+			MasterVolumeSlider.OnReleased += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
+			MusicVolumeSlider.OnReleased += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
+			GuiEffectsVolumeSlider.OnReleased += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
+			AmbienceVolumeSlider.OnReleased += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
+
 
 			MasterVolumeSlider.Value = _cfg.GetCVar(CVars.AudioMasterVolume) * 100;
 			MusicVolumeSlider.Value = DBToLV100(_cfg.GetCVar(ContentCVars.MusicVolume));
@@ -43,7 +53,6 @@ namespace Content.Client.OptionsMenu
 			MusicVolumeSlider.OnValueChanged += range => { CurrentMusicVolumeLabel.Text = $"{range.Value}%"; };
 			GuiEffectsVolumeSlider.OnValueChanged += range => { CurrentGuiEffectsVolumeLabel.Text = $"{range.Value}%"; };
 			AmbienceVolumeSlider.OnValueChanged += range => { CurrentAmbienceVolumeLabel.Text = $"{range.Value}%"; };
-
 		}
 
 		private void ApplyPressed()
