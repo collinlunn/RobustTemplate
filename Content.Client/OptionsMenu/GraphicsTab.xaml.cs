@@ -7,6 +7,8 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared;
 using Robust.Shared.Configuration;
+using Robust.Shared.Utility;
+using static Robust.Client.Input.Mouse;
 
 namespace Content.Client.OptionsMenu
 {
@@ -17,7 +19,7 @@ namespace Content.Client.OptionsMenu
 
 		private readonly List<float> _uiSizes = new() { 0.5f, 1, 1.5f, 2 };
 
-		private RadioOptions<float> _uiSizeRadio;
+		private ContentRadioOptions<float> _uiSizeRadio;
 
 		public GraphicsTab()
 		{
@@ -34,15 +36,15 @@ namespace Content.Client.OptionsMenu
 				PingCounterCheckBox
 			});
 
-			_uiSizeRadio = new RadioOptions<float>(RadioOptionsLayout.Horizontal);
-			_uiSizeRadio.OnItemSelected += args => _uiSizeRadio.Select(args.Id);
-
-			_uiSizeRadio.AddItem($"OS Auto ({UserInterfaceManager.DefaultUIScale*100}%)", 0);
+			_uiSizeRadio = new();
+			_uiSizeRadio.AddButton($"OS Auto: { UserInterfaceManager.DefaultUIScale * 100}%", 0);
 			foreach (var size in _uiSizes)
 			{
-				_uiSizeRadio.AddItem($"{size * 100}%", size);
+				_uiSizeRadio.AddButton($"{size * 100}%", size);
 			}
 			UiSizeBox.AddChild(_uiSizeRadio);
+
+			AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, _uiSizeRadio.Buttons);
 
 			UpdateButtons();
 		}
@@ -53,7 +55,9 @@ namespace Content.Client.OptionsMenu
 			FullscreenCheckBox.Pressed = _cfg.GetCVar(CVars.DisplayWindowMode) == (int)WindowMode.Fullscreen;
 			FpsCounterCheckBox.Pressed = _cfg.GetCVar(ContentCVars.HudFpsVisible);
 			PingCounterCheckBox.Pressed = _cfg.GetCVar(ContentCVars.HudPingVisible);
-			_uiSizeRadio.SelectByValue(_cfg.GetCVar(CVars.DisplayUIScale));
+			
+			var setRadio = _uiSizeRadio.SetValue(_cfg.GetCVar(CVars.DisplayUIScale));
+			DebugTools.Assert(setRadio);
 		}
 
 		private void ApplyPressed()
