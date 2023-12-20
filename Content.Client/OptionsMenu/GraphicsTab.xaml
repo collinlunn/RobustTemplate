@@ -10,7 +10,7 @@
 			<Label Text="UI Scale" MinWidth ="100"/>
 		</BoxContainer>
 		<BoxContainer Orientation="Vertical">
-			<Button Name="ApplyButton" Text="Apply" Margin="3"/>
+			<Button Name="ApplyButton" Text="Apply Graphics Settings" Margin="3"/>
 		</BoxContainer>
 	</BoxContainer>
 </Control>

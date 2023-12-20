@@ -3,6 +3,6 @@
         <ScrollContainer VerticalExpand="True">
             <BoxContainer Name="KeybindsContainer" Orientation="Vertical" Margin="8 8 8 8"/>
         </ScrollContainer>
-        <Button Name ="ResetAllButton" Text="Reset All" Margin="3"/>
+        <Button Name ="ResetAllButton" Text="Reset All Hotkeys" Margin="3"/>
     </BoxContainer>
 </Control>

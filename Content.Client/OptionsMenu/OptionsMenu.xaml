@@ -7,6 +7,6 @@
     <TabContainer Name="Tabs">
         <tabs:GraphicsTab Name="Graphics"/>
         <tabs:AudioTab Name="Audio"/>
-        <tabs:HotkeyTab/>
+        <tabs:HotkeyTab Name="Hotkeys"/>
     </TabContainer>
 </content:ContentWindow>

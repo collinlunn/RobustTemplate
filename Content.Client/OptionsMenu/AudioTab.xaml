@@ -42,8 +42,8 @@
                     Margin="10 0 10 0"/>
             <Label Name="CurrentAmbienceVolumeLabel"/>
         </BoxContainer>
-        <BoxContainer Orientation="Horizontal" Margin="5">
-            <Button Name="ApplyButton" Text="Apply" SetWidth ="200"/>
+        <BoxContainer Orientation="Vertical" Margin="5">
+            <Button Name="ApplyButton" Text="Apply Audio Settings"/>
         </BoxContainer>
     </BoxContainer>
 </Control>
