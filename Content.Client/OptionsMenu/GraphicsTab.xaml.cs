@@ -70,5 +70,11 @@ namespace Content.Client.OptionsMenu
 			_cfg.SetCVar(CVars.DisplayUIScale, _uiSizeRadio.SelectedValue);
 			_cfg.SaveToFile();
 		}
+
+		public void OnClosed()
+		{
+			//if apply wasn't preessed, the buttons will look incorrect on next open
+			UpdateButtons();
+		}
 	}
 }

@@ -38,7 +38,16 @@ namespace Content.Client.OptionsMenu
 			GuiEffectsVolumeSlider.OnReleased += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
 			AmbienceVolumeSlider.OnReleased += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
 
+			MasterVolumeSlider.OnValueChanged += range => { CurrentMasterVolumeLabel.Text = $"{range.Value}%"; };
+			MusicVolumeSlider.OnValueChanged += range => { CurrentMusicVolumeLabel.Text = $"{range.Value}%"; };
+			GuiEffectsVolumeSlider.OnValueChanged += range => { CurrentGuiEffectsVolumeLabel.Text = $"{range.Value}%"; };
+			AmbienceVolumeSlider.OnValueChanged += range => { CurrentAmbienceVolumeLabel.Text = $"{range.Value}%"; };
 
+			UpdateButtons();
+		}
+
+		private void UpdateButtons()
+		{
 			MasterVolumeSlider.Value = _cfg.GetCVar(CVars.AudioMasterVolume) * 100;
 			MusicVolumeSlider.Value = DBToLV100(_cfg.GetCVar(ContentCVars.MusicVolume));
 			GuiEffectsVolumeSlider.Value = DBToLV100(_cfg.GetCVar(ContentCVars.GuiEffectsVolume));
@@ -48,11 +57,6 @@ namespace Content.Client.OptionsMenu
 			CurrentMusicVolumeLabel.Text = $"{MusicVolumeSlider.Value}%";
 			CurrentGuiEffectsVolumeLabel.Text = $"{GuiEffectsVolumeSlider.Value}%";
 			CurrentAmbienceVolumeLabel.Text = $"{AmbienceVolumeSlider.Value}%";
-
-			MasterVolumeSlider.OnValueChanged += range => { CurrentMasterVolumeLabel.Text = $"{range.Value}%"; };
-			MusicVolumeSlider.OnValueChanged += range => { CurrentMusicVolumeLabel.Text = $"{range.Value}%"; };
-			GuiEffectsVolumeSlider.OnValueChanged += range => { CurrentGuiEffectsVolumeLabel.Text = $"{range.Value}%"; };
-			AmbienceVolumeSlider.OnValueChanged += range => { CurrentAmbienceVolumeLabel.Text = $"{range.Value}%"; };
 		}
 
 		private void ApplyPressed()
@@ -75,6 +79,12 @@ namespace Content.Client.OptionsMenu
 			// Saving negative infinity doesn't work, so use -10000000 instead (MidiManager does it)
 			var db = MathF.Max(-10000000, (float)(Math.Log(lv100 * multiplier / 100, 10) * 10));
 			return db;
+		}
+
+		public void OnClosed()
+		{
+			//if apply wasn't preessed, the buttons will look incorrect on next open
+			UpdateButtons();
 		}
 	}
 }

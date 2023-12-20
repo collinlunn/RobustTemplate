@@ -5,8 +5,8 @@
     SetSize="600 400"
     Title="Options">
     <TabContainer Name="Tabs">
-        <tabs:GraphicsTab/>
-        <tabs:AudioTab/>
+        <tabs:GraphicsTab Name="Graphics"/>
+        <tabs:AudioTab Name="Audio"/>
         <tabs:HotkeyTab/>
     </TabContainer>
 </content:ContentWindow>

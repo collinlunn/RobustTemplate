@@ -19,6 +19,12 @@ namespace Content.Client.OptionsMenu
 			Tabs.SetTabTitle(0, "Graphics");
 			Tabs.SetTabTitle(1, "Audio");
 			Tabs.SetTabTitle(2, "Hotkeys");
+
+			OnClose += () =>
+			{
+				Graphics.OnClosed();
+				Audio.OnClosed();
+			};
 		}
 	}
 }
