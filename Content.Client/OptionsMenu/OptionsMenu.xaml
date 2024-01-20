@@ -4,9 +4,15 @@
 	xmlns:content="clr-namespace:Content.Client.UI.Controls"
     SetSize="600 400"
     Title="Options">
-    <TabContainer Name="Tabs">
-        <tabs:GraphicsTab Name="Graphics"/>
-        <tabs:AudioTab Name="Audio"/>
-        <tabs:HotkeyTab Name="Hotkeys"/>
-    </TabContainer>
+    <content:ContentTabContainer Name="Tabs">
+		<content:ContentTab TabName="Graphics">
+			<tabs:GraphicsTab Name="Graphics"/>
+		</content:ContentTab>
+		<content:ContentTab TabName="Audio">
+			<tabs:AudioTab Name="Audio"/>
+		</content:ContentTab>
+		<content:ContentTab TabName="Hotkeys">
+			<tabs:HotkeyTab Name="Hotkeys"/>
+		</content:ContentTab>
+	</content:ContentTabContainer>
 </content:ContentWindow>
