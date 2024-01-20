@@ -1,6 +1,6 @@
 <Control xmlns="https://spacestation14.io" HorizontalAlignment="Center" MouseFilter="Pass"
 		 xmlns:idle="clr-namespace:Content.Client.UI.Controls">
-    <PanelContainer StyleClasses="ContentPanel">
+    <PanelContainer>
         <BoxContainer Orientation="Vertical">
             <Label Text="Placeholder Lobby" Align="Center" Margin="3"/>
             <Label Text="Woohoo you've connected to a server" Align="Center" Margin="3"/>

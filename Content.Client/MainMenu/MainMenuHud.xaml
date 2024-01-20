@@ -4,7 +4,7 @@
 	<mm:TitleArtControl Name="TitleArt"/>
     <BoxContainer Name="MenuBox" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
         <Label Text="Placeholder Game Launcher" StyleClasses="Title"/>
-        <PanelContainer HorizontalAlignment="Center" Margin="3" MouseFilter="Pass" StyleClasses="ContentPanel">
+        <PanelContainer HorizontalAlignment="Center" Margin="3" MouseFilter="Pass">
             <BoxContainer Orientation="Vertical">
                 <BoxContainer Orientation="Horizontal" Margin="3">
                     <Label Text="Set Username" SetWidth="197" Margin="0 0 3 0"/>
