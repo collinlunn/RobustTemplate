@@ -5,6 +5,7 @@ using Robust.Shared.Console;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Toolshed;
+using Robust.Shared.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Content.Tests.IntegrationTests.Admin
 			await client.WaitPost(() =>
 			{
 				var consolePerms = clientAdmin.ConsolePermissions;
-				Assert.NotNull(consolePerms);
+				DebugTools.Assert(consolePerms != null);
 				var adminConsoleCommands = consolePerms.Keys;
 				var availableCommands = clientConsole.AvailableCommands.Keys;
 
