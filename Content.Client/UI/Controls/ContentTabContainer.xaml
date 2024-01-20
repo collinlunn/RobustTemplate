@@ -1,0 +1,6 @@
+<Control xmlns="https://spacestation14.io">
+    <BoxContainer Name="MainBox" Orientation="Vertical">
+        <BoxContainer Name="TabButtonHolder"  Orientation="Horizontal"/>
+        <PanelContainer Name="TabPanel" VerticalExpand="True" HorizontalExpand="True" StyleClasses="ContentPanel"/>
+    </BoxContainer>
+</Control>
