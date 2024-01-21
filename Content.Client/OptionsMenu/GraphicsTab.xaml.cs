@@ -27,6 +27,7 @@ namespace Content.Client.OptionsMenu
 			IoCManager.InjectDependencies(this);
 
 			ApplyButton.OnPressed += _ => ApplyPressed();
+			ResetButton.OnPressed += _ => Reset();
 
 			_uiSizeRadio = new();
 			_uiSizeRadio.AddButton($"OS Auto: { UserInterfaceManager.DefaultUIScale * 100}%", 0);
@@ -61,9 +62,20 @@ namespace Content.Client.OptionsMenu
 			_cfg.SaveToFile();
 		}
 
+		private void Reset()
+		{
+			_cfg.SetCVar(CVars.DisplayVSync, CVars.DisplayVSync.DefaultValue);
+			_cfg.SetCVar(CVars.DisplayWindowMode, CVars.DisplayWindowMode.DefaultValue);
+			_cfg.SetCVar(ContentCVars.HudFpsVisible, ContentCVars.HudFpsVisible.DefaultValue);
+			_cfg.SetCVar(ContentCVars.HudPingVisible, ContentCVars.HudPingVisible.DefaultValue);
+			_cfg.SetCVar(CVars.DisplayUIScale, CVars.DisplayUIScale.DefaultValue);
+			UpdateButtons();
+			_cfg.SaveToFile();
+		}
+
 		public void OnClosed()
 		{
-			//if apply wasn't preessed, the buttons will look incorrect on next open
+			//if apply wasn't pressed, the buttons will look incorrect on next open
 			UpdateButtons();
 		}
 	}

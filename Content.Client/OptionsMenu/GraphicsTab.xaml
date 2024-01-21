@@ -9,8 +9,9 @@
 		<BoxContainer Name="UiSizeBox" Orientation="Horizontal" Margin="5">
 			<Label Text="UI Scale" MinWidth ="100"/>
 		</BoxContainer>
-		<BoxContainer Orientation="Vertical">
-			<Button Name="ApplyButton" Text="Apply Graphics Settings" Margin="3"/>
+		<BoxContainer Orientation="Horizontal">
+			<Button Name="ApplyButton" Text="Apply" Margin="3"/>
+			<Button Name="ResetButton" Text="Reset" Margin="3"/>
 		</BoxContainer>
 	</BoxContainer>
 </Control>

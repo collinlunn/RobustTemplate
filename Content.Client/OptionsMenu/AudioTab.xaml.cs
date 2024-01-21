@@ -41,6 +41,7 @@ namespace Content.Client.OptionsMenu
 			AmbienceVolumeSlider.OnValueChanged += range => { CurrentAmbienceVolumeLabel.Text = $"{range.Value}%"; };
 
 			UpdateButtons();
+			ResetButton.OnPressed += _ => Reset();
 		}
 
 		private void UpdateButtons()
@@ -65,6 +66,16 @@ namespace Content.Client.OptionsMenu
 			_cfg.SaveToFile();
 		}
 
+		private void Reset()
+		{
+			_cfg.SetCVar(CVars.AudioMasterVolume, CVars.AudioMasterVolume.DefaultValue);
+			_cfg.SetCVar(ContentCVars.MusicVolume, ContentCVars.MusicVolume.DefaultValue);
+			_cfg.SetCVar(ContentCVars.GuiEffectsVolume, ContentCVars.GuiEffectsVolume.DefaultValue);
+			_cfg.SetCVar(ContentCVars.AmbienceVolume, ContentCVars.AmbienceVolume.DefaultValue);
+			UpdateButtons();
+			_cfg.SaveToFile();
+		}
+
 		private float DBToLV100(float db, float multiplier = 1f)
 		{
 			var lvl100 = (float)(Math.Pow(10, db / 10) * 100 / multiplier);
@@ -80,7 +91,7 @@ namespace Content.Client.OptionsMenu
 
 		public void OnClosed()
 		{
-			//if apply wasn't preessed, the buttons will look incorrect on next open
+			//if apply wasn't pressed, the buttons will look incorrect on next open
 			UpdateButtons();
 		}
 	}

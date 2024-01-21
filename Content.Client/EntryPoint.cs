@@ -72,6 +72,8 @@ public sealed class EntryPoint : GameClient
 		_configMan.SetCVar(CVars.ResAutoScaleMin, autoScaleMin);
 		//Overrides OS-specified UI scale because it can look glitchy on non-whole numbers
 		_configMan.OverrideDefault(CVars.DisplayUIScale, 1);
+		//default audio % ashould be 100%
+		_configMan.OverrideDefault(CVars.AudioMasterVolume, 1);
 
 		_stateManager.RequestStateChange<MainMenuState>(); //bring up the main menu
 		//If run level drops to initialize after disconnecting reopen the main menu
