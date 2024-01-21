@@ -10,9 +10,9 @@ namespace Content.Client.UI.StyleSheets.Default
 	public sealed partial class DefaultContentStyle
 	{
 		private const string LineEditTexturePath = "outlinedCircleWhite.png";
-		private Color LineEditColor = Color.FromHex("#24242b");
-		private Color LineEditPlaceholderColor = Color.FromHex("#c4c4c4");
-		private Color LineEditNotEditableColor = Color.Gray;
+		private Color LineEditColor => LineEditPallete;
+		private Color LineEditPlaceholderColor => LineEditPlaceholderPallete;
+		private Color LineEditNotEditableColor => LineEditDisabledPallette;
 		
 
 		private List<StyleRule> LineEditRule()

@@ -12,8 +12,8 @@ namespace Content.Client.UI.StyleSheets.Default
 		private const string TabContainerPanelTexturePath = "panelWhiteOutlined.png";
 		private readonly Color TabContainerColor = Color.FromHex("#25252a");
 
-		private readonly Color TabContainerActiveTabColor = Color.FromHex("#575b7f");
-		private readonly Color TabContainerInactiveTabColor = Color.FromHex("#464966");
+		private Color TabContainerActiveTabColor => ButtonHoverPallete;
+		private Color TabContainerInactiveTabColor => ButtonNormalPallete;
 
 		private StyleRule TabContainerRule()
 		{

@@ -11,7 +11,7 @@ namespace Content.Client.UI.StyleSheets.Default
 	public sealed partial class DefaultContentStyle
 	{
 		private const string PanelContainerTexturePath = "panelWhiteOutlined.png";
-		private readonly Color PanelContainerColor = Color.FromHex("#25252a");
+		private Color PanelContainerColor => PanelPallete;
 
 		private List<StyleRule> PanelContainerRules()
 		{

@@ -11,15 +11,15 @@ namespace Content.Client.UI.StyleSheets.Default
 	public sealed partial class DefaultContentStyle
 	{
 		private const string ButtonTexturePath = "circleWhite.png";
-		private readonly Color ButtonColorDefault = Color.FromHex("#464966");
-		private readonly Color ButtonColorHover = Color.FromHex("#575b7f");
-		private readonly Color ButtonColorPressed = Color.FromHex("#3e6c45");
-		private readonly Color ButtonColorDisabled = Color.FromHex("#30313c");
+		private Color ButtonColorDefault => ButtonNormalPallete;
+		private Color ButtonColorHover => ButtonHoverPallete;
+		private Color ButtonColorPressed => ButtonPressedPallete;
+		private Color ButtonColorDisabled => ButtonDisabledPallete;
 
 		private const string WindowCloseButtonTexturePath = "cross.png";
-		private readonly Color WindowCloseButtonColorDefault = Color.FromHex("#4B596A");
-		private readonly Color WindowCloseButtonColorHover = Color.FromHex("#7F3636");
-		private readonly Color WindowCloseButtonColorPressed = Color.FromHex("#753131");
+		private Color WindowCloseButtonColorDefault => WindowCloseButtonNormalPallete;
+		private Color WindowCloseButtonColorHover => WindowCloseButtonHoverPallete;
+		private Color WindowCloseButtonColorPressed => WindowCloseButtonPressedPallete;
 
 		private List<StyleRule> ButtonRules()
 		{

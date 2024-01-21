@@ -12,9 +12,9 @@ namespace Content.Client.UI.StyleSheets.Default
 	{
 		private const string CheckBoxUncheckedTexturePath = "checkBoxUnchecked.png";
 		private const string CheckBoxCheckedTexturePath = "checkBoxChecked.png";
-		private readonly Color CheckBoxColorDefault = Color.FromHex("#464966");
-		private readonly Color CheckBoxColorPressed = Color.FromHex("#3e6c45");
-		private readonly Color CheckBoxColorDisabled = Color.FromHex("#30313c");
+		private Color CheckBoxColorDefault => ButtonNormalPallete;
+		private Color CheckBoxColorPressed => ButtonPressedPallete;
+		private Color CheckBoxColorDisabled => ButtonDisabledPallete;
 		private const int CheckBoxSeparation = 10;
 
 		private List<StyleRule> CheckBoxRules()
