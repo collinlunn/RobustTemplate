@@ -1,4 +1,4 @@
-﻿using Robust.Client.Graphics;
+using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -12,7 +12,9 @@ namespace Content.Client.UI.StyleSheets.Default
 	{
 		private const string CheckBoxUncheckedTexturePath = "checkBoxUnchecked.png";
 		private const string CheckBoxCheckedTexturePath = "checkBoxChecked.png";
-		private readonly Color CheckBoxColor = Color.FromHex("#464966");
+		private readonly Color CheckBoxColorDefault = Color.FromHex("#464966");
+		private readonly Color CheckBoxColorPressed = Color.FromHex("#3e6c45");
+		private readonly Color CheckBoxColorDisabled = Color.FromHex("#30313c");
 		private const int CheckBoxSeparation = 10;
 
 		private List<StyleRule> CheckBoxRules()
@@ -22,23 +24,61 @@ namespace Content.Client.UI.StyleSheets.Default
 
 			var uncheckedTextureRule = Element<TextureRect>()
 				.Class(CheckBox.StyleClassCheckBox)
-				.Prop(TextureRect.StylePropertyTexture, checkBoxUncheckedTexture)
-				.Prop(Control.StylePropertyModulateSelf, CheckBoxColor);
+				.Prop(TextureRect.StylePropertyTexture, checkBoxUncheckedTexture);
 
 			var checkedTextureRule = Element<TextureRect>()
 				.Class(CheckBox.StyleClassCheckBoxChecked)
-				.Prop(TextureRect.StylePropertyTexture, checkBoxCheckedTexture)
-				.Prop(Control.StylePropertyModulateSelf, CheckBoxColor);
+				.Prop(TextureRect.StylePropertyTexture, checkBoxCheckedTexture);
 
 			var separationRule = Element<BoxContainer>()
 				.Class(CheckBox.StyleClassCheckBox)
 				.Prop(BoxContainer.StylePropertySeparation, CheckBoxSeparation);
+			
+			var colorNormal = 
+				Child()
+					.Parent(
+						Child()
+							.Parent(Element<CheckBox>().Pseudo(ContainerButton.StylePseudoClassNormal))
+							.Child(Element<BoxContainer>()))
+					.Child(Element<TextureRect>())
+				.Prop(Control.StylePropertyModulateSelf, CheckBoxColorDefault);
+
+			var colorHover =
+				Child()
+					.Parent(
+						Child()
+							.Parent(Element<CheckBox>().Pseudo(ContainerButton.StylePseudoClassHover))
+							.Child(Element<BoxContainer>()))
+					.Child(Element<TextureRect>())
+				.Prop(Control.StylePropertyModulateSelf, CheckBoxColorDefault);
+
+			var colorPressed =
+				Child()
+					.Parent(
+						Child()
+							.Parent(Element<CheckBox>().Pseudo(ContainerButton.StylePseudoClassPressed))
+							.Child(Element<BoxContainer>()))
+					.Child(Element<TextureRect>())
+				.Prop(Control.StylePropertyModulateSelf, CheckBoxColorPressed);
+
+			var colorDisabled =
+				Child()
+					.Parent(
+						Child()
+							.Parent(Element<CheckBox>().Pseudo(ContainerButton.StylePseudoClassDisabled))
+							.Child(Element<BoxContainer>()))
+					.Child(Element<TextureRect>())
+				.Prop(Control.StylePropertyModulateSelf, CheckBoxColorDisabled);
 
 			return new List<StyleRule>
 			{
 				uncheckedTextureRule,
 				checkedTextureRule,
 				separationRule,
+				colorNormal,
+				colorHover,
+				colorPressed,
+				colorDisabled,
 			};
 		}
 	}
