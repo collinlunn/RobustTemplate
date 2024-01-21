@@ -23,8 +23,6 @@ namespace Content.Client.UI.StyleSheets.Default
 
 		private const string DefaultFontResourcePath = "/Fonts/NotoSans/NotoSans-Regular.ttf";
 
-		private const string TextureRoot = "/Textures/Interface/";
-
 		[Dependency] private readonly IUserInterfaceManager _uiMan = default!;
 		[Dependency] private readonly ILogManager _logMan = default!;
 
@@ -75,8 +73,7 @@ namespace Content.Client.UI.StyleSheets.Default
 
 		private Texture GetTexture(string texturePath)
 		{
-			var texture = _resourceCache.GetResource<TextureResource>(TextureRoot + texturePath);
-			return texture;
+			return _uiMan.CurrentTheme.ResolveTexture(texturePath);
 		}
 
 		private StyleBoxTexture GetStyleBoxTexture(string texturePath)
