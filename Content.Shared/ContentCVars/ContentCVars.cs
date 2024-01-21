@@ -31,9 +31,15 @@ namespace Content.Shared.ContentCVars
 			CVarDef.Create("audio.ambiencevolume", 0.0f, CVar.ARCHIVE | CVar.CLIENTONLY);
 
 		/// <summary>
-		///		Soundfile used when triggering UI clicks via UiManager
+		///		Soundfile used when triggering UI click sound via UiManager
 		/// </summary>
 		public static readonly CVarDef<string> UIClickSound =
 			CVarDef.Create("audio.click_sound", "/Audio/pop.wav", CVar.ARCHIVE | CVar.CLIENTONLY);
+
+		/// <summary>
+		///		Soundfile used when triggering UI hover sound via UiManager
+		/// </summary>
+		public static readonly CVarDef<string> UIHoverSound =
+			CVarDef.Create("audio.hover_sound", string.Empty, CVar.ARCHIVE | CVar.CLIENTONLY);
 	}
 }

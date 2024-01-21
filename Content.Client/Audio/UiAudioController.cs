@@ -21,12 +21,13 @@ namespace Content.Client.Audio
 		[Dependency] private readonly IResourceCache _cache = default!;
 
 		private IAudioSource? _clickSource;
+		private IAudioSource? _hoverSource;
 
 		public override void Initialize()
 		{
 			base.Initialize();
 			_configManager.OnValueChanged(ContentCVars.UIClickSound, SetClickSound, true);
-			//_configManager.OnValueChanged(CCVars.UIHoverSound, SetHoverSound, true);
+			_configManager.OnValueChanged(ContentCVars.UIHoverSound, SetHoverSound, true);
 			_configManager.OnValueChanged(ContentCVars.GuiEffectsVolume, SetGuiVolume, true);
 		}
 
@@ -48,6 +49,27 @@ namespace Content.Client.Audio
 				_clickSource = source;
 			}
 			UIManager.SetClickSound(_clickSource);
+		}
+
+		private void SetHoverSound(string value)
+		{
+			_hoverSource = null;
+
+			if (!string.IsNullOrEmpty(value))
+			{
+				var resource = _cache.GetResource<AudioResource>(value);
+				var source = _audioManager.CreateAudioSource(resource);
+
+				if (source != null)
+				{
+					source.Volume = IoCManager.Resolve<IConfigurationManager>()
+						.GetCVar(ContentCVars.GuiEffectsVolume);
+					source.Global = true;
+				}
+
+				_hoverSource = source;
+			}
+			UIManager.SetHoverSound(_hoverSource);
 		}
 
 		private void SetGuiVolume(float volume)
