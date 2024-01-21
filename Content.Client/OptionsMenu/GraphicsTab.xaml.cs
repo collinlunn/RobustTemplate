@@ -27,14 +27,6 @@ namespace Content.Client.OptionsMenu
 			IoCManager.InjectDependencies(this);
 
 			ApplyButton.OnPressed += _ => ApplyPressed();
-			AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, new List<BaseButton>
-			{
-				ApplyButton,
-				VSyncCheckBox,
-				FullscreenCheckBox,
-				FpsCounterCheckBox,
-				PingCounterCheckBox
-			});
 
 			_uiSizeRadio = new();
 			_uiSizeRadio.AddButton($"OS Auto: { UserInterfaceManager.DefaultUIScale * 100}%", 0);
@@ -43,8 +35,6 @@ namespace Content.Client.OptionsMenu
 				_uiSizeRadio.AddButton($"{size * 100}%", size);
 			}
 			UiSizeBox.AddChild(_uiSizeRadio);
-
-			AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, _uiSizeRadio.Buttons);
 
 			UpdateButtons();
 		}

@@ -16,12 +16,6 @@ namespace Content.Client.EscapeMenu
 			RobustXamlLoader.Load(this);
 			IoCManager.InjectDependencies(this);
 
-			AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, new List<BaseButton>
-			{
-				OptionsButton,
-				DisconnectButton
-			});
-
 			CustomCursor.SetCursor(this);
 		}
 	}

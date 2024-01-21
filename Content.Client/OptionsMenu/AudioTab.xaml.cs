@@ -16,6 +16,7 @@ namespace Content.Client.OptionsMenu
 	public sealed partial class AudioTab : Control
 	{
 		[Dependency] private readonly IConfigurationManager _cfg = default!;
+		[Dependency] private readonly IUserInterfaceManager _uiManager = default!;
 
 		public AudioTab()
 		{
@@ -24,19 +25,15 @@ namespace Content.Client.OptionsMenu
 
 			ApplyButton.OnPressed += _ => ApplyPressed();
 
-			AudioHelpers.AddButtonSound(AudioHelpers.PresetSoundFiles.Pop, new List<BaseButton>
-			{
-				ApplyButton
-			});
-			MasterVolumeSlider.OnGrabbed += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
-			MusicVolumeSlider.OnGrabbed += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
-			GuiEffectsVolumeSlider.OnGrabbed += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
-			AmbienceVolumeSlider.OnGrabbed += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
+			MasterVolumeSlider.OnGrabbed += _ => _uiManager.ClickSound();
+			MusicVolumeSlider.OnGrabbed += _ => _uiManager.ClickSound();
+			GuiEffectsVolumeSlider.OnGrabbed += _ => _uiManager.ClickSound();
+			AmbienceVolumeSlider.OnGrabbed += _ => _uiManager.ClickSound();
 
-			MasterVolumeSlider.OnReleased += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
-			MusicVolumeSlider.OnReleased += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
-			GuiEffectsVolumeSlider.OnReleased += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
-			AmbienceVolumeSlider.OnReleased += _ => AudioHelpers.TryPlayGuiEffect(AudioHelpers.PresetSoundFiles.Pop);
+			MasterVolumeSlider.OnReleased += _ => _uiManager.ClickSound();
+			MusicVolumeSlider.OnReleased += _ => _uiManager.ClickSound();
+			GuiEffectsVolumeSlider.OnReleased += _ => _uiManager.ClickSound();
+			AmbienceVolumeSlider.OnReleased += _ => _uiManager.ClickSound();
 
 			MasterVolumeSlider.OnValueChanged += range => { CurrentMasterVolumeLabel.Text = $"{range.Value}%"; };
 			MusicVolumeSlider.OnValueChanged += range => { CurrentMusicVolumeLabel.Text = $"{range.Value}%"; };
