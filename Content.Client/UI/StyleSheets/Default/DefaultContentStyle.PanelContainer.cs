@@ -1,4 +1,4 @@
-﻿using Robust.Client.Graphics;
+using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -12,6 +12,10 @@ namespace Content.Client.UI.StyleSheets.Default
 	{
 		private const string PanelContainerTexturePath = "panelWhiteOutlined.png";
 
+		//designates panels that should receive color modulation, to avoid coloring panels inside other controls
+		//such as coloring the panels inside sliders
+		private const string ContentPanelStyleRule = "ContentPanel"; 
+
 		private List<StyleRule> PanelContainerRules()
 		{
 			var panelContainerStyleBoxTexture = GetStyleBoxTexture(PanelContainerTexturePath);
@@ -21,6 +25,7 @@ namespace Content.Client.UI.StyleSheets.Default
 				.Prop(PanelContainer.StylePropertyPanel, panelContainerStyleBoxTexture);
 
 			var panelContainerColorRule = Element<PanelContainer>()
+				.Class(ContentPanelStyleRule)
 				.Prop(Control.StylePropertyModulateSelf, PanelColor);
 
 			var windowPanelColorRule = Element<PanelContainer>()
