@@ -1,3 +1,25 @@
 - type: uiTheme
   id: DefaultContentTheme
   path: /Textures/Interface/
+  colors:
+    panel: "#25252a"
+    
+    lineEdit: "#24242b"
+    lineEditPlaceholder: "#c4c4c4"
+    lineEditDisabled: "#808080"
+    
+    button: "#464966"
+    buttonHovered: "#575b7f"
+    buttonPressed: "#31843E"
+    buttonDisabled: "#30313c"
+    
+    windowCloseButton: "#4B596A"
+    windowCloseButtonHovered: "#7F3636"
+    windowCloseButtonPressed: "#753131"
+    
+    windowRoot: Black
+    
+    sliderFill: "#2b8f2f"
+    sliderBack: "#8f2b2b"
+    sliderFore: "#010000"
+    sliderGrabber: "#4B596A"

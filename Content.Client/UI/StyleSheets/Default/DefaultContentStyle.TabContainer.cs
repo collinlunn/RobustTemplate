@@ -12,9 +12,6 @@ namespace Content.Client.UI.StyleSheets.Default
 		private const string TabContainerPanelTexturePath = "panelWhiteOutlined.png";
 		private readonly Color TabContainerColor = Color.FromHex("#25252a");
 
-		private Color TabContainerActiveTabColor => ButtonHoverPallete;
-		private Color TabContainerInactiveTabColor => ButtonNormalPallete;
-
 		private StyleRule TabContainerRule()
 		{
 			var tabContainerPanel = GetStyleBoxTexture(TabContainerPanelTexturePath);
@@ -23,12 +20,12 @@ namespace Content.Client.UI.StyleSheets.Default
 			tabContainerPanel.SetPadding(StyleBox.Margin.Right, 4);
 
 			var tabContainerBoxActive = GetStyleBoxTexture(TabContainerPanelTexturePath);
-			tabContainerBoxActive.Modulate = TabContainerActiveTabColor;
+			tabContainerBoxActive.Modulate = ButtonHoveredColor;
 			tabContainerBoxActive.SetPatchMargin(StyleBox.Margin.All, 2);
 			tabContainerBoxActive.SetPadding(StyleBox.Margin.Right, 4);
 
 			var tabContainerBoxInactive = GetStyleBoxTexture(TabContainerPanelTexturePath);
-			tabContainerBoxInactive.Modulate = TabContainerInactiveTabColor;
+			tabContainerBoxInactive.Modulate = ButtonColor;
 			tabContainerBoxInactive.SetPatchMargin(StyleBox.Margin.All, 2);
 			tabContainerBoxInactive.SetPadding(StyleBox.Margin.Right, 4);
 

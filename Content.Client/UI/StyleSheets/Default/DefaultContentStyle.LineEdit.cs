@@ -10,10 +10,6 @@ namespace Content.Client.UI.StyleSheets.Default
 	public sealed partial class DefaultContentStyle
 	{
 		private const string LineEditTexturePath = "outlinedCircleWhite.png";
-		private Color LineEditColor => LineEditPallete;
-		private Color LineEditPlaceholderColor => LineEditPlaceholderPallete;
-		private Color LineEditNotEditableColor => LineEditDisabledPallette;
-		
 
 		private List<StyleRule> LineEditRule()
 		{
@@ -34,7 +30,7 @@ namespace Content.Client.UI.StyleSheets.Default
 
 			var lineEditPlaceholderFont = Element<LineEdit>()
 				.Class(LineEdit.StyleClassLineEditNotEditable)
-				.Prop(Label.StylePropertyFontColor, LineEditNotEditableColor);
+				.Prop(Label.StylePropertyFontColor, LineEditDisabledColor);
 
 			return new()
 			{

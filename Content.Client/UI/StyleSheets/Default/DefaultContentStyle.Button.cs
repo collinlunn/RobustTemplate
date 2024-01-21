@@ -11,15 +11,8 @@ namespace Content.Client.UI.StyleSheets.Default
 	public sealed partial class DefaultContentStyle
 	{
 		private const string ButtonTexturePath = "circleWhite.png";
-		private Color ButtonColorDefault => ButtonNormalPallete;
-		private Color ButtonColorHover => ButtonHoverPallete;
-		private Color ButtonColorPressed => ButtonPressedPallete;
-		private Color ButtonColorDisabled => ButtonDisabledPallete;
 
 		private const string WindowCloseButtonTexturePath = "cross.png";
-		private Color WindowCloseButtonColorDefault => WindowCloseButtonNormalPallete;
-		private Color WindowCloseButtonColorHover => WindowCloseButtonHoverPallete;
-		private Color WindowCloseButtonColorPressed => WindowCloseButtonPressedPallete;
 
 		private List<StyleRule> ButtonRules()
 		{
@@ -31,19 +24,19 @@ namespace Content.Client.UI.StyleSheets.Default
 
 			var buttonDefaultColor = Element<Button>()
 				.Pseudo(ContainerButton.StylePseudoClassNormal)
-				.Prop(Control.StylePropertyModulateSelf, ButtonColorDefault);
+				.Prop(Control.StylePropertyModulateSelf, ButtonColor);
 
 			var buttonPressedColor = Element<Button>()
 				.Pseudo(ContainerButton.StylePseudoClassPressed)
-				.Prop(Control.StylePropertyModulateSelf, ButtonColorPressed);
+				.Prop(Control.StylePropertyModulateSelf, ButtonPressedColor);
 
 			var buttonHoverColor = Element<Button>()
 				.Pseudo(ContainerButton.StylePseudoClassHover)
-				.Prop(Control.StylePropertyModulateSelf, ButtonColorHover);
+				.Prop(Control.StylePropertyModulateSelf, ButtonHoveredColor);
 
 			var buttonDisabledColor = Element<Button>()
 				.Pseudo(ContainerButton.StylePseudoClassDisabled)
-				.Prop(Control.StylePropertyModulateSelf, ButtonColorDisabled);
+				.Prop(Control.StylePropertyModulateSelf, ButtonDisabledColor);
 
 			return new List<StyleRule>
 			{
@@ -65,17 +58,17 @@ namespace Content.Client.UI.StyleSheets.Default
 
 			var windowCloseButtonDefaultColorRule = Element<TextureButton>()
 				.Class(DefaultWindow.StyleClassWindowCloseButton)
-				.Prop(Control.StylePropertyModulateSelf, WindowCloseButtonColorDefault);
+				.Prop(Control.StylePropertyModulateSelf, WindowCloseButtonNormalColor);
 
 			var windowCloseButtonHoverColorRule = Element<TextureButton>()
 				.Class(DefaultWindow.StyleClassWindowCloseButton)
 				.Pseudo(TextureButton.StylePseudoClassHover)
-				.Prop(Control.StylePropertyModulateSelf, WindowCloseButtonColorHover);
+				.Prop(Control.StylePropertyModulateSelf, WindowCloseButtonHoveredColor);
 
 			var windowCloseButtonPressedColorRule = Element<TextureButton>()
 				.Class(DefaultWindow.StyleClassWindowCloseButton)
 				.Pseudo(TextureButton.StylePseudoClassPressed)
-				.Prop(Control.StylePropertyModulateSelf, WindowCloseButtonColorPressed);
+				.Prop(Control.StylePropertyModulateSelf, WindowCloseButtonPressedColor);
 
 			return new()
 			{

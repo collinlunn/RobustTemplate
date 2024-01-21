@@ -12,9 +12,6 @@ namespace Content.Client.UI.StyleSheets.Default
 	{
 		private const string CheckBoxUncheckedTexturePath = "checkBoxUnchecked.png";
 		private const string CheckBoxCheckedTexturePath = "checkBoxChecked.png";
-		private Color CheckBoxColorDefault => ButtonNormalPallete;
-		private Color CheckBoxColorPressed => ButtonPressedPallete;
-		private Color CheckBoxColorDisabled => ButtonDisabledPallete;
 		private const int CheckBoxSeparation = 10;
 
 		private List<StyleRule> CheckBoxRules()
@@ -41,7 +38,7 @@ namespace Content.Client.UI.StyleSheets.Default
 							.Parent(Element<CheckBox>().Pseudo(ContainerButton.StylePseudoClassNormal))
 							.Child(Element<BoxContainer>()))
 					.Child(Element<TextureRect>())
-				.Prop(Control.StylePropertyModulateSelf, CheckBoxColorDefault);
+				.Prop(Control.StylePropertyModulateSelf, ButtonColor);
 
 			var colorHover =
 				Child()
@@ -50,7 +47,7 @@ namespace Content.Client.UI.StyleSheets.Default
 							.Parent(Element<CheckBox>().Pseudo(ContainerButton.StylePseudoClassHover))
 							.Child(Element<BoxContainer>()))
 					.Child(Element<TextureRect>())
-				.Prop(Control.StylePropertyModulateSelf, CheckBoxColorDefault);
+				.Prop(Control.StylePropertyModulateSelf, ButtonPressedColor);
 
 			var colorPressed =
 				Child()
@@ -59,7 +56,7 @@ namespace Content.Client.UI.StyleSheets.Default
 							.Parent(Element<CheckBox>().Pseudo(ContainerButton.StylePseudoClassPressed))
 							.Child(Element<BoxContainer>()))
 					.Child(Element<TextureRect>())
-				.Prop(Control.StylePropertyModulateSelf, CheckBoxColorPressed);
+				.Prop(Control.StylePropertyModulateSelf, ButtonPressedColor);
 
 			var colorDisabled =
 				Child()
@@ -68,7 +65,7 @@ namespace Content.Client.UI.StyleSheets.Default
 							.Parent(Element<CheckBox>().Pseudo(ContainerButton.StylePseudoClassDisabled))
 							.Child(Element<BoxContainer>()))
 					.Child(Element<TextureRect>())
-				.Prop(Control.StylePropertyModulateSelf, CheckBoxColorDisabled);
+				.Prop(Control.StylePropertyModulateSelf, ButtonDisabledColor);
 
 			return new List<StyleRule>
 			{

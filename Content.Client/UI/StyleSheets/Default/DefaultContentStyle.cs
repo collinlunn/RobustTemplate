@@ -14,6 +14,7 @@ namespace Content.Client.UI.StyleSheets.Default
 	/// </summary>
 	public sealed partial class DefaultContentStyle
 	{
+
 		public Stylesheet Stylesheet { get; }
 
 		private IResourceCache _resourceCache;
@@ -23,6 +24,11 @@ namespace Content.Client.UI.StyleSheets.Default
 		private const string DefaultFontResourcePath = "/Fonts/NotoSans/NotoSans-Regular.ttf";
 
 		private const string TextureRoot = "/Textures/Interface/";
+
+		[Dependency] private readonly IUserInterfaceManager _uiMan = default!;
+		[Dependency] private readonly ILogManager _logMan = default!;
+
+		private readonly ISawmill _logger;
 
 		/* Margin Notes:
 		 * 
@@ -37,8 +43,11 @@ namespace Content.Client.UI.StyleSheets.Default
 
 		public DefaultContentStyle(IResourceCache resourceCache)
 		{
+			IoCManager.InjectDependencies(this);
+
 			_resourceCache = resourceCache;
 			_fontResource = _resourceCache.GetResource<FontResource>(DefaultFontResourcePath);
+			_logger = _logMan.GetSawmill("stylesheet.default");
 
 			var rules = GetStyleRules();
 			Stylesheet = new Stylesheet(rules);
@@ -81,8 +90,6 @@ namespace Content.Client.UI.StyleSheets.Default
 
 		#region WindowRoot
 
-		private readonly Color WindowRootColor = Color.Black;
-
 		private StyleRule WindowRootRule()
 		{
 			var windowRootRule = Element<WindowRoot>()
@@ -97,11 +104,6 @@ namespace Content.Client.UI.StyleSheets.Default
 		private const string SliderFillTexturePath = "sliderFill.png";
 		private const string SliderOutlineTexturePath = "sliderOutline.png";
 		private const string SliderGrabberTexturePath = "sliderGrabber.png";
-
-		private readonly Color SliderFillColor = Color.FromHex("#2b8f2f");
-		private readonly Color SliderBackColor = Color.FromHex("#8f2b2b");
-		private readonly Color SliderForeColor = Color.FromHex("#010000");
-		private readonly Color SliderGrabberColor = Color.FromHex("#4B596A");
 
 		private StyleRule SliderRule()
 		{

@@ -11,9 +11,9 @@ namespace Content.Client.UI.StyleSheets.Default
 		private const string ScrollBarTexturePath = "panelWhiteOutlined.png";
 
 		private const int ScrollBarGrabberSize = 10;
-		private Color ScrollBarGrabberDefaultColor => ButtonNormalPallete.WithAlpha(0.35f);
-		private Color ScrollBarGrabberHoverColor => ButtonHoverPallete.WithAlpha(0.35f);
-		private Color ScrollBarGrabberGrabbedColor => ButtonPressedPallete.WithAlpha(0.35f);
+		private Color ScrollBarGrabberDefaultColor => ButtonColor.WithAlpha(0.35f);
+		private Color ScrollBarGrabberHoverColor => ButtonHoveredColor.WithAlpha(0.35f);
+		private Color ScrollBarGrabberGrabbedColor => ButtonPressedColor.WithAlpha(0.35f);
 
 		private List<StyleRule> VScrollBarRules()
 		{

@@ -11,7 +11,6 @@ namespace Content.Client.UI.StyleSheets.Default
 	public sealed partial class DefaultContentStyle
 	{
 		private const string PanelContainerTexturePath = "panelWhiteOutlined.png";
-		private Color PanelContainerColor => PanelPallete;
 
 		private List<StyleRule> PanelContainerRules()
 		{
@@ -22,15 +21,15 @@ namespace Content.Client.UI.StyleSheets.Default
 				.Prop(PanelContainer.StylePropertyPanel, panelContainerStyleBoxTexture);
 
 			var panelContainerColorRule = Element<PanelContainer>()
-				.Prop(Control.StylePropertyModulateSelf, PanelContainerColor);
+				.Prop(Control.StylePropertyModulateSelf, PanelColor);
 
 			var windowPanelColorRule = Element<PanelContainer>()
 				.Class(DefaultWindow.StyleClassWindowPanel)
-				.Prop(Control.StylePropertyModulateSelf, PanelContainerColor);
+				.Prop(Control.StylePropertyModulateSelf, PanelColor);
 
 			var windowHeaderColorRule = Element<PanelContainer>()
 				.Class(DefaultWindow.StyleClassWindowHeader)
-				.Prop(Control.StylePropertyModulateSelf, PanelContainerColor);
+				.Prop(Control.StylePropertyModulateSelf, PanelColor);
 
 			return new()
 			{
