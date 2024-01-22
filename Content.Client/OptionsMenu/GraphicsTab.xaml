@@ -3,9 +3,11 @@
          VerticalAlignment="Top">
 	<BoxContainer Orientation="Vertical">
 		<CheckBox Name="VSyncCheckBox" Text="VSync" Margin="3"/>
-		<CheckBox Name="FullscreenCheckBox" Text="Fullscreen" Margin="3"/>
 		<CheckBox Name="FpsCounterCheckBox" Text="Show FPS Counter" Margin="3"/>
 		<CheckBox Name="PingCounterCheckBox" Text="Show Ping Counter" Margin="3"/>
+		<BoxContainer Name="WindowModeBox" Orientation="Horizontal" Margin="5">
+			<Label Text="Window Mode" MinWidth ="100"/>
+		</BoxContainer>
 		<BoxContainer Name="UiSizeBox" Orientation="Horizontal" Margin="5">
 			<Label Text="UI Scale" MinWidth ="100"/>
 		</BoxContainer>

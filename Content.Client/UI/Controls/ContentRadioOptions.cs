@@ -13,6 +13,8 @@ namespace Robust.Client.UserInterface.Controls
 		public IEnumerable<BaseButton> Buttons => _radioOptions.Select(o => o.Button);
 		private readonly List<RadioOption> _radioOptions = new();
 
+		public Action<T>? OptionSelected;
+
 		private LayoutOrientation Layout
 		{
 			get => _box.Orientation;
@@ -57,6 +59,7 @@ namespace Robust.Client.UserInterface.Controls
 			ClearSelected();
 			option.Button.Pressed = true;
 			SelectedValue = option.Value;
+			OptionSelected?.Invoke(SelectedValue);
 		}
 
 		private void ClearSelected()
