@@ -31,6 +31,8 @@ namespace Content.Client.OptionsMenu
 		private bool _currentlyRebinding = false;
 		private BoundKeyFunction _rebindingFunction;
 
+		private const string FunctionUnboundLabel = "Unbound";
+
 		public HotkeyTab()
 		{
 			RobustXamlLoader.Load(this);
@@ -60,6 +62,7 @@ namespace Content.Client.OptionsMenu
 
 				hotkeyBox.ResetButton.OnButtonUp += _ => ResetKeybind(hotkeyBox);
 				hotkeyBox.RebindButton.OnButtonUp += _ => StartRebinding(hotkeyBox);
+				hotkeyBox.ClearButton.OnButtonUp += _ => ClearKeybind(hotkeyBox);
 			}
 		}
 
@@ -83,6 +86,21 @@ namespace Content.Client.OptionsMenu
 			});
 		}
 
+		private void ClearKeybind(HotKeyBox hotkeyBox)
+		{
+			if (!_inputManager.TryGetKeyBinding(hotkeyBox.Function, out var binding))
+				return;
+
+			//Reseting the keybind is defered to the next frame
+			//Removing a keybind in the middle of InputManager handling a key input causes a crash
+			_keybindResets.Add(() =>
+			{
+				_inputManager.RemoveBinding(binding);
+				_inputManager.SaveToUserData();
+				UpdateHotkeyBox(hotkeyBox);
+			});
+		}
+
 		private void UpdateAllHotkeyBoxes()
 		{
 			foreach (var hotkeyBox in _hoykeyBoxes)
@@ -95,10 +113,15 @@ namespace Content.Client.OptionsMenu
 		{
 			hotkeyBox.RebindButton.Disabled = _currentlyRebinding;
 
+			_inputManager.TryGetKeyBinding(hotkeyBox.Function, out var currentBind);
+			var bindText = currentBind is not null ? currentBind.GetKeyString() : FunctionUnboundLabel;
 			hotkeyBox.RebindButton.Text = _rebindingFunction == hotkeyBox.Function ?
-				"Rebinding..." : _inputManager.GetKeyBinding(hotkeyBox.Function).GetKeyString();
+				"Rebinding..." : bindText;
 
 			hotkeyBox.ResetButton.Disabled = !_inputManager.IsKeyFunctionModified(hotkeyBox.Function);
+			hotkeyBox.ClearButton.Disabled = !_inputManager.TryGetKeyBinding(hotkeyBox.Function, out _);
+
+			_inputManager.TryGetKeyBinding(hotkeyBox.Function, out var bind);
 		}
 
 		private void UpdateResetAllButton()
@@ -137,6 +160,7 @@ namespace Content.Client.OptionsMenu
 			}
 
 			RebindHotkey(rebindingHotkeyBox.Function, _heldKeys);
+
 			_inputManager.FirstChanceOnKeyEvent -= handler;
 			_heldKeys.Clear();
 			_currentlyRebinding = false;
@@ -146,9 +170,9 @@ namespace Content.Client.OptionsMenu
 			_uiManager.ClickSound();
 		}
 
-		private void RebindHotkey(BoundKeyFunction function, List<Key> newKeys)
+		private IKeyBinding RebindHotkey(BoundKeyFunction function, List<Key> newKeys)
 		{
-			var currentBind = _inputManager.GetKeyBinding(function);
+			_inputManager.TryGetKeyBinding(function, out var currentBind);
 
 			newKeys.TryGetValue(0, out var primaryKey);
 			newKeys.TryGetValue(1, out var mod1);
@@ -157,20 +181,30 @@ namespace Content.Client.OptionsMenu
 
 			var newBind = new KeyBindingRegistration
 			{
-				Function = currentBind.Function,
+				Function = function,
 				BaseKey = primaryKey,
 				Mod1 = mod1,
 				Mod2 = mod2,
 				Mod3 = mod3,
-				Priority = currentBind.Priority,
-				Type = currentBind.BindingType,
-				CanFocus = currentBind.CanFocus,
-				CanRepeat = currentBind.CanRepeat,
+				Priority = 0,
+				Type = KeyFunctionToBindType(function), //todo 
+				CanFocus = false, //todo how to make sure this is enabled for ui clicks
+				CanRepeat = false,  //todo 
 			};
-			_inputManager.RemoveBinding(currentBind);
-			_inputManager.RegisterBinding(newBind);
+			if (currentBind is not null)
+				_inputManager.RemoveBinding(currentBind);
+			var newKeyBind = _inputManager.RegisterBinding(newBind);
 			_inputManager.SaveToUserData();
 			UpdateResetAllButton();
+			return newKeyBind;
+
+			KeyBindingType KeyFunctionToBindType(BoundKeyFunction function)
+			{
+				return function switch
+				{
+					_ => KeyBindingType.State //default them all to state for now
+				};
+			}
 		}
 
 		protected override void FrameUpdate(FrameEventArgs args)
@@ -189,6 +223,7 @@ namespace Content.Client.OptionsMenu
 		{
 			public readonly Button RebindButton;
 			public readonly Button ResetButton;
+			public readonly Button ClearButton;
 			public readonly BoundKeyFunction Function;
 
 			public HotKeyBox(BoundKeyFunction function)
@@ -203,6 +238,7 @@ namespace Content.Client.OptionsMenu
 				};
 				RebindButton = new Button { MinWidth = 150f };
 				ResetButton = new Button { Text = "Reset" };
+				ClearButton = new Button { Text = "Clear" };
 				AddChild(new BoxContainer
 				{
 					Orientation = LayoutOrientation.Horizontal,
@@ -211,6 +247,7 @@ namespace Content.Client.OptionsMenu
 						functionLabel,
 						RebindButton,
 						ResetButton,
+						ClearButton,
 					}
 				});
 
