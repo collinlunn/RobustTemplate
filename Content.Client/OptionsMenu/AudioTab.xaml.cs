@@ -40,6 +40,11 @@ namespace Content.Client.OptionsMenu
 			GuiEffectsVolumeSlider.OnValueChanged += range => { CurrentGuiEffectsVolumeLabel.Text = $"{range.Value}%"; };
 			AmbienceVolumeSlider.OnValueChanged += range => { CurrentAmbienceVolumeLabel.Text = $"{range.Value}%"; };
 
+			MasterVolumeSlider.OnValueChanged += _ => UpdateApplyResetStatus();
+			MusicVolumeSlider.OnValueChanged += _ => UpdateApplyResetStatus();
+			GuiEffectsVolumeSlider.OnValueChanged += _ => UpdateApplyResetStatus();
+			AmbienceVolumeSlider.OnValueChanged += _ => UpdateApplyResetStatus();
+
 			UpdateButtons();
 			ResetButton.OnPressed += _ => Reset();
 		}
@@ -55,14 +60,17 @@ namespace Content.Client.OptionsMenu
 			CurrentMusicVolumeLabel.Text = $"{MusicVolumeSlider.Value}%";
 			CurrentGuiEffectsVolumeLabel.Text = $"{GuiEffectsVolumeSlider.Value}%";
 			CurrentAmbienceVolumeLabel.Text = $"{AmbienceVolumeSlider.Value}%";
+
+			UpdateApplyResetStatus();
 		}
 
 		private void ApplyPressed()
 		{
-			_cfg.SetCVar(CVars.AudioMasterVolume, MasterVolumeSlider.Value / 100);
+			_cfg.SetCVar(CVars.AudioMasterVolume, SelectedMasterVol());
 			_cfg.SetCVar(ContentCVars.MusicVolume, LV100ToDB(MusicVolumeSlider.Value));
 			_cfg.SetCVar(ContentCVars.GuiEffectsVolume, LV100ToDB(GuiEffectsVolumeSlider.Value));
-			_cfg.SetCVar(ContentCVars.AmbienceVolume, LV100ToDB(AmbienceVolumeSlider.Value));
+			_cfg.SetCVar(ContentCVars.AmbienceVolume, SelectedAmbienceVol());
+			UpdateButtons();
 			_cfg.SaveToFile();
 		}
 
@@ -75,6 +83,30 @@ namespace Content.Client.OptionsMenu
 			UpdateButtons();
 			_cfg.SaveToFile();
 		}
+
+		private void UpdateApplyResetStatus()
+		{
+			var allMatchCurrent =
+				(SelectedMasterVol() == _cfg.GetCVar(CVars.AudioMasterVolume)) &&
+				(LV100ToDB(MusicVolumeSlider.Value) == _cfg.GetCVar(ContentCVars.MusicVolume)) &&
+				(LV100ToDB(GuiEffectsVolumeSlider.Value) == _cfg.GetCVar(ContentCVars.GuiEffectsVolume)) &&
+				(SelectedAmbienceVol() == _cfg.GetCVar(ContentCVars.AmbienceVolume));
+
+			var allMatchDefault =
+				(SelectedMasterVol() == CVars.AudioMasterVolume.DefaultValue) &&
+				(SelectedMusicVol() == ContentCVars.MusicVolume.DefaultValue) &&
+				(LV100ToDB(GuiEffectsVolumeSlider.Value) == ContentCVars.GuiEffectsVolume.DefaultValue) &&
+				(SelectedAmbienceVol() == ContentCVars.AmbienceVolume.DefaultValue);
+
+			ApplyButton.Disabled = allMatchCurrent;
+			ResetButton.Disabled = allMatchDefault;
+		}
+
+		private float SelectedMasterVol() => MasterVolumeSlider.Value / 100;
+		private float SelectedMusicVol() => LV100ToDB(MusicVolumeSlider.Value);
+		private float SelectedGuiVol() => LV100ToDB(GuiEffectsVolumeSlider.Value);
+		private float SelectedAmbienceVol() => LV100ToDB(AmbienceVolumeSlider.Value);
+
 
 		private float DBToLV100(float db, float multiplier = 1f)
 		{
