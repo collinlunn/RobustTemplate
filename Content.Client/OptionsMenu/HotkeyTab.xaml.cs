@@ -49,6 +49,7 @@ namespace Content.Client.OptionsMenu
 				}
 			}
 			UpdateAllHotkeyBoxes();
+			UpdateResetAllButton();
 			ResetAllButton.OnButtonUp += _ => ResetAllKeybinds();
 
 			void AddHotkeyBox(BoundKeyFunction function)
@@ -98,6 +99,13 @@ namespace Content.Client.OptionsMenu
 				"Rebinding..." : _inputManager.GetKeyBinding(hotkeyBox.Function).GetKeyString();
 
 			hotkeyBox.ResetButton.Disabled = !_inputManager.IsKeyFunctionModified(hotkeyBox.Function);
+		}
+
+		private void UpdateResetAllButton()
+		{
+			var modifiedKeys = _hoykeyBoxes.Select(i => (i.Function, _inputManager.IsKeyFunctionModified(i.Function)))
+				.Where(i => i.Item2);
+			ResetAllButton.Disabled = !modifiedKeys.Any();
 		}
 
 		private void StartRebinding(HotKeyBox rebindingHotkeyBox)
@@ -162,6 +170,7 @@ namespace Content.Client.OptionsMenu
 			_inputManager.RemoveBinding(currentBind);
 			_inputManager.RegisterBinding(newBind);
 			_inputManager.SaveToUserData();
+			UpdateResetAllButton();
 		}
 
 		protected override void FrameUpdate(FrameEventArgs args)
@@ -171,6 +180,7 @@ namespace Content.Client.OptionsMenu
 			foreach (var command in _keybindResets)
 			{
 				command();
+				UpdateResetAllButton();
 			}
 			_keybindResets.Clear();
 		}
