@@ -1,4 +1,4 @@
-﻿using Robust.Shared.Utility;
+using Robust.Shared.Utility;
 using System.Linq;
 using static Robust.Client.Input.Mouse;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
@@ -21,11 +21,17 @@ namespace Robust.Client.UserInterface.Controls
 			set => _box.Orientation = value;
 		}
 
+		[Dependency] private readonly ILogManager _logMan = default!;
+		private ISawmill _logger;
+
 		private BoxContainer _box;
 
 		public ContentRadioOptions()
 		{
+			IoCManager.InjectDependencies(this);
+
 			_box = new();
+			_logger = _logMan.GetSawmill("ui.contentRadioOptions");
 			AddChild(_box);
 		}
 
@@ -42,15 +48,16 @@ namespace Robust.Client.UserInterface.Controls
 			return button;
 		}
 
-		public bool SetValue(T value)
+		public void SetValue(T value)
 		{
 			var matchingButtons = _radioOptions.Where(o => o.Value.Equals(value));
 			if (matchingButtons.Count() != 1)
 			{
-				return false;
+				_logger.Error(
+					$"Failed to set {nameof(ContentRadioOptions<T>)} to value {value} (Parent:{Parent?.GetType()}, Parent Name:{Parent?.Name})");
+				return;
 			}
 			SetSelected(matchingButtons.First());
-			return true;
 		}
 
 		private void SetSelected(RadioOption option)
