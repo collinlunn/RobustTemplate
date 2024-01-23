@@ -41,37 +41,23 @@ namespace Content.Client.OptionsMenu
 			foreach (var hotkeySet in GetHotkeySets())
 			{
 				KeybindsContainer.AddChild(new Label
-					{ 
-						Text = hotkeySet.CategoryName, StyleClasses = { DefaultContentStyle.StyleClassHeaderFont }
-					});
+				{ 
+					Text = hotkeySet.CategoryName, StyleClasses = { DefaultContentStyle.StyleClassHeaderFont }
+				});
 
 				foreach (var function in hotkeySet.Functions)
 				{
-					AddHotkeyBox(function);
+					var hotkeyBox = new HotKeyBox(function);
+					_hoykeyBoxes.Add(hotkeyBox);
+					KeybindsContainer.AddChild(hotkeyBox);
+
+					hotkeyBox.ResetButton.OnButtonUp += _ => ResetKeybind(hotkeyBox);
+					hotkeyBox.RebindButton.OnButtonUp += _ => StartRebinding(hotkeyBox);
+					hotkeyBox.ClearButton.OnButtonUp += _ => ClearKeybind(hotkeyBox);
 				}
 			}
-			UpdateAllHotkeyBoxes();
-			UpdateResetAllButton();
-			ResetAllButton.OnButtonUp += _ => ResetAllKeybinds();
-
-			void AddHotkeyBox(BoundKeyFunction function)
-			{
-				var hotkeyBox = new HotKeyBox(function);
-				_hoykeyBoxes.Add(hotkeyBox);
-				KeybindsContainer.AddChild(hotkeyBox);
-
-				hotkeyBox.ResetButton.OnButtonUp += _ => ResetKeybind(hotkeyBox);
-				hotkeyBox.RebindButton.OnButtonUp += _ => StartRebinding(hotkeyBox);
-				hotkeyBox.ClearButton.OnButtonUp += _ => ClearKeybind(hotkeyBox);
-			}
-		}
-
-		private void ResetAllKeybinds()
-		{
-			foreach (var hotkeyBox in _hoykeyBoxes)
-			{
-				ResetKeybind(hotkeyBox);
-			}
+			UpdateButtons();
+			ResetAllButton.OnButtonUp += _ => _hoykeyBoxes.ForEach(hotkeyBox => ResetKeybind(hotkeyBox));
 		}
 
 		private void ResetKeybind(HotKeyBox hotkeyBox)
@@ -82,7 +68,7 @@ namespace Content.Client.OptionsMenu
 			{
 				_inputManager.ResetBindingsFor(hotkeyBox.Function);
 				_inputManager.SaveToUserData();
-				UpdateHotkeyBox(hotkeyBox);
+				UpdateButtons();
 			});
 		}
 
@@ -97,35 +83,24 @@ namespace Content.Client.OptionsMenu
 			{
 				_inputManager.RemoveBinding(binding);
 				_inputManager.SaveToUserData();
-				UpdateHotkeyBox(hotkeyBox);
+				UpdateButtons();
 			});
 		}
 
-		private void UpdateAllHotkeyBoxes()
+		private void UpdateButtons()
 		{
 			foreach (var hotkeyBox in _hoykeyBoxes)
 			{
-				UpdateHotkeyBox(hotkeyBox);
+				hotkeyBox.RebindButton.Disabled = _currentlyRebinding;
+
+				_inputManager.TryGetKeyBinding(hotkeyBox.Function, out var currentBind);
+				var bindText = currentBind is not null ? currentBind.GetKeyString() : FunctionUnboundLabel;
+				hotkeyBox.RebindButton.Text = _rebindingFunction == hotkeyBox.Function ?
+					"Rebinding..." : bindText;
+
+				hotkeyBox.ResetButton.Disabled = !_inputManager.IsKeyFunctionModified(hotkeyBox.Function);
+				hotkeyBox.ClearButton.Disabled = !_inputManager.TryGetKeyBinding(hotkeyBox.Function, out _);
 			}
-		}
-
-		private void UpdateHotkeyBox(HotKeyBox hotkeyBox)
-		{
-			hotkeyBox.RebindButton.Disabled = _currentlyRebinding;
-
-			_inputManager.TryGetKeyBinding(hotkeyBox.Function, out var currentBind);
-			var bindText = currentBind is not null ? currentBind.GetKeyString() : FunctionUnboundLabel;
-			hotkeyBox.RebindButton.Text = _rebindingFunction == hotkeyBox.Function ?
-				"Rebinding..." : bindText;
-
-			hotkeyBox.ResetButton.Disabled = !_inputManager.IsKeyFunctionModified(hotkeyBox.Function);
-			hotkeyBox.ClearButton.Disabled = !_inputManager.TryGetKeyBinding(hotkeyBox.Function, out _);
-
-			_inputManager.TryGetKeyBinding(hotkeyBox.Function, out var bind);
-		}
-
-		private void UpdateResetAllButton()
-		{
 			var modifiedKeys = _hoykeyBoxes.Select(i => (i.Function, _inputManager.IsKeyFunctionModified(i.Function)))
 				.Where(i => i.Item2);
 			ResetAllButton.Disabled = !modifiedKeys.Any();
@@ -136,38 +111,38 @@ namespace Content.Client.OptionsMenu
 			_currentlyRebinding = true;
 			_rebindingFunction = rebindingHotkeyBox.Function;
 
-			UpdateAllHotkeyBoxes();
+			UpdateButtons();
 
 			KeyEventAction handler = (_, _) => { };
 			handler = (keyEvent, type) => InterceptInput(keyEvent, type, handler, rebindingHotkeyBox);
 			_inputManager.FirstChanceOnKeyEvent += handler;
-		}
 
-		private void InterceptInput(KeyEventArgs keyEvent, KeyEventType type, KeyEventAction handler, HotKeyBox rebindingHotkeyBox)
-		{
-			if (type == KeyEventType.Down)
+			void InterceptInput(KeyEventArgs keyEvent, KeyEventType type, KeyEventAction handler, HotKeyBox rebindingHotkeyBox)
 			{
-				_heldKeys.Add(keyEvent.Key);
-				return;
-			}
-			else if (type == KeyEventType.Repeat)
-			{
-				return;
-			}
-			if (!_heldKeys.Any())
-			{
-				return;
-			}
+				if (type == KeyEventType.Down)
+				{
+					_heldKeys.Add(keyEvent.Key);
+					return;
+				}
+				else if (type == KeyEventType.Repeat)
+				{
+					return;
+				}
+				if (!_heldKeys.Any())
+				{
+					return;
+				}
 
-			RebindHotkey(rebindingHotkeyBox.Function, _heldKeys);
+				RebindHotkey(rebindingHotkeyBox.Function, _heldKeys);
 
-			_inputManager.FirstChanceOnKeyEvent -= handler;
-			_heldKeys.Clear();
-			_currentlyRebinding = false;
-			_rebindingFunction = default;
-			UpdateAllHotkeyBoxes();
+				_inputManager.FirstChanceOnKeyEvent -= handler;
+				_heldKeys.Clear();
+				_currentlyRebinding = false;
+				_rebindingFunction = default;
+				UpdateButtons();
 
-			_uiManager.ClickSound();
+				_uiManager.ClickSound();
+			}
 		}
 
 		private IKeyBinding RebindHotkey(BoundKeyFunction function, List<Key> newKeys)
@@ -195,7 +170,6 @@ namespace Content.Client.OptionsMenu
 				_inputManager.RemoveBinding(currentBind);
 			var newKeyBind = _inputManager.RegisterBinding(newBind);
 			_inputManager.SaveToUserData();
-			UpdateResetAllButton();
 			return newKeyBind;
 
 			KeyBindingType KeyFunctionToBindType(BoundKeyFunction function)
@@ -214,7 +188,6 @@ namespace Content.Client.OptionsMenu
 			foreach (var command in _keybindResets)
 			{
 				command();
-				UpdateResetAllButton();
 			}
 			_keybindResets.Clear();
 		}
@@ -255,7 +228,6 @@ namespace Content.Client.OptionsMenu
 				{
 					var regex = new Regex("(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])", RegexOptions.Compiled);
 					return regex.Replace(str, " $1");
-
 				} 
 			}
 		}
