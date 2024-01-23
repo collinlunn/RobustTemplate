@@ -112,6 +112,8 @@ namespace Content.Client.OptionsMenu
 				hotkeyBox.ResetButton.Disabled = !_inputManager.IsKeyFunctionModified(function);
 				hotkeyBox.ClearButton.Disabled = !_inputManager.TryGetKeyBinding(function, out _);
 			}
+
+			var changedKeys = _hoykeyBoxes.Select(i => (i, _inputManager.IsKeyFunctionModified(i.Function))).Where(i => i.Item2);
 			ResetAllButton.Disabled = !_hoykeyBoxes.Select(i => _inputManager.IsKeyFunctionModified(i.Function))
 				.Contains(true);
 		}
@@ -164,6 +166,13 @@ namespace Content.Client.OptionsMenu
 			newKeys.TryGetValue(2, out var mod2);
 			newKeys.TryGetValue(3, out var mod3);
 
+			var keysSame =
+				currentBind is not null &&
+				primaryKey == currentBind.BaseKey &&
+				mod1 == currentBind.Mod1 &&
+				mod2 == currentBind.Mod2 &&
+				mod3 == currentBind.Mod3;
+
 			var newBind = new KeyBindingRegistration
 			{
 				Function = function,
@@ -177,8 +186,8 @@ namespace Content.Client.OptionsMenu
 				CanRepeat = false,  //todo 
 			};
 			if (currentBind is not null)
-				_inputManager.RemoveBinding(currentBind);
-			var newKeyBind = _inputManager.RegisterBinding(newBind);
+				_inputManager.RemoveBinding(currentBind, !keysSame);
+			var newKeyBind = _inputManager.RegisterBinding(newBind, !keysSame);
 			_inputManager.SaveToUserData();
 			return newKeyBind;
 
