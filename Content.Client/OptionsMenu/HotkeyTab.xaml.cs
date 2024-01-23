@@ -26,7 +26,8 @@ namespace Content.Client.OptionsMenu
 
 		private readonly List<Key> _heldKeys = new();
 
-		private readonly List<HotKeyBox> _hoykeyBoxes = new();
+		private record HotKeyBoxEntry(BoundKeyFunction Function, HotKeyBox HotkeyBox);
+		private readonly List<HotKeyBoxEntry> _hoykeyBoxes = new();
 
 		private bool _currentlyRebinding = false;
 		private BoundKeyFunction _rebindingFunction;
@@ -47,34 +48,41 @@ namespace Content.Client.OptionsMenu
 
 				foreach (var function in hotkeySet.Functions)
 				{
-					var hotkeyBox = new HotKeyBox(function);
-					_hoykeyBoxes.Add(hotkeyBox);
+					var hotkeyBox = new HotKeyBox(FunctionNameToString(function.FunctionName));
+					_hoykeyBoxes.Add(new HotKeyBoxEntry(function, hotkeyBox));
 					KeybindsContainer.AddChild(hotkeyBox);
 
-					hotkeyBox.ResetButton.OnButtonUp += _ => ResetKeybind(hotkeyBox);
-					hotkeyBox.RebindButton.OnButtonUp += _ => StartRebinding(hotkeyBox);
-					hotkeyBox.ClearButton.OnButtonUp += _ => ClearKeybind(hotkeyBox);
+					hotkeyBox.ResetButton.OnButtonUp += _ => ResetKeybind(function);
+					hotkeyBox.RebindButton.OnButtonUp += _ => StartRebinding(function);
+					hotkeyBox.ClearButton.OnButtonUp += _ => ClearKeybind(function);
 				}
 			}
 			UpdateButtons();
-			ResetAllButton.OnButtonUp += _ => _hoykeyBoxes.ForEach(hotkeyBox => ResetKeybind(hotkeyBox));
+			ResetAllButton.OnButtonUp += _ => AllHotkeys().ToList()
+				.ForEach(function => ResetKeybind(function));
+
+			string FunctionNameToString(string str)
+			{
+				var regex = new Regex("(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])", RegexOptions.Compiled);
+				return regex.Replace(str, " $1");
+			}
 		}
 
-		private void ResetKeybind(HotKeyBox hotkeyBox)
+		private void ResetKeybind(BoundKeyFunction function)
 		{
 			//Reseting the keybind is defered to the next frame
 			//Removing a keybind in the middle of InputManager handling a key input causes a crash
 			_keybindResets.Add(() =>
 			{
-				_inputManager.ResetBindingsFor(hotkeyBox.Function);
+				_inputManager.ResetBindingsFor(function);
 				_inputManager.SaveToUserData();
 				UpdateButtons();
 			});
 		}
 
-		private void ClearKeybind(HotKeyBox hotkeyBox)
+		private void ClearKeybind(BoundKeyFunction function)
 		{
-			if (!_inputManager.TryGetKeyBinding(hotkeyBox.Function, out var binding))
+			if (!_inputManager.TryGetKeyBinding(function, out var binding))
 				return;
 
 			//Reseting the keybind is defered to the next frame
@@ -89,35 +97,37 @@ namespace Content.Client.OptionsMenu
 
 		private void UpdateButtons()
 		{
-			foreach (var hotkeyBox in _hoykeyBoxes)
+			foreach (var hotkeyBoxEntry in _hoykeyBoxes)
 			{
+				var function = hotkeyBoxEntry.Function;
+				var hotkeyBox = hotkeyBoxEntry.HotkeyBox;
+
 				hotkeyBox.RebindButton.Disabled = _currentlyRebinding;
 
-				_inputManager.TryGetKeyBinding(hotkeyBox.Function, out var currentBind);
+				_inputManager.TryGetKeyBinding(function, out var currentBind);
 				var bindText = currentBind is not null ? currentBind.GetKeyString() : FunctionUnboundLabel;
-				hotkeyBox.RebindButton.Text = _rebindingFunction == hotkeyBox.Function ?
+				hotkeyBox.RebindButton.Text = _rebindingFunction == function ?
 					"Rebinding..." : bindText;
 
-				hotkeyBox.ResetButton.Disabled = !_inputManager.IsKeyFunctionModified(hotkeyBox.Function);
-				hotkeyBox.ClearButton.Disabled = !_inputManager.TryGetKeyBinding(hotkeyBox.Function, out _);
+				hotkeyBox.ResetButton.Disabled = !_inputManager.IsKeyFunctionModified(function);
+				hotkeyBox.ClearButton.Disabled = !_inputManager.TryGetKeyBinding(function, out _);
 			}
-			var modifiedKeys = _hoykeyBoxes.Select(i => (i.Function, _inputManager.IsKeyFunctionModified(i.Function)))
-				.Where(i => i.Item2);
-			ResetAllButton.Disabled = !modifiedKeys.Any();
+			ResetAllButton.Disabled = !_hoykeyBoxes.Select(i => _inputManager.IsKeyFunctionModified(i.Function))
+				.Contains(true);
 		}
 
-		private void StartRebinding(HotKeyBox rebindingHotkeyBox)
+		private void StartRebinding(BoundKeyFunction function)
 		{
 			_currentlyRebinding = true;
-			_rebindingFunction = rebindingHotkeyBox.Function;
+			_rebindingFunction = function;
 
 			UpdateButtons();
 
 			KeyEventAction handler = (_, _) => { };
-			handler = (keyEvent, type) => InterceptInput(keyEvent, type, handler, rebindingHotkeyBox);
+			handler = (keyEvent, type) => InterceptInput(keyEvent, type, handler, function);
 			_inputManager.FirstChanceOnKeyEvent += handler;
 
-			void InterceptInput(KeyEventArgs keyEvent, KeyEventType type, KeyEventAction handler, HotKeyBox rebindingHotkeyBox)
+			void InterceptInput(KeyEventArgs keyEvent, KeyEventType type, KeyEventAction handler, BoundKeyFunction function)
 			{
 				if (type == KeyEventType.Down)
 				{
@@ -133,7 +143,7 @@ namespace Content.Client.OptionsMenu
 					return;
 				}
 
-				RebindHotkey(rebindingHotkeyBox.Function, _heldKeys);
+				RebindHotkey(function, _heldKeys);
 
 				_inputManager.FirstChanceOnKeyEvent -= handler;
 				_heldKeys.Clear();
@@ -197,16 +207,14 @@ namespace Content.Client.OptionsMenu
 			public readonly Button RebindButton;
 			public readonly Button ResetButton;
 			public readonly Button ClearButton;
-			public readonly BoundKeyFunction Function;
 
-			public HotKeyBox(BoundKeyFunction function)
+			public HotKeyBox(string functionName)
 			{
 				IoCManager.InjectDependencies(this);
-				Function = function;
 
 				var functionLabel = new Label
 				{
-					Text = FunctionNameToString(Function.FunctionName),
+					Text = functionName,
 					MinWidth = 300f,
 				};
 				RebindButton = new Button { MinWidth = 150f };
@@ -223,12 +231,6 @@ namespace Content.Client.OptionsMenu
 						ClearButton,
 					}
 				});
-
-				string FunctionNameToString(string str)
-				{
-					var regex = new Regex("(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])", RegexOptions.Compiled);
-					return regex.Replace(str, " $1");
-				} 
 			}
 		}
 
@@ -270,6 +272,7 @@ namespace Content.Client.OptionsMenu
 			};
 		}
 
+		private IEnumerable<BoundKeyFunction> AllHotkeys() => GetHotkeySets().SelectMany(set => set.Functions);
 		private sealed class HotkeySet
 		{
 			public string CategoryName { get; private set; }
