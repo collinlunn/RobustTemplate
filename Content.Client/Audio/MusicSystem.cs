@@ -6,6 +6,7 @@ using Robust.Client.GameObjects;
 using Robust.Client.State;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
+using Robust.Shared.Audio.Sources;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
@@ -17,52 +18,51 @@ namespace Content.Client.Audio
 	public sealed class MusicSystem : EntitySystem
 	{
 		[Dependency] private readonly IStateManager _stateManager = default!;
-		[Dependency] private readonly SharedAudioSystem _audio = default!;
 		[Dependency] private readonly IConfigurationManager _cfg = default!;
+
+		private IAudioSource? _musicSource;
 
 		private const string LobbyMusicPath = "/Audio/test_music.wav";
 		private const string InGameMusicPath = "/Audio/test_music.wav";
 
-		private (EntityUid Stream, AudioComponent Component)? _currentMusic = default;
-
 		public override void Initialize()
 		{
 			base.Initialize();
-			_stateManager.OnStateChanged += OnStateChanged;
+			_stateManager.OnStateChanged += UpdateSong;
 			_cfg.OnValueChanged(ContentCVars.MusicVolume, UpdateVolume);
 		}
 
 		public override void Shutdown()
 		{
 			base.Shutdown();
-			_stateManager.OnStateChanged -= OnStateChanged;
+			_stateManager.OnStateChanged -= UpdateSong;
 			_cfg.UnsubValueChanged(ContentCVars.MusicVolume, UpdateVolume);
 			ClearSong();
 		}
 
-		private void OnStateChanged(StateChangedEventArgs args)
+		private void UpdateSong(StateChangedEventArgs args)
 		{
 			ClearSong();
-			if (TryGetCurrentSong(args.NewState, out var file))
+			if (TryGetCurrentSong(args.NewState, out var file) && AudioHelpers.TryGetAudioSource(file, out var source))
 			{
-				var musicParams = new AudioParams
-				{
-					Volume = _cfg.GetCVar(ContentCVars.MusicVolume),
-					Loop = true,
-				};
-				_currentMusic = _audio.PlayGlobal(file, Filter.Local(), false, audioParams: musicParams);
+				source.Global = true;
+				source.Volume = _cfg.GetCVar(ContentCVars.MusicVolume);
+				source.Looping = true;
+				_musicSource = source;
+				_musicSource.StartPlaying();
 			}
 		}
 
 		private void UpdateVolume(float newVolume)
 		{
-			_audio.SetVolume(_currentMusic?.Stream, newVolume, component: _currentMusic?.Component);
+			if (_musicSource is not null)
+				_musicSource.Volume = newVolume;
 		}
 
 		private void ClearSong()
 		{
-			_audio.Stop(_currentMusic?.Stream, _currentMusic?.Component);
-			_currentMusic = null;
+			_musicSource?.Dispose();
+			_musicSource = null;
 		}
 
 		private bool TryGetCurrentSong(State gameState, [NotNullWhen(true)] out string? fileName)
