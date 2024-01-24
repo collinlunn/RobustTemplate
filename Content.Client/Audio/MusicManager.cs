@@ -1,5 +1,6 @@
 using Content.Client.InGame;
 using Content.Client.Lobby;
+using Content.Client.MainMenu;
 using Content.Shared.ContentCVars;
 using JetBrains.Annotations;
 using Robust.Client.GameObjects;
@@ -21,6 +22,7 @@ namespace Content.Client.Audio
 
 		private IAudioSource? _musicSource;
 
+		private const string MainMenuMusicPath = "/Audio/test_music.wav";
 		private const string LobbyMusicPath = "/Audio/test_music.wav";
 		private const string InGameMusicPath = "/Audio/test_music.wav";
 
@@ -54,6 +56,7 @@ namespace Content.Client.Audio
 		{
 			fileName = gameState switch
 			{
+				MainMenuState => MainMenuMusicPath,
 				InGameState => InGameMusicPath,
 				LobbyState => LobbyMusicPath,
 				_ => null,
