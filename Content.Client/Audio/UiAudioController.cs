@@ -35,17 +35,11 @@ namespace Content.Client.Audio
 		{
 			_clickSource = null;
 
-			if (!string.IsNullOrEmpty(value))
+			if (AudioHelpers.TryGetAudioSource(value, out var source))
 			{
-				var resource = _cache.GetResource<AudioResource>(value);
-				var source = _audioManager.CreateAudioSource(resource);
-
-				if (source != null)
-				{
-					source.Volume = IoCManager.Resolve<IConfigurationManager>()
-						.GetCVar(ContentCVars.GuiEffectsVolume);
-					source.Global = true;
-				}
+				source.Volume = IoCManager.Resolve<IConfigurationManager>()
+					.GetCVar(ContentCVars.GuiEffectsVolume);
+				source.Global = true;
 				_clickSource = source;
 			}
 			UIManager.SetClickSound(_clickSource);
