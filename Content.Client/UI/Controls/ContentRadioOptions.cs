@@ -21,9 +21,6 @@ namespace Robust.Client.UserInterface.Controls
 			set => _box.Orientation = value;
 		}
 
-		[Dependency] private readonly ILogManager _logMan = default!;
-		private ISawmill _logger;
-
 		private BoxContainer _box;
 
 		public ContentRadioOptions()
@@ -31,7 +28,6 @@ namespace Robust.Client.UserInterface.Controls
 			IoCManager.InjectDependencies(this);
 
 			_box = new();
-			_logger = _logMan.GetSawmill("ui.contentRadioOptions");
 			AddChild(_box);
 		}
 
@@ -48,16 +44,17 @@ namespace Robust.Client.UserInterface.Controls
 			return button;
 		}
 
-		public void SetValue(T value)
+		public bool TrySetValue(T value)
 		{
 			var matchingButtons = _radioOptions.Where(o => o.Value.Equals(value));
+
+			//There should an available option for the value, but not multiple
 			if (matchingButtons.Count() != 1)
 			{
-				_logger.Error(
-					$"Failed to set {nameof(ContentRadioOptions<T>)} to value {value} (Parent:{Parent?.GetType()}, Parent Name:{Parent?.Name})");
-				return;
+				return false;
 			}
 			SetSelected(matchingButtons.First());
+			return true;
 		}
 
 		private void SetSelected(RadioOption option)
