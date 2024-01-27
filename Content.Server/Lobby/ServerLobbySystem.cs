@@ -52,7 +52,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 			case SessionStatus.InGame:
 				_playersInLobby.Add(session);
 				RaiseNetworkEvent(new LobbyJoinedEvent(), session);
-				_uiState.OpenUiConnection(LobbyUiKey.Key, session, UiState());
+				_uiState.TryOpenUiConnection(LobbyUiKey.Key, session, UiState());
 				DirtyUi();
 				break;
 
@@ -83,7 +83,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		var uiState = UiState();
 		foreach (var player in _playersInLobby)
 		{
-			_uiState.DirtyUiState(LobbyUiKey.Key, player, uiState);
+			_uiState.TryDirtyUiState(LobbyUiKey.Key, player, uiState);
 		}
 	}
 
@@ -162,7 +162,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 		var gameStartedEvent = new GameStartedEvent();
 		RaiseNetworkEvent(gameStartedEvent, playerSession);
 
-		_uiState.CloseUiConnection(LobbyUiKey.Key, playerSession);
+		_uiState.TryCloseUiConnection(LobbyUiKey.Key, playerSession);
 		DirtyUi();
 	}
 }

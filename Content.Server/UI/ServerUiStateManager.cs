@@ -3,22 +3,23 @@ using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.Player;
 using Robust.Shared.Utility;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Contracts;
 
 namespace Content.Server.UI
 {
 	public sealed class ServerUiStateManager : EntitySystem
 	{
 		[Dependency] private readonly IPlayerManager _players = default!;
+		[Dependency] private readonly ILogManager _logMan = default!;
+		private ISawmill _logger = default!;
 
 		/// <summary>
 		///		Set of connected players with their set of active ui connections.
 		/// </summary>
-		private readonly Dictionary<ICommonSession, PlayerUiConnectionSet> _playerUiConnectionSets = new();
+		private readonly Dictionary<ICommonSession, ConnectionSet> _playerUiConnectionSets = new();
 
-		private sealed class PlayerUiConnectionSet
-		{
-			public readonly Dictionary<Enum, ServerUiConnection> UiConnections = new();
-		}
+		private sealed class ConnectionSet : Dictionary<Enum, ServerUiConnection> { };
 
 		/// <summary>
 		///		Set of players with a dirty ui state to update, with the key of the ui to update.
@@ -28,6 +29,7 @@ namespace Content.Server.UI
 		public override void Initialize()
 		{
 			base.Initialize();
+			_logger = _logMan.GetSawmill("uiState.server");
 			_players.PlayerStatusChanged += PlayerStatusChanged;
 		}
 
@@ -37,10 +39,38 @@ namespace Content.Server.UI
 			_players.PlayerStatusChanged -= PlayerStatusChanged;
 		}
 
+		private void PlayerStatusChanged(object? sender, SessionStatusEventArgs ev)
+		{
+			switch (ev.NewStatus)
+			{
+				case SessionStatus.Connected:
+					_playerUiConnectionSets.Add(ev.Session, new());
+					break;
+				case SessionStatus.Disconnected:
+					_playerUiConnectionSets.Remove(ev.Session);
+					break;
+			}
+		}
+
 		public override void Update(float frameTime)
 		{
 			base.Update(frameTime);
 			SendDirtyStates();
+
+			void SendDirtyStates()
+			{
+				while (_stateUpdateQueue.TryDequeue(out var tuple))
+				{
+					var (player, uiKey) = tuple;
+
+					// Check that UI and player still exist.
+					if (!TryGetConnection(player, uiKey, out var ui, out _))
+						continue;
+
+					ui.Dirty = false;
+					RaiseNetworkEvent(new StateUiConnectionMessage(uiKey, ui.State), player);
+				}
+			}
 		}
 
 		/// <summary>
@@ -49,25 +79,22 @@ namespace Content.Server.UI
 		/// <param name="uiKey">Determine which UI gets the state.</param>
 		/// <param name="player">Player to send the state to.</param>
 		/// <param name="state">State to send to the player. If null sends empty dummy state.</param>
-		public void OpenUiConnection(Enum uiKey, ICommonSession player, UiState? state = null)
+		public bool TryOpenUiConnection(Enum uiKey, ICommonSession player, UiState? state = null)
 		{
-			if (state == null)
+			state ??= new DummyUiState();
+
+			if (!TryGetConnectionSet(player, out var connectionSet, out var errorMsg) ||
+				ConnectionExists(connectionSet, uiKey, out errorMsg))
 			{
-				Log.Debug($"Loaded UI {nameof(uiKey)} with dummy UI state.");
-				state = new DummyUiState();
+				_logger.Error($"Failed to open {nameof(ConnectionSet)}:\n{errorMsg}");
+				return false;
 			}
-			DebugTools.Assert(_playerUiConnectionSets.ContainsKey(player),
-				$"Tried to open UI connection for {player} but they were not in list of players.");
-
-			var connectionSet = _playerUiConnectionSets[player].UiConnections;
-
-			DebugTools.Assert(!connectionSet.ContainsKey(uiKey),
-				$"Tried to open UI connection for {player} but {nameof(uiKey)} was already in use.");
 
 			var ui = new ServerUiConnection(uiKey, state);
 			connectionSet.Add(uiKey, ui);
 
 			RaiseNetworkEvent(new OpenUiConnectionMessage(uiKey, state), player);
+			return true;
 		}
 
 		/// <summary>
@@ -75,71 +102,72 @@ namespace Content.Server.UI
 		/// </summary>
 		/// <param name="uiKey">Determine which UI discards its state.</param>
 		/// <param name="player">Player to make discard.</param>
-		public void CloseUiConnection(Enum uiKey, ICommonSession player)
+		public bool TryCloseUiConnection(Enum uiKey, ICommonSession player)
 		{
-			DebugTools.Assert(_playerUiConnectionSets.ContainsKey(player),
-				$"Tried to close UI connection for {player} but they were not in list of players.");
+			if (!TryGetConnectionSet(player, out var connectionSet, out var errorMsg) ||
+				!ConnectionExists(connectionSet, uiKey, out errorMsg))
+			{
+				_logger.Error($"Failed to close {nameof(ConnectionSet)}:\n{errorMsg}");
 
-			var uiConnections = _playerUiConnectionSets[player].UiConnections;
+				return false;
+			}
 
-			DebugTools.Assert(uiConnections.ContainsKey(uiKey),
-				$"Tried to close UI connection for {player} but but none existed for {nameof(uiKey)}.");
-
-			uiConnections.Remove(uiKey);
+			connectionSet.Remove(uiKey);
 			RaiseNetworkEvent(new CloseUiConnectionMessage(uiKey), player);
+			return true;
 		}
 
-		public void DirtyUiState(Enum uiKey, ICommonSession player, UiState newState)
+		public bool TryDirtyUiState(Enum uiKey, ICommonSession player, UiState newState)
 		{
-			DebugTools.Assert(_playerUiConnectionSets.ContainsKey(player),
-				$"Tried to dirty UI state  for {player} but they were not in list of players.");
+			if (!TryGetConnection(player, uiKey, out var ui, out var errorMsg))
+			{
+				_logger.Error($"Failed to dirty {nameof(ConnectionSet)}:\n{errorMsg}");
+				return false;
+			}
 
-			var uiConnections = _playerUiConnectionSets[player].UiConnections;
-
-			DebugTools.Assert(uiConnections.ContainsKey(uiKey),
-				$"Tried to dirty UI state for {player} but but none existed for {nameof(uiKey)}.");
-
-			var ui = uiConnections[uiKey];
 			ui.State = newState;
 			if (!ui.Dirty)
 			{
 				ui.Dirty = true;
 				_stateUpdateQueue.Enqueue((player, ui.UiKey));
 			}
+			return true;
 		}
 
-		/// <summary>
-		///		Sends states to all clients with a dirty UI state.
-		/// </summary>
-		private void SendDirtyStates()
+		[Pure]
+		private bool TryGetConnectionSet(
+			ICommonSession player,
+			[NotNullWhen(true)] out ConnectionSet? connections,
+			out string errorMsg)
 		{
-			while (_stateUpdateQueue.TryDequeue(out var tuple))
-			{
-				var (player, uiKey) = tuple;
-
-				// Check that UI and player still exist.
-				if (!_playerUiConnectionSets.TryGetValue(player, out var playerData) ||
-					!playerData.UiConnections.TryGetValue(uiKey, out var ui))
-				{
-					continue;
-				}
-
-				ui.Dirty = false;
-				RaiseNetworkEvent(new StateUiConnectionMessage(uiKey, ui.State), player);
-			}
+			errorMsg = $"{nameof(ConnectionSet)} not present for {player}";
+			return _playerUiConnectionSets.TryGetValue(player, out connections);
 		}
 
-		private void PlayerStatusChanged(object? sender, SessionStatusEventArgs ev)
+		[Pure]
+		private static bool ConnectionExists(
+			Dictionary<Enum, ServerUiConnection> connectionSet,
+			Enum uiKey,
+			out string errorMsg)
 		{
-			switch (ev.NewStatus)
-			{
-				case SessionStatus.Connected:
-					_playerUiConnectionSets.Add(ev.Session, new PlayerUiConnectionSet());
-					break;
-				case SessionStatus.Disconnected:
-					_playerUiConnectionSets.Remove(ev.Session);
-					break;
-			}
+			var present = connectionSet.ContainsKey(uiKey);
+			errorMsg = $"{nameof(ServerUiConnection)} is {(present ? "already" : "not")} present for {uiKey.GetType()}";
+			return present;
+		}
+
+		[Pure]
+		private bool TryGetConnection(
+			ICommonSession player,
+			Enum uiKey,
+			[NotNullWhen(true)] out ServerUiConnection? connection,
+			out string errorMsg)
+		{
+			connection = null;
+			if (!TryGetConnectionSet(player, out var connectionSet, out errorMsg))
+				return false;
+
+			errorMsg = $"{nameof(ServerUiConnection)} not present for {uiKey.GetType()}";
+			return connectionSet.TryGetValue(uiKey, out connection);
 		}
 	}
 }
