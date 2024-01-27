@@ -40,8 +40,17 @@ public sealed partial class LobbyHud : Control
 			});
 		}
 
-		StartGameButton.Visible = !state.GameStarted;
-		StartMappingButton.Visible = !state.GameStarted;
-		JoinGameButton.Visible = state.GameStarted;
+		var status = state.LobbyStatus;
+		StartGameButton.Visible = status == LobbyStatus.GameNotStarted;
+		StartMappingButton.Visible = status == LobbyStatus.GameNotStarted;
+		JoinGameButton.Visible = status != LobbyStatus.GameNotStarted;
+
+		JoinGameButton.Text = status switch
+		{
+			LobbyStatus.GameNotStarted => "Not Visible",
+			LobbyStatus.GameStarted => "Join Game",
+			LobbyStatus.MappingStarted => "Join Mapping",
+			_ => throw new NotImplementedException(),
+		};
 	}
 }

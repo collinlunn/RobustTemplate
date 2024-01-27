@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
+using Robust.Shared.GameStates;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
@@ -20,13 +21,12 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 	[Dependency] private readonly MapLoaderSystem _mapLoader = default!;
 	[Dependency] private readonly ServerUiStateManager _uiState = default!;
 
-	private string _mapToLoad = "/Maps/default_map.yml";
-	private bool _gameStarted = false;
-
+	private const string DefaultMap = "/Maps/default_map.yml";
 	private const string PlayerProto = "TestPlayer";
 	private const string PlayerMappingProto = "TestMappingPlayer";
 
-	private HashSet<ICommonSession> _playersInLobby = new();
+	private LobbyStatus _lobbyStatus = LobbyStatus.GameNotStarted;
+	private readonly HashSet<ICommonSession> _playersInLobby = new();
 
 	public override void Initialize()
     {
@@ -57,14 +57,95 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 				break;
 
 			case SessionStatus.Disconnected:
-				if (_playersInLobby.Contains(session))
-				{
-					_playersInLobby.Remove(session);
-				}
+				_playersInLobby.Remove(session);
 				DirtyUi();
 				break;
 		}
     }
+
+	private void OnStartGamePressed(StartGameButtonPressed message, EntitySessionEventArgs args)
+    {
+		if (!GameCanStart(out var errorMsg))
+		{
+			Log.Error($"{args.SenderSession} cannot start game: {errorMsg}");
+			return;
+		}
+		_lobbyStatus = LobbyStatus.GameStarted;
+
+		var mapId = _mapManager.CreateMap();
+		_mapLoader.TryLoad(mapId, DefaultMap, out _);
+
+		_playerManager.Sessions.ForEach(SpawnPlayer);
+	}
+
+	private void OnStartMappingPressed(StartMappingButtonPressed message, EntitySessionEventArgs args)
+	{
+		if (!GameCanStart(out var errorMsg))
+		{
+			Log.Error($"{args.SenderSession} cannot start mapping: {errorMsg}");
+			return;
+		}
+		_lobbyStatus = LobbyStatus.MappingStarted;
+
+		var mapId = _mapManager.CreateMap();
+		_mapManager.AddUninitializedMap(mapId); //set as uninitialized so map can be saved to a file correctly
+		_mapLoader.TryLoad(mapId, DefaultMap, out _);
+
+		_playerManager.Sessions.ForEach(session => SpawnPlayerMapping(session, mapId));
+	}
+
+	private void OnJoinGamePressed(JoinGameButtonPressed message, EntitySessionEventArgs args)
+	{
+		var player = args.SenderSession;
+
+		if (!GameCanStart(out var errorMsg))
+		{
+			Log.Error($"{player} cannot join game:{errorMsg}");
+			return;
+		}
+		SpawnPlayer(player);
+	}
+
+	private void SpawnPlayer(ICommonSession playerSession)
+	{
+		_playersInLobby.Remove(playerSession);
+
+		RaiseLocalEvent(new SpawnPlayerEvent(PlayerProto, playerSession));
+		RaiseNetworkEvent(new GameStartedEvent(), playerSession);
+		_uiState.TryCloseUiConnection(LobbyUiKey.Key, playerSession);
+		DirtyUi();
+	}
+
+	private void SpawnPlayerMapping(ICommonSession playerSession, MapId mapId)
+	{
+		_playersInLobby.Remove(playerSession);
+
+		RaiseLocalEvent(new SpawnMappingPlayerEvent(PlayerMappingProto, mapId, playerSession));
+		RaiseNetworkEvent(new GameStartedEvent(), playerSession);
+		_uiState.TryCloseUiConnection(LobbyUiKey.Key, playerSession);
+		DirtyUi();
+	}
+
+	private void DirtyUi()
+	{
+		var state = UiState();
+		_playersInLobby.ForEach(player => _uiState.TryDirtyUiState(LobbyUiKey.Key, player, state));
+	}
+
+	[Pure]
+	private bool GameCanStart(out string errorMsg)
+	{
+		errorMsg = $"Lobby cannot start; {nameof(ServerLobbySystem)} is not in state {LobbyStatus.GameNotStarted}";
+		return _lobbyStatus == LobbyStatus.GameNotStarted;
+	}
+
+	[Pure]
+	private bool GameCanJoin(out string errorMsg)
+	{
+		errorMsg = $"Cannot join; {nameof(ServerLobbySystem)} is still in state {LobbyStatus.GameNotStarted}";
+		return _lobbyStatus == LobbyStatus.GameNotStarted;
+	}
+
 
 	[Pure]
 	private LobbyUiState UiState()
@@ -74,95 +155,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 			.Select(session => session.Name)
 			.ToArray();
 
-		var uiState = new LobbyUiState(connectedPlayers, _gameStarted);
+		var uiState = new LobbyUiState(connectedPlayers, _lobbyStatus);
 		return uiState;
-	}
-
-	private void DirtyUi()
-	{
-		var uiState = UiState();
-		foreach (var player in _playersInLobby)
-		{
-			_uiState.TryDirtyUiState(LobbyUiKey.Key, player, uiState);
-		}
-	}
-
-	private void OnStartGamePressed(StartGameButtonPressed message)
-    {
-		if (_gameStarted)
-		{
-			Log.Debug("Client tried to start game, but it has already started.");
-			return;
-		}
-		_gameStarted = true;
-
-		var mapId = _mapManager.CreateMap();
-		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
-
-		foreach (var playerSession in _playerManager.Sessions)
-		{
-			SpawnPlayer(playerSession);
-		}
-	}
-
-	private void OnStartMappingPressed(StartMappingButtonPressed message)
-	{
-		if (_gameStarted)
-		{
-			Log.Debug("Client tried to start mapping, but it has already started.");
-			return;
-		}
-		_gameStarted = true;
-
-		var mapId = _mapManager.CreateMap();
-		_mapManager.AddUninitializedMap(mapId); //set as uninitialized so map can be saved to a file correctly
-		_mapLoader.TryLoad(mapId, _mapToLoad, out _);
-
-		foreach (var playerSession in _playerManager.Sessions)
-		{
-			SpawnPlayerMapping(playerSession, mapId);
-		}
-	}
-
-	private void OnJoinGamePressed(JoinGameButtonPressed message, EntitySessionEventArgs args)
-	{
-		if (!_gameStarted)
-		{
-			Log.Debug("Client tried to join game, but it has not started yet.");
-			return;
-		}
-
-		if (args.SenderSession is not ICommonSession session)
-		{
-			Log.Error("Received wrong type of session in OnJoinGamePressed");
-			return;
-		}
-
-		SpawnPlayer(session);
-	}
-
-	private void SpawnPlayer(ICommonSession playerSession)
-	{
-		var spawnEvent = new SpawnPlayerEvent(PlayerProto, playerSession);
-		RaiseLocalEvent(spawnEvent);
-		PlayerSpawned(playerSession);
-	}
-
-	private void SpawnPlayerMapping(ICommonSession playerSession, MapId mapId)
-	{
-		var spawnEvent = new SpawnMappingPlayerEvent(PlayerMappingProto, mapId, playerSession);
-		RaiseLocalEvent(spawnEvent);
-		PlayerSpawned(playerSession);
-	}
-
-	private void PlayerSpawned(ICommonSession playerSession)
-	{
-		_playersInLobby.Remove(playerSession);
-
-		var gameStartedEvent = new GameStartedEvent();
-		RaiseNetworkEvent(gameStartedEvent, playerSession);
-
-		_uiState.TryCloseUiConnection(LobbyUiKey.Key, playerSession);
-		DirtyUi();
 	}
 }

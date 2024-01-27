@@ -7,13 +7,21 @@ namespace Content.Shared.Lobby
 	public class LobbyUiState : UiState
 	{
 		public readonly string[] ConnectedPlayers;
-		public readonly bool GameStarted;
+		public readonly LobbyStatus LobbyStatus;
 
-		public LobbyUiState(string[] connectedPlayers, bool gameStarted)
+		public LobbyUiState(string[] connectedPlayers, LobbyStatus lobbyStatus)
 		{
 			ConnectedPlayers = connectedPlayers;
-			GameStarted = gameStarted;
+			LobbyStatus = lobbyStatus;
 		}
+	}
+
+	[Serializable, NetSerializable]
+	public enum LobbyStatus
+	{
+		GameNotStarted,
+		GameStarted,
+		MappingStarted,
 	}
 
 	[Serializable, NetSerializable]
