@@ -1,98 +1,66 @@
 ﻿using Content.Shared.UI;
 using Robust.Shared.Utility;
+using System.Diagnostics.Contracts;
+using System.Linq;
 
 namespace Content.Client.UI
 {
 	[Access(typeof(ClientUiStateManager))]
 	public sealed class ClientUiConnection
 	{
-		public Enum UiKey { get; }
+		public readonly Enum UiKey;
 
-		private readonly List<IUiStateSubscriber> _subscribers = new();
+		public readonly List<IUiStateSubscriber> Subscribers = new();
 		
 		/// <summary>
 		///		Tracks the status of the server's ui connection.
 		/// </summary>
-		private UiConnectionStatus Status = UiConnectionStatus.NotOpen;
+		public UiConnectionStatus Status = UiConnectionStatus.NotOpen;
 
 		/// <summary>
 		///		The last state sent by the server for this key.
 		/// </summary>
-		private UiState State = new DefaultUiState();
+		public UiState State = new DefaultUiState();
 
 		public ClientUiConnection(Enum uiKey)
 		{
 			UiKey = uiKey;
 		}
 
-		public void ServerUiConnectionOpened(UiState state)
+		[Pure]
+		public bool SubscriberExists(IUiStateSubscriber subscriber, out string errorMsg)
 		{
-			DebugTools.Assert(Status == UiConnectionStatus.NotOpen || Status == UiConnectionStatus.Closed);
-			Status = UiConnectionStatus.Open;
-
-			State = state;
-
-			SetSubscriberStates();
+			var exists = Subscribers.Contains(subscriber);
+			errorMsg = $"{nameof(IUiStateSubscriber)} {subscriber.GetType()} {(exists ? "is already" : "is not")}" +
+				$" subscribed to {Name()}";
+			return exists;
 		}
 
-		public void ServerUiStateReceived(UiState state)
+		[Pure]
+		public bool CanReceiveState(out string errorMsg)
 		{
-			DebugTools.Assert(Status == UiConnectionStatus.Open);
-
-			DebugTools.Assert(State != null);
-			State = state;
-
-			SetSubscriberStates();
+			errorMsg = $"{Name()} cannot receive a {nameof(UiState)}";
+			return Status == UiConnectionStatus.Open;
 		}
 
-		public void ServerUiConnectionClosed()
+		[Pure]
+		public bool CanChangeStatusTo(UiConnectionStatus newStatus, out string errorMsg)
 		{
-			DebugTools.Assert(Status == UiConnectionStatus.Open);
-			Status = UiConnectionStatus.Closed;
-
-			DebugTools.Assert(State != null);
-			ClearState();
-
-			SetSubscriberStates();
-		}
-
-		public void OnNetDisconnected()
-		{
-			Status = UiConnectionStatus.Closed;
-			ClearState();
-			SetSubscriberStates();
-		}
-
-		public void AddSubscriber(IUiStateSubscriber subscriber)
-		{
-			DebugTools.Assert(!_subscribers.Contains(subscriber));
-			_subscribers.Add(subscriber);
-			SetState(subscriber);
-		}
-
-		public void RemoveSubscriber(IUiStateSubscriber subscriber)
-		{
-			DebugTools.Assert(_subscribers.Contains(subscriber));
-			_subscribers.Remove(subscriber);
-		}
-
-		private void SetState(IUiStateSubscriber subscriber)
-		{
-			DebugTools.Assert(_subscribers.Contains(subscriber));
-			subscriber.SetState(State, Status);
-		}
-
-		private void SetSubscriberStates()
-		{
-			foreach (var subscriber in _subscribers)
+			errorMsg = $"Cannot change {Name()} from {nameof(UiConnectionStatus)} {Status} to {newStatus}";
+			var allowedNewStatuses = Status switch
 			{
-				SetState(subscriber);
-			}
+				UiConnectionStatus.NotOpen => new UiConnectionStatus[] { UiConnectionStatus.Open },
+				UiConnectionStatus.Open => new UiConnectionStatus[] { UiConnectionStatus.Closed },
+				UiConnectionStatus.Closed => new UiConnectionStatus[] { UiConnectionStatus.Open },
+				_ => throw new NotImplementedException(),
+			};
+			return allowedNewStatuses.Contains(newStatus);
 		}
 
-		private void ClearState()
+		[Pure]
+		private string Name()
 		{
-			State = new DefaultUiState();
+			return $"{nameof(ClientUiConnection)} (Key:{UiKey.GetType()}, Status:{Status})";
 		}
 	}
 

@@ -28,7 +28,7 @@ namespace Content.Client.Lobby
 		{
 			DebugTools.Assert(_lobbyHud == null);
 			_lobbyHud = new LobbyHud();
-			_uiStateMan.AddSubscriber(this);
+			_uiStateMan.TryAddSubscriber(this);
 
 			_lobbyHud.StartGameButton.OnPressed += _ =>
 			{
@@ -70,7 +70,7 @@ namespace Content.Client.Lobby
 		{
 			_lobbyHud?.Dispose();
 			_lobbyHud = null;
-			_uiStateMan?.RemoveSubscriber(this); //null forgiveness as entity system are nulled on disconnect
+			_uiStateMan?.TryRemoveSubscriber(this); //null forgiveness as entity system are nulled on disconnect
 		}
 
 		public Enum UiKey => LobbyUiKey.Key;
