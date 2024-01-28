@@ -88,7 +88,7 @@ namespace Content.Client.UI
 			var uiKey = msg.UiKey;
 
 			if (!TryGetConnection(uiKey, out var connection, out var errorMsg) ||
-				connection.CanChangeStatusTo(UiConnectionStatus.Closed, out errorMsg))
+				!connection.CanChangeStatusTo(UiConnectionStatus.Closed, out errorMsg))
 			{
 				_logger.Error($"Failed to close {nameof(ClientUiConnection)} for {uiKey.GetType()}:\n{errorMsg}");
 				return;
