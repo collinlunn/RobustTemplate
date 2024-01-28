@@ -1,7 +1,6 @@
 - type: shader
   id: test_canvas_shader
   kind: canvas
-  blend_mode: subtract
   light_mode: normal
 
 - type: shader
