@@ -43,7 +43,7 @@
   - type: Input
   - type: MoveButtonTracker
   - type: PlayerMovement
-    speed: 10
+    startStopMax: [0.25, 0.25, 10]
   - type: PointLight
     radius: 5.0
     energy: 5.0

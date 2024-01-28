@@ -1,6 +1,7 @@
 using Content.Shared.Movement;
 using Content.Shared.Movement.PlayerMovement;
 using JetBrains.Annotations;
+using Robust.Shared.Physics.Components;
 
 namespace Content.Server.Movement.PlayerMovement
 {
@@ -11,11 +12,12 @@ namespace Content.Server.Movement.PlayerMovement
         {
             base.UpdateBeforeSolve(prediction, frameTime);
 
-            //Includes paused entities, as players will be on a paused map during Player
-            var PlayerMovementQuery = AllEntityQuery<MoveButtonTrackerComponent, PlayerMovementComponent>();
-            while (PlayerMovementQuery.MoveNext(out var PlayerPlayer, out var movebuttonTracker, out var PlayerMovement))
+            var playerMovementQuery =
+				EntityQueryEnumerator<PlayerMovementComponent>();
+            while (playerMovementQuery.MoveNext(
+				out var player, out var playerMovement))
             {
-                SetPlayerVelocity(PlayerPlayer, movebuttonTracker, PlayerMovement);
+                SetPlayerKinematics(player, playerMovement, frameTime);
             }
         }
     }

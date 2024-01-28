@@ -4,6 +4,7 @@ using Robust.Client.Player;
 using Robust.Client.Physics;
 using Robust.Shared.Player;
 using Content.Shared.Movement.PlayerMovement;
+using Robust.Shared.Physics.Components;
 
 namespace Content.Client.Movement.PlayerMovement
 {
@@ -37,15 +38,11 @@ namespace Content.Client.Movement.PlayerMovement
         {
             base.UpdateBeforeSolve(prediction, frameTime);
 
-            if (_playerManager?.LocalSession?.AttachedEntity is not { Valid: true } PlayerPlayer)
+            if (_playerManager?.LocalSession?.AttachedEntity is not { Valid: true } player ||
+				!TryComp<PlayerMovementComponent>(player, out var playerMovement))
                 return;
 
-            if (!TryComp<PlayerMovementComponent>(PlayerPlayer, out var PlayerMovement))
-                return;
-
-            var moveButtonTracker = Comp<MoveButtonTrackerComponent>(PlayerPlayer);
-
-            SetPlayerVelocity(PlayerPlayer, moveButtonTracker, PlayerMovement);
+            SetPlayerKinematics(player, playerMovement, frameTime);
         }
     }
 }
