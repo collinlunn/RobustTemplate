@@ -1,14 +1,15 @@
 - Flags: None
   Commands:
   - oldhelp
+  - help
 
 - Flags: Debug
   Commands:
   - addcomp
   - addmap
   - addview
+  - audio_length
   - cvar
-  - delete
   - dump_dependency_injectors
   - dump_event_tables
   - dump_net_comps
