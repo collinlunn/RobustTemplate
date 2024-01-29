@@ -1,43 +1,122 @@
 - Flags: None
   Commands:
-  - ">"
-  - cls
-  - disconnect
-  - echo
-  - exec
-  - fill
-  - hardquit
-  - lsmonitor
-  - midipanic
-  - monitor
-  - monitorinfo
-  - net_graph
-  - quit
-  - setmonitor
-  - vram
+  - help
 
 - Flags: Debug
   Commands:
+  - ">"
+  - '!='
+  - '%'
+  - '%/'
+  - '&'
+  - '&~'
+  - '*'
+  - '*/'
+  - '+'
+  - '+/'
+  - '-'
+  - '-/'
+  - '/'
+  - '//'
+  - '<'
+  - '<='
+  - '=='
+  - '>='
+  - '?'
+  - '??'
+  - '^'
+  - '^~'
+  - 'or?'
+  - '|'
+  - '|~'
+  - '~'
+  - =>
+  - abs
+  - acos
+  - acospi
+  - actor:controlled
+  - actor:session
   - addcomp
   - addcompc
   - addmap
   - addview
+  - allcomps
+  - any
+  - append
+  - as
+  - asin
+  - asinpi
+  - atan
+  - atanpi
+  - audio_length
+  - average
+  - b
+  - bibytecount
+  - bin
   - bind
+  - buildinfo
+  - cbrt
+  - cd
+  - ceil
+  - checkedto
   - chunkinfo
   - cldbglyr
+  - cls
+  - cmd:descloc
+  - cmd:getshim
+  - cmd:info
+  - cmd:list
+  - cmd:moo
+  - comp:add
+  - comp:ensure
+  - comp:get
+  - comp:has
+  - comp:rm
+  - cos
+  - cospi
+  - count
+  - countleadzeros
+  - counttrailingzeros
   - csi
   - cspawn
+  - curtick
+  - curtime
   - cvar
+  - de
   - delete
+  - depsilon
   - detachent
   - devwindow
+  - disconnect
   - dmetamem
+  - do
+  - dpi
+  - dtau
   - dump_dependency_injectors
   - dump_event_tables
   - dump_net_comps
   - dump_netserializer_type_map
   - dumpentities
+  - echo
+  - emplace
+  - ent
   - entfo
+  - entities
+  - entitysystemupdateorder:frame
+  - entitysystemupdateorder:tick
+  - exec
+  - explain
+  - exponentbytecount
+  - exponentshortestbitcount
+  - extremes
+  - f
+  - fe
+  - fepsilon
+  - fill
+  - first
+  - floor
+  - fpi
+  - ftau
   - fuck
   - fullstatereset
   - gc
@@ -47,9 +126,37 @@
   - getcomponentregistration
   - gridtc
   - guidump
+  - hardquit
+  - he
+  - hepsilon
+  - hpi
+  - htau
   - hub_advertise_now
   - hwid
+  - hypot
+  - i
   - incmd
+  - ioc:get
+  - ioc:registered
+  - iota
+  - iscanonical
+  - iscomplex
+  - isempty
+  - iseven
+  - isfinite
+  - isimaginary
+  - isinfinite
+  - isinteger
+  - isnan
+  - isnegative
+  - isnull
+  - isodd
+  - ispositive
+  - isreal
+  - issubnormal
+  - iszero
+  - iterate
+  - join
   - keyinfo
   - kick
   - launchauth
@@ -61,26 +168,63 @@
   - loadmap
   - loadprototype
   - loc
+  - loc:loc
+  - loc:tryloc
   - localdelete
   - loglevel
+  - ls:here
+  - ls:in
   - lsasm
   - lsgrid
   - lsmap
+  - lsmonitor
+  - map
   - mapinit
+  - mappos
+  - max
   - mem
+  - methods:get
+  - methods:overrides
+  - methods:overridesfrom
+  - midipanic
+  - min
+  - monitor
+  - monitorinfo
+  - more
+  - named
+  - nearby
+  - neg
   - net_draw_interp
   - net_entityreport
+  - net_graph
   - net_watchent
   - netaudit
   - oldhelp
   - overrideplayername
+  - paused
   - pausemap
   - physics
+  - physics:angular_velocity
+  - physics:parent
+  - physics:velocity
+  - pick
+  - player:entity
+  - player:imm
+  - player:list
+  - player:self
+  - pos
+  - pow
   - profileEntitySpawning
   - profsnap
+  - prototyped
   - querymappaused
+  - quit
+  - realtime
+  - reduce
   - reloadtiletextures
   - removeview
+  - rep
+  - replace
   - replay_load
   - replay_pause
   - replay_play
@@ -91,6 +235,7 @@
   - replay_skip
   - replay_stop
   - replay_toggle
+  - replay_toggleui
   - resetallents
   - resetent
   - rldloc
@@ -100,17 +245,32 @@
   - rmcompc
   - rmgrid
   - rmmap
+  - rng:from
+  - rng:prob
+  - rng:to
+  - root
+  - round
+  - round2frac
+  - s
+  - saturateto
   - saveconfig
   - savegrid
   - savemap
   - scale
   - scene
+  - search
+  - select
+  - self
   - sendgarbage
+  - servertime
   - setambientlight
   - setclipboard
   - setinputcontext
+  - setmonitor
   - sggcell
+  - shortestbitlength
   - showanchored
+  - showaudio
   - showchunkbb
   - showgridnodes
   - showislands
@@ -121,11 +281,33 @@
   - showtime
   - showvelocities
   - shutdown
+  - significandbitcount
+  - significandbytecount
+  - sin
+  - sinpi
+  - sort
+  - sortby
+  - sortdown
+  - sortdownby
+  - sortmapby
+  - sortmapdownby
   - spawn
+  - spawn:at
+  - spawn:attached
+  - spawn:on
   - spin
+  - sqrt
+  - stepnext
+  - stepprev
+  - stopwatch
   - sudo
+  - sum
   - svbind
   - szr_stats
+  - take
+  - tan
+  - tanpi
+  - tee
   - testbed
   - testlog
   - testopenfile
@@ -133,6 +315,7 @@
   - textedit_queuelinebreak
   - textedit_rebalance
   - textedit_ropeviz
+  - to
   - togglefov
   - togglehardfov
   - togglelight
@@ -140,220 +323,34 @@
   - togglelookup
   - toggleshadows
   - tp
+  - tp:coords
+  - tp:into
+  - tp:to
   - tpgrid
   - tpto
+  - trunc
+  - truncto
+  - types:consumers
+  - types:fullname
+  - types:gettype
+  - types:tree
   - uitest
   - uitest2
+  - unique
   - unpausemap
   - uploadfile
   - uploadfolder
+  - val
+  - vars
   - vfs_ls
+  - vram
   - vv
   - vvinvoke
   - vvread
   - vvwrite
   - watch
-
-- Flags: Debug
-  Commands:
-  - help
-  - audio_length
-  - replay_toggleui
-  - showaudio
-  - cd
-  - ls:here
-  - ls:in
-  - i
-  - f
-  - s
-  - b
-  - ent
-  - val
-  - methods:get
-  - methods:overrides
-  - methods:overridesfrom
-  - self
-  - buildinfo
-  - cmd:list
-  - cmd:moo
-  - cmd:descloc
-  - cmd:info
-  - cmd:getshim
-  - explain
-  - ioc:registered
-  - ioc:get
-  - loc:tryloc
-  - loc:loc
-  - more
-  - physics:velocity
-  - physics:parent
-  - physics:angular_velocity
-  - search
-  - stopwatch
-  - types:consumers
-  - types:tree
-  - types:gettype
-  - types:fullname
-  - '+'
-  - '+/'
-  - '-'
-  - '-/'
-  - '*'
-  - '*/'
-  - '/'
-  - '//'
-  - '%'
-  - '%/'
-  - min
-  - max
-  - '&'
-  - '&~'
-  - '|'
-  - '|~'
-  - '^'
-  - '^~'
-  - '~'
-  - neg
-  - abs
-  - average
-  - bibytecount
-  - shortestbitlength
-  - countleadzeros
-  - counttrailingzeros
-  - '<'
-  - '>='
-  - '<='
-  - '=='
-  - '!='
-  - fpi
-  - fe
-  - ftau
-  - fepsilon
-  - dpi
-  - de
-  - dtau
-  - depsilon
-  - hpi
-  - he
-  - htau
-  - hepsilon
-  - floor
-  - ceil
-  - round
-  - trunc
-  - round2frac
-  - exponentbytecount
-  - significandbytecount
-  - significandbitcount
-  - exponentshortestbitcount
-  - stepnext
-  - stepprev
-  - join
-  - append
-  - '?'
-  - 'or?'
-  - '??'
-  - checkedto
-  - saturateto
-  - truncto
-  - iscanonical
-  - iscomplex
-  - iseven
-  - isodd
-  - isfinite
-  - isimaginary
-  - isinfinite
-  - isinteger
-  - isnan
-  - isnegative
-  - ispositive
-  - isreal
-  - issubnormal
-  - iszero
-  - pow
-  - rng:to
-  - rng:from
-  - rng:prob
-  - sqrt
-  - cbrt
-  - root
-  - hypot
-  - sum
-  - sin
-  - sinpi
-  - asin
-  - asinpi
-  - cos
-  - cospi
-  - acos
-  - acospi
-  - tan
-  - tanpi
-  - atan
-  - atanpi
-  - any
-  - as
-  - count
-  - emplace
-  - first
-  - isempty
-  - isnull
-  - iterate
-  - map
-  - pick
-  - reduce
-  - select
-  - take
-  - tee
-  - unique
   - where
-  - =>
-  - vars
-  - bin
-  - extremes
-  - sortby
-  - sort
-  - sortdownby
-  - sortdown
-  - sortmapby
-  - sortmapdownby
-  - iota
-  - rep
-  - to
-  - curtick
-  - curtime
-  - realtime
-  - servertime
-  - do
-  - entities
-  - named
-  - nearby
-  - paused
-  - prototyped
-  - replace
-  - spawn:at
-  - spawn:on
-  - spawn:attached
   - with
-  - mappos
-  - pos
-  - tp:coords
-  - tp:to
-  - tp:into
-  - allcomps
-  - comp:get
-  - comp:add
-  - comp:rm
-  - comp:ensure
-  - comp:has
-  - entitysystemupdateorder:tick
-  - entitysystemupdateorder:frame
-  - actor:controlled
-  - actor:session
-  - player:list
-  - player:self
-  - player:imm
-  - player:entity
 
 - Flags: Host
   Commands:

@@ -12,13 +12,13 @@
   - cvar
   - dump_dependency_injectors
   - dump_event_tables
-  - dump_net_comps
   - dump_netserializer_type_map
+  - dump_net_comps
   - echo
   - exec
   - gc
-  - gc_mode
   - gcf
+  - gc_mode
   - hub_advertise_now
   - hwid
   - list

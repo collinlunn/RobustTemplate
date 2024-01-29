@@ -1,5 +1,9 @@
 - Flags: None
   Commands:
+  - buildinfo
+
+- Flags: Debug
+  Commands:
   - '!='
   - '%'
   - '%/'
@@ -43,6 +47,9 @@
   - '~'
   - acos
   - acospi
+  - actor:controlled
+  - actor:session
+  - allcomps
   - any
   - append
   - as
@@ -51,7 +58,7 @@
   - atan
   - atanpi
   - b
-  - buildinfo
+  - bin
   - cbrt
   - cd
   - ceil
@@ -61,18 +68,31 @@
   - cmd:info
   - cmd:list
   - cmd:moo
+  - comp:add
+  - comp:ensure
+  - comp:get
+  - comp:has
+  - comp:rm
   - cos
   - cospi
+  - count
   - curtick
   - curtime
   - de
+  - delete
   - depsilon
+  - do
   - dpi
   - dtau
+  - emplace
   - ent
+  - entities
+  - entitysystemupdateorder:frame
+  - entitysystemupdateorder:tick
   - explain
   - exponentbytecount
   - exponentshortestbitcount
+  - extremes
   - f
   - first
   - floor
@@ -83,6 +103,7 @@
   - htau
   - hypot
   - i
+  - iota
   - iscanonical
   - iscomplex
   - isempty
@@ -99,15 +120,33 @@
   - isreal
   - issubnormal
   - iszero
+  - iterate
   - join
   - loc:loc
   - loc:tryloc
   - ls:here
   - ls:in
+  - map
+  - mappos
   - more
+  - named
+  - nearby
+  - paused
+  - physics:angular_velocity
+  - physics:parent
+  - physics:velocity
   - pick
+  - player:entity
+  - player:imm
+  - player:list
+  - player:self
+  - pos
   - pow
+  - prototyped
   - realtime
+  - reduce
+  - rep
+  - replace
   - rng:from
   - rng:prob
   - rng:to
@@ -117,65 +156,13 @@
   - s
   - saturateto
   - search
+  - select
   - self
   - servertime
   - significandbitcount
   - significandbytecount
   - sin
   - sinpi
-  - sqrt
-  - stepnext
-  - stepprev
-  - stopwatch
-  - take
-  - tan
-  - tanpi
-  - tee
-  - trunc
-  - truncto
-  - unique
-  - val
-  - vars
-
-- Flags: Debug
-  Commands:
-  - actor:controlled
-  - actor:session
-  - allcomps
-  - bin
-  - comp:add
-  - comp:ensure
-  - comp:get
-  - comp:has
-  - comp:rm
-  - count
-  - delete
-  - do
-  - emplace
-  - entities
-  - entitysystemupdateorder:frame
-  - entitysystemupdateorder:tick
-  - extremes
-  - iota
-  - iterate
-  - map
-  - mappos
-  - named
-  - nearby
-  - paused
-  - physics:angular_velocity
-  - physics:parent
-  - physics:velocity
-  - player:entity
-  - player:imm
-  - player:list
-  - player:self
-  - pos
-  - prototyped
-  - reduce
-  - rep
-  - replace
-  - select
   - sort
   - sortby
   - sortdown
@@ -185,14 +172,27 @@
   - spawn:at
   - spawn:attached
   - spawn:on
+  - sqrt
+  - stepnext
+  - stepprev
+  - stopwatch
+  - take
+  - tan
+  - tanpi
+  - tee
   - to
   - tp:coords
   - tp:into
   - tp:to
+  - trunc
+  - truncto
   - types:consumers
   - types:fullname
   - types:gettype
   - types:tree
+  - unique
+  - val
+  - vars
   - where
   - with
 
