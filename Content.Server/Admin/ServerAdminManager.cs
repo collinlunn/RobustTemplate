@@ -88,11 +88,6 @@ namespace Content.Server.Admin
 			return CanUseCommand(session, cmdName);
 		}
 
-		public bool CanViewVar(ICommonSession session)
-		{
-			return CanUseCommand(session, "vv");
-		}
-
 		public bool CheckInvokable(CommandSpec command, ICommonSession? user, out IConError? error)
 		{
 			if (user is null)
@@ -130,16 +125,23 @@ namespace Content.Server.Admin
 
 		private bool CanUseCommand(ICommonSession session, string cmdName)
 		{
+			if (!TryGetCachedPlayerPermissions(session, out var playerPerms))
+			{
+				return false;
+			}
+			//unfortunately it appears this has to be hardcoded
+			// "vv" is checked on the server for client ability ot use VV, but is not actually a real command on the server
+			//so it will command loader tests if in YAML permissions
+			if (cmdName == "vv")
+			{
+				return playerPerms.Permissions.HasFlag(AdminFlags.Debug);
+			}
 			if (!_serverConsolePermissions.TryGetValue(cmdName, out var cmdFlag))
 			{
 				Log.Error($"Could not find permissions for {cmdName}");
 				return false;
 			}
-			if (TryGetCachedPlayerPermissions(session, out var playerPerms))
-			{
-				return playerPerms.Permissions.HasFlag(cmdFlag); 
-			}
-			return false;
+			return playerPerms.Permissions.HasFlag(cmdFlag);
 		}
 
 		private void PlayerStatusChanged(object? sender, SessionStatusEventArgs args)
