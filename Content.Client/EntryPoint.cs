@@ -14,6 +14,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using Content.Client.AczLauncherConnecting;
 
 // DEVNOTE: Games that want to be on the hub can change their namespace prefix in the "manifest.yml" file.
 namespace Content.Client;
@@ -76,9 +77,11 @@ public sealed class EntryPoint : GameClient
 		//default audio % ashould be 100%
 		_configMan.OverrideDefault(CVars.AudioMasterVolume, 1);
 
-		//If this is not launcher (aka standalone) go to main menu. Otherwise, wait for connection to finish so we transition to lobby.
+		//If this is not launcher (aka standalone) go to main menu. Otherwise, enter "waiting for connection" screen.
 		if (!_gameController.LaunchState.FromLauncher)
 			_stateManager.RequestStateChange<MainMenuState>();
+		else
+			_stateManager.RequestStateChange<AczLauncherConnectingState>();
 
 		//If run level drops to initialize after disconnecting reopen the main menu
 		_baseClient.RunLevelChanged += (_, args) =>
