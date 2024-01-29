@@ -76,21 +76,17 @@ public sealed class EntryPoint : GameClient
 		//default audio % ashould be 100%
 		_configMan.OverrideDefault(CVars.AudioMasterVolume, 1);
 
-		_stateManager.RequestStateChange<MainMenuState>(); //bring up the main menu
+		//If this is not launcher (aka standalone) go to main menu. Otherwise, wait for connection to finish so we transition to lobby.
+		if (!_gameController.LaunchState.FromLauncher)
+			_stateManager.RequestStateChange<MainMenuState>();
+
 		//If run level drops to initialize after disconnecting reopen the main menu
 		_baseClient.RunLevelChanged += (_, args) =>
 		{
 			if (args.NewLevel == ClientRunLevel.Initialize && 
 			(args.OldLevel == ClientRunLevel.Connected || args.OldLevel == ClientRunLevel.InGame))
 			{
-				if (_gameController.LaunchState.FromLauncher)
-				{
-					throw new NotImplementedException();
-				}
-				else
-				{
-					_stateManager.RequestStateChange<MainMenuState>();
-				}
+				_stateManager.RequestStateChange<MainMenuState>();
 			}
 		};
 
