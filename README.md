@@ -12,14 +12,16 @@ If it mysteriously breaks, run the following shell command from RobustTemplate:
 
 Breakpoint not setting? "Source code is different" - make a small change and rebuild
 
-### Shader Notes (Placeholder)
-https://docs.godotengine.org/en/stable/tutorials/shaders/introduction_to_shaders.html
-https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/shading_language.html#doc-shading-language
-https://docs.godotengine.org/en/stable/tutorials/shaders/shader_reference/canvas_item_shader.html
-https://www.khronos.org/opengl/wiki/Built-in_Variable_(GLSL)#Fragment_shader_inputs
-https://thebookofshaders.com/
+### Engine Notes
+Engine Documentation: https://docs.spacestation14.com/
+(See "Robust Toolbox" subsection in left-side dropdown)
 
-Variables:
+Engine Changelog: ./RobustToolbox/RELEASE-NOTES.md
+
+### Shader Notes (Placeholder)
+Spacw Wizard Shading Language (SWSL) Source Document: https://docs.spacestation14.com/en/robust-toolbox/rendering/shaders.html
+
+Variable References:
 vec4 COLOR - rgba of fragment (can be set)
 vec4 FRAGCOORD - coordinates of fragment
 UV - normilzed coordinates of fragment
