@@ -77,7 +77,8 @@ public sealed class EntryPoint : GameClient
 		//default audio % ashould be 100%
 		_configMan.OverrideDefault(CVars.AudioMasterVolume, 1);
 
-		//If this is not launcher (aka standalone) go to main menu. Otherwise, enter "waiting for connection" screen.
+		//If this is not launcher (aka standalone) go to main menu.
+		//Otherwise, enter "waiting for connection" screen.
 		if (!_gameController.LaunchState.FromLauncher)
 			_stateManager.RequestStateChange<MainMenuState>();
 		else
@@ -86,8 +87,7 @@ public sealed class EntryPoint : GameClient
 		//If run level drops to initialize after disconnecting reopen the main menu
 		_baseClient.RunLevelChanged += (_, args) =>
 		{
-			if (args.NewLevel == ClientRunLevel.Initialize && 
-			(args.OldLevel == ClientRunLevel.Connected || args.OldLevel == ClientRunLevel.InGame))
+			if (args.NewLevel == ClientRunLevel.Initialize && !_gameController.LaunchState.FromLauncher)
 			{
 				_stateManager.RequestStateChange<MainMenuState>();
 			}
