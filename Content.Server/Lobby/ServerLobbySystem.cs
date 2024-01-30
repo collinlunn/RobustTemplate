@@ -98,7 +98,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 	{
 		var player = args.SenderSession;
 
-		if (!GameCanStart(out var errorMsg))
+		if (GameCanJoin(out var errorMsg))
 		{
 			Log.Error($"{player} cannot join game:{errorMsg}");
 			return;
@@ -142,7 +142,7 @@ public sealed class ServerLobbySystem : SharedLobbySystem
 	[Pure]
 	private bool GameCanJoin(out string errorMsg)
 	{
-		errorMsg = $"Cannot join; {nameof(ServerLobbySystem)} is still in state {LobbyStatus.GameNotStarted}";
+		errorMsg = $"Cannot join; {nameof(ServerLobbySystem)} is still in state {_lobbyStatus}";
 		return _lobbyStatus == LobbyStatus.GameNotStarted;
 	}
 
