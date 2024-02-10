@@ -1,8 +1,8 @@
 ### Robust Template Project
-This documenbt contains notes regarding the use of this template project.
+This document contains notes regarding the use of this template project.
 
 ### How to publish
-Run RobustTemplate/Content.Packaging/Program.cs to create the project zip files in RobustTemplate/release
+Run ./Content.Packaging/Program.cs to create the project zip files in ./release. May need altered parameters to build all platforms.
 
 ### Common development errors
 If it mysteriously breaks, run the following shell command from RobustTemplate:
@@ -32,3 +32,23 @@ float TIME - seconds since game startup
 zTextureSpec - returns vec4 color of provided sampler2D tex at given UV coords
 zTexture - return vec4 color, shorthand for zTextureSpec but tex is TEXTURE
 TEXTURE -> a uniform, is a sampler2D. Set by Clyde to be a texture.
+
+### Environmental Variables (RuntimeConfig)
+Can improve performance:
+DOTNET_TieredPGO: 1
+DOTNET_TC_QuickJitForLoops: 1
+DOTNET_ReadyToRun: 0
+
+Enable AVX operations (Depending on your processor, may reduce performance):
+ROBUST_NUMERICS_AVX: true
+
+Can set environment variables from Watchdog.
+
+### Running Prod Servers
+Server Hosting: https://docs.spacestation14.com/en/general-development/setup/server-hosting-tutorial.html
+Watchdog Setup: https://docs.spacestation14.com/en/server-hosting/setting-up-ss14-watchdog.html
+
+In the seperate watchdog project:
+Publish by running Packager.csproj, files get put in ./release
+Put server files (exe, dll, etc) into .\SS14.Watchdog\bin\instances\{insert instance name from app settings}\bin
+Custom server/client update methodas can be madew by extending UpdateProvider
