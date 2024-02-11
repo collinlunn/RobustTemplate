@@ -11,10 +11,14 @@ Directory.SetCurrentDirectory("../../../..");
 
 IPackageLogger logger = new PackageLoggerConsole();
 
-if (republish && Directory.Exists("bin"))
+if (republish && Directory.Exists(Packager.ContentBin))
 {
-	logger.Info("Clearing old build.");
+	logger.Info("Clearing old content build.");
 	Directory.Delete(Packager.ContentBin, recursive: true);
+}
+if (republish && Directory.Exists(Packager.EngineBin))
+{
+	logger.Info("Clearing old engine build.");
 	Directory.Delete(Packager.EngineBin, recursive: true);
 }
 if (Directory.Exists(Packager.ReleaseDir))
