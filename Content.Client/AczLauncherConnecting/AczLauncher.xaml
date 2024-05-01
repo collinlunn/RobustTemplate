@@ -1,0 +1,14 @@
+<Control
+    xmlns="https://spacestation14.io" 
+	xmlns:idle="clr-namespace:Content.Client.UI.Controls">
+    <PanelContainer HorizontalAlignment="Center" Margin="5" MouseFilter="Pass" StyleClasses="ContentPanel" SetWidth="500">
+        <BoxContainer Orientation="Vertical" Margin="3">
+			<Label Name="LauncherStatus" Access="Public" Text="Placeholder LauncherStatus"/>
+			<Label Name="ConnectionStatus" Access="Public" Text="Placeholder ConnectionStatus"/>
+			<Label Name="ConnectionFailedReason" Access="Public" Text="Placeholder ConnectionFailedReason"/>
+			<Button Name="RetryButton" Access="Public" Text="Retry" SetWidth="200" Margin="0 0 3 0"/>
+			<Button Name="QuitButton" Text="Quit" SetWidth="200" Margin="0 0 3 0"/>
+			<idle:IdleAnimation Access="Public" Name="IdleAnimation"/>
+		</BoxContainer>
+    </PanelContainer>
+</Control>

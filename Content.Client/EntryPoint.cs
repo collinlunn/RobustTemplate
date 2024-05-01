@@ -87,9 +87,19 @@ public sealed class EntryPoint : GameClient
 		//If run level drops to initialize after disconnecting reopen the main menu
 		_baseClient.RunLevelChanged += (_, args) =>
 		{
-			if (args.NewLevel == ClientRunLevel.Initialize && !_gameController.LaunchState.FromLauncher)
+			if (args.NewLevel == ClientRunLevel.Initialize)
 			{
-				_stateManager.RequestStateChange<MainMenuState>();
+				if (_gameController.LaunchState.FromLauncher)
+				{
+					var aczLauncher = _stateManager.RequestStateChange<AczLauncherConnectingState>();
+
+					if (args.OldLevel >= ClientRunLevel.Connected)
+						aczLauncher.SetDisconnected();
+					else
+						aczLauncher.SetConnecting();
+				}
+				else
+					_stateManager.RequestStateChange<MainMenuState>();
 			}
 		};
 
