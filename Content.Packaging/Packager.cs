@@ -25,7 +25,7 @@ namespace Content.Packaging
 					"build",
 					project,
 					"--runtime", platform.Rid,
-					"--no-self-contained", //should this be self contained?
+					"--self-contained", "true",
 					"-c", "Release",
 					"--nologo",
 					"-v", "q",
@@ -47,7 +47,7 @@ namespace Content.Packaging
 					"publish",
 					project,
 					"--runtime", platform.Rid,
-					"--no-self-contained", //should this be self contained?
+					"--self-contained", "true",
 					"-c", "Release",
 					"--nologo",
 					"--no-build",
